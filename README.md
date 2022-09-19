@@ -12,10 +12,15 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 ## Getting Started
 
 ### To try everything out: Download this repository and open with Unity
-### To import into your project:
-    - TODO UPN
-    - TODO  .unitypackage
-    - TODO gihub url
+
+### Import the SDK unitypackage to your Unity project
+0. Download the unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases/tag/v0.0.1-alpha
+    - or import via the package manager from git url: https://github.com/Origin-Byte/sui-unity-sdk.git?path=/Assets/SuiUnitySDK
+1. Create an Unity project
+2. Drag and drop the unitypackage to the Project window
+3. As soon as the Import Windows pop up, just click the Import button
+4. If prompted, import Text Mesh Pro Essentials as well
+5. The SDK will be imported
 
 ### Export a unitypackage from the SDK in this repository
 1. Click the RMB on the SuiUnitySDK folder to get a context menu
@@ -25,13 +30,6 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 5. Write a name of the package
 6. Click the Save button
 7. The unitypackage is saved on your disk
-
-### Import the SDK unitypackage to an Unity project
-
-1. Create an Unity project
-2. Drag and drop the unitypackage to the Project window
-3. As soon as the Import Windows pop up, just click the Import button
-4. The SDK will be imported
 
 ## Usage Samples
 
