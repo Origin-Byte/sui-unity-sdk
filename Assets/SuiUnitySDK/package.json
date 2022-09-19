@@ -3,7 +3,7 @@
     "displayName": "SuiUnitySDK",
     "author": { "name": "Origin Byte", "url": "https://github.com/Origin-Byte" },
     "version": "0.0.1",
-    "unity": "2021.3.9",
+    "unity": "2021.3",
     "description": "Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.",
     "keywords": [ "web3", "blockchain", "gaming", "SuiUnitySDK" ],
     "license": "MIT",
