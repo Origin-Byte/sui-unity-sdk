@@ -1,4 +1,6 @@
-﻿/*
+﻿#define WEBGL_COPY_AND_PASTE_SUPPORT_TEXTMESH_PRO
+
+/*
  * Copyright 2020, Gregg Tavares.
  * All rights reserved.
  *
@@ -32,7 +34,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Runtime.InteropServices;
 
-// #define WEBGL_COPY_AND_PASTE_SUPPORT_TEXTMESH_PRO
 
 public class WebGLCopyAndPasteAPI
 {
