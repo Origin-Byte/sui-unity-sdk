@@ -98,9 +98,10 @@ Every dependency with source code can be found in ./Assets/AldrinLabsSDK/Plugins
 Nuget packages are in ./Assets/AldrinLabsSDK/NuGetPackages
 
 - `suinet`, our internal C#/.NET Sui library. It will be regularly updated as features are added to the core library.
-- `Newtonsoft.Json` (included in Unity by default)
 - `Chaos.NaCl.Standard`
 - `Portable.BouncyCastle`
+- `Newtonsoft.Json` (included in recent Unity versions by default)
+- `TextMesh Pro` (Unity restores it)
 
 ## Roadmap
 - Mobile platform support (iOS, Android)
