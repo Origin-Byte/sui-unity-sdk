@@ -13,6 +13,9 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 ### To try everything out: Download this repository and open with Unity
 
+The Samples are in ./Assets/SuiUnitySDK/Samples
+Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
+
 ### Import the SDK unitypackage to your Unity project
 0. Download the unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases/tag/v0.0.1-alpha
     - or import via the package manager from git url: https://github.com/Origin-Byte/sui-unity-sdk.git?path=/Assets/SuiUnitySDK
