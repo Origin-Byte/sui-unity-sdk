@@ -13,6 +13,7 @@ public class MintNFTUI : MonoBehaviour
     public TMP_InputField NFTDescriptionInputField;
     public TMP_InputField NFTUrlInputField;
     public TMP_InputField GasObjectIdInputField;
+    public TMP_Text NFTMintedText;
 
     public Image NFTImage;
 
@@ -35,6 +36,8 @@ public class MintNFTUI : MonoBehaviour
             var typeArgs = System.Array.Empty<string>();
             var args = new object[] { NFTNameInputField.text, NFTDescriptionInputField.text, NFTUrlInputField.text };
             var gasObjectId = GasObjectIdInputField.text;
+
+            NFTMintedText.gameObject.SetActive(false);
             var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
 
             if (rpcResult.IsSuccess)
@@ -49,6 +52,7 @@ public class MintNFTUI : MonoBehaviour
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);
+                    NFTMintedText.gameObject.SetActive(true);
                 }
                 else
                 {
