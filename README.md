@@ -4,10 +4,16 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 # Features
 - Rpc client for direct interaction with the Sui JSON-RPC API https://docs.sui.io/sui-jsonrpc
-    - currently exposed: Read API, Event Read API, Transaction Builder Api
-- Generate and Restore key pairs with Mnemonics (currently Ed25519 supported), signing transactions
-- Currently tested on Windows desktop and WebGL platforms
-- Tested with Unity 2021.3.9f1 LTS and greater
+    - Read API
+    - Event Read API
+    - Transaction Builder Api
+- Wallet Management 
+    - Generate and Restore key pairs with Mnemonics (currently Ed25519 supported)
+    - Sign transactions
+    - Store key pair in PlayerPrefs
+
+- Windows desktop and WebGL platforms tested
+- Unity 2021.3.9f1 LTS or later supported
 
 ### Try the live samples here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
