@@ -2,7 +2,7 @@
 
 Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
-## Features
+# Features
 - Rpc client for direct interaction with the Sui JSON-RPC API https://docs.sui.io/sui-jsonrpc
     - currently exposed: Read API, Event Read API, Transaction Builder Api
 - Generate and Restore key pairs with Mnemonics (currently Ed25519 supported), signing transactions
@@ -11,14 +11,14 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 ### Try the live samples here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
-## Getting Started
+# Getting Started
 
-### To try everything: Download this repository and open with Unity
+## To try everything: Download this repository and open with Unity
 
 The Samples are in ./Assets/SuiUnitySDK/Samples
 Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 
-### Import the SDK unitypackage to your Unity project
+## Import the SDK unitypackage to your Unity project
 0. Download the unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases/tag/v0.0.1-alpha
     - or import via the package manager from git url: https://github.com/Origin-Byte/sui-unity-sdk.git?path=/Assets/SuiUnitySDK
 1. Create an Unity project
@@ -27,7 +27,7 @@ Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 4. If prompted, import Text Mesh Pro Essentials as well
 5. The SDK will be imported
 
-### Export a unitypackage from the SDK in this repository
+## Export a unitypackage from the SDK in this repository
 1. Click the RMB on the SuiUnitySDK folder to get a context menu
 2. Click Export Package on the context menu
 3. Uncheck the *Include dependencies* checkbox not to export non-sdk files
@@ -36,16 +36,26 @@ Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 6. Click the Save button
 7. The unitypackage is saved on your disk
 
-## Usage Samples
+# Usage Samples
 
 All samples can be found in SuiUnitySDK/Samples
 
-### Create New Wallet and Import Wallet
+## Wallet management
+![Alt text](/imgs/wallet_ui_1.png "Wallet UI")
+
 
 ![Alt text](/imgs/create_new_wallet.png "Create New Wallet")
 
+
+![Alt text](/imgs/import_wallet.png "Import Wallet")
+
+
 You can click on Create New Wallet or Import Wallet buttons to initialize the currently active Wallet.
+
+
 PlayerPrefs is used as a keystore at the moment, and it saves the last active wallet and will be loaded from there on the next restart.
+
+
 Now you are ready to execute transactions that require signature.
 
 ```csharp
@@ -54,7 +64,7 @@ Now you are ready to execute transactions that require signature.
  Mnemonics.GetKeypairFromMnemonic(mnemo).PublicKeySuiAddress;
 ```
 
-### RPC Read API
+## RPC Read API
 ![Alt text](/imgs/read_api.png "Read API test")
 
 Enter any address and see the results as formatted JSON.
@@ -66,7 +76,7 @@ Enter any address and see the results as formatted JSON.
     Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
 ```
 
-### RPC Move call and execute transaction samples
+## RPC Move call and execute transaction samples
 
 ![Alt text](/imgs/transactions.png "Transactions")
 
@@ -96,7 +106,9 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
     ...
 ```
 
-### Mint NFT Samples
+## Mint NFT Sample
+
+![Alt text](/imgs/mint_nft.png "Mint NFT")
 
 ```csharp
     var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
@@ -132,7 +144,7 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 
 ```
 
-## Dependencies
+# Dependencies
 
 Every dependency used by the SDK can be found in ./Assets/SuiUnitySDK/Plugins.
 
@@ -143,14 +155,14 @@ Nuget packages are in ./Assets/SuiUnitySDK/Plugins/NuGetPackages
 - `Portable.BouncyCastle`
 - `Newtonsoft.Json` (included in recent Unity versions by default)
 
-### Samples dependencies
+## Samples dependencies
 
 Dependencies used by the Samples can be found in ./Assets/SuiUnitySDK/Samples/Plugins
 
 - `TextMesh Pro`
 - `WebGLCopyAndPaste`
 
-## Roadmap
+# Roadmap
 - Mobile platform support (iOS, Android)
 - WalletConnect
 - Streaming RPC client, Event subscription
