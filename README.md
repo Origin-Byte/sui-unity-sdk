@@ -9,9 +9,11 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 - Currently tested on Windows desktop and WebGL platforms
 - Tested with Unity 2021.3.9f1 LTS and greater
 
+### Try the live samples here: https://suiunitysdksample.z13.web.core.windows.net/ 
+
 ## Getting Started
 
-### To try everything out: Download this repository and open with Unity
+### To try everything: Download this repository and open with Unity
 
 The Samples are in ./Assets/SuiUnitySDK/Samples
 Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
@@ -94,6 +96,42 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
     ...
 ```
 
+### Mint NFT Samples
+
+```csharp
+    var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
+    var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
+
+    var signer = SuiWallet.Instance.GetActiveAddress();
+    var packageObjectId = "0x2";
+    var module = "devnet_nft";
+    var function = "mint";
+    var typeArgs = System.Array.Empty<string>();
+    var nftName = "nft name";
+    var nftDescription = "nft description";
+    var nftUrl = "https://avatars.githubusercontent.com/u/112119979";
+    var args = new object[] { nftName, nftDescription, nftUrl };
+    var gasObjectId = GasObjectIdInputField.text;
+
+    var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+
+    if (rpcResult.IsSuccess)
+    {
+        var keyPair = SuiWallet.Instance.GetActiveKeyPair();
+
+        var txBytes = rpcResult.Result.TxBytes;
+        var signature = keyPair.Sign(rpcResult.Result.TxBytes);
+        var pkBase64 = keyPair.PublicKeyBase64;
+
+        var txRpcResult = await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+    }
+    else
+    {
+        Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
+    }
+
+```
+
 ## Dependencies
 
 Every dependency used by the SDK can be found in ./Assets/SuiUnitySDK/Plugins.
@@ -119,4 +157,5 @@ Dependencies used by the Samples can be found in ./Assets/SuiUnitySDK/Samples/Pl
 - Secp256k1 keypair support
 - More samples
 - Origin-Byte NFT ecosystem access from Unity
+- Higher level APIs, easy-to-use Prefabs 
 - Rust & Typescript SDK parity
