@@ -93,15 +93,18 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 
 ## Dependencies
 
-Every dependency with source code can be found in ./Assets/AldrinLabsSDK/Plugins.
+Every dependency used by the SDK and added with source code can be found in ./Assets/SuiUnitySDK/Plugins.
 
-Nuget packages are in ./Assets/AldrinLabsSDK/NuGetPackages
+Nuget packages are in ./Assets/SuiUnitySDK/NuGetPackages
 
 - `suinet`, our internal C#/.NET Sui library. It will be regularly updated as features are added to the core library.
 - `Chaos.NaCl.Standard`
 - `Portable.BouncyCastle`
 - `Newtonsoft.Json` (included in recent Unity versions by default)
+
+### Samples dependencies
 - `TextMesh Pro` (Unity restores it)
+- `WebGLCopyAndPaste`
 
 ## Roadmap
 - Mobile platform support (iOS, Android)
