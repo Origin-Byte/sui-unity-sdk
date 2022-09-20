@@ -7,7 +7,22 @@
     "description": "Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.",
     "keywords": [ "web3", "blockchain", "gaming", "SuiUnitySDK" ],
     "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/Origin-Byte/sui-unity-sdk/issues"
+    },
     "dependencies": {
       "com.unity.nuget.newtonsoft-json": "3.0.2"
+    },
+    "samples": [
+      {
+        "displayName": "SDK Samples",
+        "description": "SDK Sample scene",
+        "path": "Samples~"
+      }
+    ],
+    "homepage": "https://github.com/Origin-Byte/sui-unity-sdk",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Origin-Byte/sui-unity-sdk.git"
     }
 }
