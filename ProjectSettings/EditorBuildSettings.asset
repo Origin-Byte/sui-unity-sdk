@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SuiUnitySDK/Samples/Sample.unity
+    path: Assets/SuiUnitySDK/Samples/Scenes/SDKSample.unity
     guid: 232afea96ca427149ab6a349e2511a8c
   m_configObjects: {}

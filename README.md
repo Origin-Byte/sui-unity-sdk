@@ -93,9 +93,9 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 
 ## Dependencies
 
-Every dependency used by the SDK and added with source code can be found in ./Assets/SuiUnitySDK/Plugins.
+Every dependency used by the SDK can be found in ./Assets/SuiUnitySDK/Plugins.
 
-Nuget packages are in ./Assets/SuiUnitySDK/NuGetPackages
+Nuget packages are in ./Assets/SuiUnitySDK/Plugins/NuGetPackages
 
 - `suinet`, our internal C#/.NET Sui library. It will be regularly updated as features are added to the core library.
 - `Chaos.NaCl.Standard`
@@ -103,7 +103,10 @@ Nuget packages are in ./Assets/SuiUnitySDK/NuGetPackages
 - `Newtonsoft.Json` (included in recent Unity versions by default)
 
 ### Samples dependencies
-- `TextMesh Pro` (Unity restores it)
+
+Dependencies used by the Samples can be found in ./Assets/SuiUnitySDK/Samples/Plugins
+
+- `TextMesh Pro`
 - `WebGLCopyAndPaste`
 
 ## Roadmap
@@ -113,4 +116,4 @@ Nuget packages are in ./Assets/SuiUnitySDK/NuGetPackages
 - Secp256k1 keypair support
 - More samples
 - Origin-Byte NFT ecosystem access from Unity
-- Full Rust & Typescript SDK parity
+- Rust & Typescript SDK parity
