@@ -1,0 +1,16 @@
+{
+    "name": "Suinet.Wallet",
+    "rootNamespace": "Suinet.Wallet",
+    "references": [
+        "GUID:98fb6f0fa3f93144dad13ae0fa62e065"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
