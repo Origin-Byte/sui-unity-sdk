@@ -25,8 +25,7 @@ The Samples are in ./Assets/SuiUnitySDK/Samples
 Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 
 ## Import the SDK unitypackage to your Unity project
-0. Download the unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases/tag/v0.0.1-alpha
-    - or import via the package manager from git url: https://github.com/Origin-Byte/sui-unity-sdk.git?path=/Assets/SuiUnitySDK
+0. Download the latest unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases
 1. Create an Unity project
 2. Drag and drop the unitypackage to the Project window
 3. As soon as the Import Windows pop up, just click the Import button
