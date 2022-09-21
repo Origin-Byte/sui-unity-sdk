@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using System.Collections;
@@ -50,15 +51,20 @@ public class NftProtocolMintUIController : MonoBehaviour
             var typeArgs = System.Array.Empty<string>();
 
             // We need 2 separate gas objects because both of them will be mutated in a batch transaction
-            var gas1Id = "0x8c588303884be101aedf6cfda8696347bcfb11c4";
-            var gas2Id = "0xff14d4f36c0fc91473a60188a5747c9d0d51d67a";
+            var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 2);
+
+            if (gasObjectIds.Count < 2)
+            {
+                Debug.LogError("Could not retrieve 2 sui coin objects with at least 1000 balance. Please send more SUI to your address");
+                return;
+            }
 
             var args = new object[] { NFTNameInputField.text, NFTUrlInputField.text, false, new object[] { "description" },
-                new object[] { NFTDescriptionInputField.text }, _collectionObjectId, gas1Id, signer };
+                new object[] { NFTDescriptionInputField.text }, _collectionObjectId, gasObjectIds[0], signer };
 
             NFTMintedText.gameObject.SetActive(false);
             NFTMintedReadonlyInputField.gameObject.SetActive(false);
-            var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gas2Id, 2000);
+            var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
 
             if (rpcResult.IsSuccess)
             {
@@ -74,7 +80,10 @@ public class NftProtocolMintUIController : MonoBehaviour
                     await LoadNFT(NFTUrlInputField.text);
                     NFTMintedText.gameObject.SetActive(true);
                     NFTMintedReadonlyInputField.gameObject.SetActive(true);
-                  //  NFTMintedReadonlyInputField.text = ;
+
+                    var txEffects = JObject.FromObject(txRpcResult.Result.Effects);
+                    var mintedNftObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
+                    NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ mintedNftObjectId;
                 }
                 else
                 {
