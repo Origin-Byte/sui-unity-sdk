@@ -117,7 +117,7 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 ![Alt text](/imgs/nft_protocol_mint.png "Mint Nft using Origin Byte Nft Protocol")
 
 This sample demonstrates the minting of an Nft for a collection using Origin Byte Nft protocol with RPC calls.
-More info of the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
+More info on the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
 In this sample we automatically query for 2 separate SUI coin type objects, because the move call executes in a 
 batch transaction and sui does not allow the same coin object to be used as a gas and mutate in the move call as well.
 
