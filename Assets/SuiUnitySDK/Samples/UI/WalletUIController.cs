@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WalletUI : MonoBehaviour
+public class WalletUIController : MonoBehaviour
 {
     public Button NewWalletButton;
     public TMP_InputField NewWalletMnemonicsText;

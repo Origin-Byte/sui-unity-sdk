@@ -5,7 +5,7 @@ using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using Newtonsoft.Json;
 
-public class SuiReadApiUI : MonoBehaviour
+public class SuiReadApiUIController : MonoBehaviour
 {
     public Button GetObjectsOwnedByAddressButton;
     public TMP_InputField Input;

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class MintNFTUI : MonoBehaviour
+public class MintNFTUIController : MonoBehaviour
 {
     public Button MintNFTButton;
     public TMP_InputField NFTNameInputField;

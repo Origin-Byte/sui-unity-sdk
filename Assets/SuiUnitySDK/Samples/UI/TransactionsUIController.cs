@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TransactionsUI : MonoBehaviour
+public class TransactionsUIController : MonoBehaviour
 {
     public Button IncrementCounterButton;
     public Button RefreshCounterButton;
