@@ -14,7 +14,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 - Interact with Origin Byte Nft Protocol https://github.com/Origin-Byte/nft-protocol
 
 - Windows desktop and WebGL platforms tested
-- Unity 2021.3.9f1 LTS or later supported
+- Unity 2021.3.10f1 LTS or later supported
 
 ### Try the live samples here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
