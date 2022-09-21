@@ -20,27 +20,35 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 # Getting Started
 
-## To test the SDK: Download this repository and open with Unity
+## Quickstart: download this repository and open with Unity
 
 The Samples are in ./Assets/SuiUnitySDK/Samples
 Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 
-## Import the SDK `sui-unity-sdk.unitypackage` to your Unity project
-0. Download the latest `sui-unity-sdk.unitypackage` from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases
-1. Create an Unity project
-2. Drag and drop the `sui-unity-sdk.unitypackage` to the Project window
-3. As soon as the Import Windows pop up, just click the Import button
-4. If prompted, import Text Mesh Pro Essentials as well
-5. The SDK will be imported
+## Installation
+Choose one of the following methods:
 
-## Export a `sui-unity-sdk.unitypackage` from the SDK in this repository
-1. Click the RMB on the SuiUnitySDK folder to get a context menu
-2. Click Export Package on the context menu
-3. Uncheck the *Include dependencies* checkbox to not export non-sdk files
-4. Click the Export button
-5. Write a name of the package
-6. Click the Save button
-7. The `sui-unity-sdk.unitypackage` is saved on your disk
+### 1. The package is available on the [openupm registry](https://openupm.com/packages/com.originbyte.suiunitysdk). You can install it via openupm-cli.
+```
+openupm add com.originbyte.suiunitysdk
+```
+
+### 2. Via 'Add package from git URL' in Unity Package Manager
+```
+https://github.com/Origin-Byte/sui-unity-sdk.git#upm
+```
+
+### 3. You can also install via git url by adding this entry in your **manifest.json**
+```
+"com.originbyte.suiunitysdk": "https://github.com/Origin-Byte/sui-unity-sdk.git#upm"
+```
+
+### 4. Download the latest `sui-unity-sdk.unitypackage` from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases
+1. Drag and drop the `sui-unity-sdk.unitypackage` to the Project window
+2. As soon as the Import Windows pop up, just click the Import button
+
+
+## Put a SuiWallet component on any GameObject in the Scene, and start interacting with our SDK. Check out the samples as well.
 
 # Usage Samples
 
