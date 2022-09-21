@@ -11,6 +11,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
     - Generate and Restore key pairs with Mnemonics (currently Ed25519 supported)
     - Sign transactions
     - Store key pair in PlayerPrefs
+- Interact with Origin Byte Nft Protocol https://github.com/Origin-Byte/nft-protocol
 
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.9f1 LTS or later supported
