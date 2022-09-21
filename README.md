@@ -112,26 +112,41 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
     ...
 ```
 
-## Mint NFT Sample
+## Mint Nft using Origin Byte Nft Protocol
 
-![Alt text](/imgs/mint_nft.png "Mint NFT")
+![Alt text](/imgs/nft_protocol_mint.png "Mint Nft using Origin Byte Nft Protocol")
+
+This sample demonstrates the minting of an Nft for a collection using Origin Byte Nft protocol with RPC calls.
+More info of the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
+In this sample we automatically query for 2 separate SUI coin type objects, because the move call executes in a 
+batch transaction and sui does not allow the same coin object to be used as a gas and mutate in the move call as well.
 
 ```csharp
     var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
     var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
 
     var signer = SuiWallet.Instance.GetActiveAddress();
-    var packageObjectId = "0x2";
-    var module = "devnet_nft";
-    var function = "mint";
+    // package id of the Nft Protocol
+    var packageObjectId = "0x1e5a734576e8d8c885cd4cf75665c05d9944ae34";
+    var module = "std_nft";
+    var function = "mint_and_transfer";
     var typeArgs = System.Array.Empty<string>();
-    var nftName = "nft name";
-    var nftDescription = "nft description";
-    var nftUrl = "https://avatars.githubusercontent.com/u/112119979";
-    var args = new object[] { nftName, nftDescription, nftUrl };
-    var gasObjectId = GasObjectIdInputField.text;
 
-    var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+    // We need 2 separate gas objects because both of them will be mutated in a batch transaction
+    var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 2);
+
+    if (gasObjectIds.Count < 2)
+    {
+        Debug.LogError("Could not retrieve 2 sui coin objects with at least 2000 balance. Please send more SUI to your address");
+        return;
+    }
+
+    var args = new object[] { NFTNameInputField.text, NFTUrlInputField.text, false, new object[] { "description" },
+        new object[] { NFTDescriptionInputField.text }, NFTCollectionIdInputField.text, gasObjectIds[0], signer };
+
+    NFTMintedText.gameObject.SetActive(false);
+    NFTMintedReadonlyInputField.gameObject.SetActive(false);
+    var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
 
     if (rpcResult.IsSuccess)
     {
@@ -142,6 +157,7 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
         var pkBase64 = keyPair.PublicKeyBase64;
 
         var txRpcResult = await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+        
     }
     else
     {
