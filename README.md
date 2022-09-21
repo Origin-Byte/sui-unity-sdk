@@ -3,7 +3,7 @@
 Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 # Features
-- Rpc client for direct interaction with the Sui JSON-RPC API https://docs.sui.io/sui-jsonrpc
+- For Rpc clients’ direct interaction with the Sui JSON-RPC https://docs.sui.io/sui-jsonrpc
     - Read API
     - Event Read API
     - Transaction Builder Api
@@ -16,31 +16,31 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
 
-### Try the live samples here: https://suiunitysdksample.z13.web.core.windows.net/ 
+### Try the live example here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
 # Getting Started
 
-## To try everything: Download this repository and open with Unity
+## To test the SDK: Download this repository and open with Unity
 
 The Samples are in ./Assets/SuiUnitySDK/Samples
 Open a Scene from ./Assets/SuiUnitySDK/Samples/Scenes
 
-## Import the SDK unitypackage to your Unity project
-0. Download the latest unity package from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases
+## Import the SDK `sui-unity-sdk.unitypackage` to your Unity project
+0. Download the latest `sui-unity-sdk.unitypackage` from the releases: https://github.com/Origin-Byte/sui-unity-sdk/releases
 1. Create an Unity project
-2. Drag and drop the unitypackage to the Project window
+2. Drag and drop the `sui-unity-sdk.unitypackage` to the Project window
 3. As soon as the Import Windows pop up, just click the Import button
 4. If prompted, import Text Mesh Pro Essentials as well
 5. The SDK will be imported
 
-## Export a unitypackage from the SDK in this repository
+## Export a `sui-unity-sdk.unitypackage` from the SDK in this repository
 1. Click the RMB on the SuiUnitySDK folder to get a context menu
 2. Click Export Package on the context menu
-3. Uncheck the *Include dependencies* checkbox not to export non-sdk files
+3. Uncheck the *Include dependencies* checkbox to not export non-sdk files
 4. Click the Export button
 5. Write a name of the package
 6. Click the Save button
-7. The unitypackage is saved on your disk
+7. The `sui-unity-sdk.unitypackage` is saved on your disk
 
 # Usage Samples
 
@@ -119,7 +119,7 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 This sample demonstrates the minting of an Nft for a collection using Origin Byte Nft protocol with RPC calls.
 More info on the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
 In this sample we automatically query for 2 separate SUI coin type objects, because the move call executes in a 
-batch transaction and sui does not allow the same coin object to be used as a gas and mutate in the move call as well.
+batch transaction and sui does not allow the same coin object to be used as gas and mutate in the move call as well.
 
 ```csharp
     var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
