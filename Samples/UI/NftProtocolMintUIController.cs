@@ -26,7 +26,7 @@ public class NftProtocolMintUIController : MonoBehaviour
     public Image NFTImage;
 
 
-    private async void Start()
+    private void Start()
     {
         // Default text
         NFTNameInputField.text = "Origin Byte NFT using Nft protocol";
