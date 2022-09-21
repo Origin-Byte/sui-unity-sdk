@@ -1,0 +1,19 @@
+{
+    "name": "SuiUnitySDK",
+    "rootNamespace": "",
+    "references": [
+        "GUID:98fb6f0fa3f93144dad13ae0fa62e065",
+        "GUID:e8d2d13fff63d9a44bfafdc73c439915",
+        "GUID:9f081016280de6b49aa9e90afb65c993",
+        "GUID:7b3c0037940919a42af64600403b87a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
