@@ -79,7 +79,16 @@ public class NftProtocolMintUIController : MonoBehaviour
                     NFTMintedReadonlyInputField.gameObject.SetActive(true);
 
                     var txEffects = JObject.FromObject(txRpcResult.Result.Effects);
+
+                    // check the created object, one is a coin, the other one is the actual NFT
                     var mintedNftObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
+                    var createdObject = await suiJsonRpcApi.GetObjectAsync(mintedNftObjectId);
+                    var createdJobj = JObject.FromObject(createdObject.Result.Details);
+                    if (createdJobj.SelectToken("data.type").Value<string>() == "0x2::coin::Coin<0x2::sui::SUI>")
+                    {
+                        mintedNftObjectId = txEffects.SelectToken("created[1].reference.objectId").Value<string>();
+                    }
+
                     NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ mintedNftObjectId;
                 }
                 else
