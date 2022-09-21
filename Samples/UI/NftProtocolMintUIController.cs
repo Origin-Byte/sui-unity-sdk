@@ -20,14 +20,10 @@ public class NftProtocolMintUIController : MonoBehaviour
     public TMP_InputField NFTDescriptionInputField;
     public TMP_InputField NFTUrlInputField;
     public TMP_Text NFTMintedText;
-    public TMP_InputField NFTCollectionReadonlyInputField;
+    public TMP_InputField NFTCollectionIdInputField;
     public TMP_InputField NFTMintedReadonlyInputField;
 
-
     public Image NFTImage;
-
-    // Origin Byte NFTs are minted for a collection
-    private const string _collectionObjectId = "0xd1211d906949786592de54daae392a49edfe197e";
 
 
     private async void Start()
@@ -36,7 +32,8 @@ public class NftProtocolMintUIController : MonoBehaviour
         NFTNameInputField.text = "Origin Byte NFT using Nft protocol";
         NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
         NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
-        NFTCollectionReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/0xd1211d906949786592de54daae392a49edfe197e";
+        // Origin Byte NFTs are minted for a given collection. Default collection for samples.
+        NFTCollectionIdInputField.text = "0xd1211d906949786592de54daae392a49edfe197e";
 
         MintNFTButton.onClick.AddListener(async () =>
         {
@@ -60,7 +57,7 @@ public class NftProtocolMintUIController : MonoBehaviour
             }
 
             var args = new object[] { NFTNameInputField.text, NFTUrlInputField.text, false, new object[] { "description" },
-                new object[] { NFTDescriptionInputField.text }, _collectionObjectId, gasObjectIds[0], signer };
+                new object[] { NFTDescriptionInputField.text }, NFTCollectionIdInputField.text, gasObjectIds[0], signer };
 
             NFTMintedText.gameObject.SetActive(false);
             NFTMintedReadonlyInputField.gameObject.SetActive(false);
