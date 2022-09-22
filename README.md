@@ -48,7 +48,7 @@ https://github.com/Origin-Byte/sui-unity-sdk.git#upm
 2. As soon as the Import Windows pop up, just click the Import button
 
 
-## Put a SuiWallet component on any GameObject in the Scene, and start interacting with our SDK. Check out the samples as well.
+## Start using the SDK via SuiApi and SuiWallet classes. Also check out the samples below.
 
 # Usage Samples
 
@@ -73,9 +73,10 @@ PlayerPrefs is used as a keystore at the moment, and it saves the last active wa
 Now you are ready to execute transactions that require signature.
 
 ```csharp
- var mnemo = Mnemonics.GenerateMnemonic();
+ var mnemonics = SuiWallet.CreateNewWallet();
  ...
- Mnemonics.GetKeypairFromMnemonic(mnemo).PublicKeySuiAddress;
+ SuiWallet.RestoreWalletFromMnemonics(mnemonics);
+ var activeAddress = SuiWallet.GetActiveAddress();
 ```
 
 ## RPC Read API
@@ -84,9 +85,7 @@ Now you are ready to execute transactions that require signature.
 Enter any address and see the results as formatted JSON.
 
 ```csharp
-    var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-    var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-    var ownedObjectsResult = await suiJsonRpcApi.GetObjectsOwnedByAddressAsync(Input.text);
+    var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
     Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
 ```
 
@@ -99,24 +98,21 @@ This sample code calls a function in a published move package that has a ```coun
 See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples/basics/sources/counter.move
 
 ```csharp
-    var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-    var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-
-    var signer = SuiWallet.Instance.GetActiveAddress();
+    var signer = SuiWallet.GetActiveAddress();
     var packageObjectId = "0xa21da7987c2b75870ddb4d638600f9af950b64c6";
     var module = "counter";
     var function = "increment";
     var typeArgs = System.Array.Empty<string>();
     var args = new object[] { SharedCounterObjectId };
     var gasObjectId = GasObjectIdInput.text;
-    var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
-    var keyPair = SuiWallet.Instance.GetActiveKeyPair();
+    var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+    var keyPair = SuiWallet.GetActiveKeyPair();
 
     var txBytes = rpcResult.Result.TxBytes;
     var signature = keyPair.Sign(rpcResult.Result.TxBytes);
     var pkBase64 = keyPair.PublicKeyBase64;
 
-    await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+    await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
     ...
 ```
 
@@ -130,10 +126,7 @@ In this sample we automatically query for 2 separate SUI coin type objects, beca
 batch transaction and sui does not allow the same coin object to be used as gas and mutate in the move call as well.
 
 ```csharp
-    var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-    var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-
-    var signer = SuiWallet.Instance.GetActiveAddress();
+    var signer = SuiWallet.GetActiveAddress();
     // package id of the Nft Protocol
     var packageObjectId = "0x1e5a734576e8d8c885cd4cf75665c05d9944ae34";
     var module = "std_nft";
@@ -154,17 +147,17 @@ batch transaction and sui does not allow the same coin object to be used as gas 
 
     NFTMintedText.gameObject.SetActive(false);
     NFTMintedReadonlyInputField.gameObject.SetActive(false);
-    var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
+    var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
 
     if (rpcResult.IsSuccess)
     {
-        var keyPair = SuiWallet.Instance.GetActiveKeyPair();
+        var keyPair = SuiWallet.GetActiveKeyPair();
 
         var txBytes = rpcResult.Result.TxBytes;
         var signature = keyPair.Sign(rpcResult.Result.TxBytes);
         var pkBase64 = keyPair.PublicKeyBase64;
 
-        var txRpcResult = await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+        var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
         
     }
     else
