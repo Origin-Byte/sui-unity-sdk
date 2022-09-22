@@ -21,24 +21,21 @@ public class TransactionsUIController : MonoBehaviour
 
         IncrementCounterButton.onClick.AddListener(async () =>
         {
-            var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-            var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-
-            var signer = SuiWallet.Instance.GetActiveAddress();
+            var signer = SuiWallet.GetActiveAddress();
             var packageObjectId = "0xa21da7987c2b75870ddb4d638600f9af950b64c6";
             var module = "counter";
             var function = "increment";
             var typeArgs = System.Array.Empty<string>();
             var args = new object[] { SharedCounterObjectId };
             var gasObjectId = GasObjectIdInput.text;
-            var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
-            var keyPair = SuiWallet.Instance.GetActiveKeyPair();
+            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+            var keyPair = SuiWallet.GetActiveKeyPair();
 
             var txBytes = rpcResult.Result.TxBytes;
             var signature = keyPair.Sign(rpcResult.Result.TxBytes);
             var pkBase64 = keyPair.PublicKeyBase64;
 
-            await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+            await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
             await RefreshCounter();
         });
 

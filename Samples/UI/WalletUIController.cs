@@ -15,23 +15,23 @@ public class WalletUIController : MonoBehaviour
 
     private void Start()
     {
-        ActiveAddressText.text = SuiWallet.Instance.GetActiveAddress();
+        ActiveAddressText.text = SuiWallet.GetActiveAddress();
 
         NewWalletButton.onClick.AddListener(() =>
         {
-            var walletmnemo = SuiWallet.Instance.CreateNewWallet();
+            var walletmnemo = SuiWallet.CreateNewWallet();
             NewWalletMnemonicsText.gameObject.SetActive(true);
             NewWalletMnemonicsText.text = walletmnemo;
 
-            ActiveAddressText.text = SuiWallet.Instance.GetActiveAddress();
+            ActiveAddressText.text = SuiWallet.GetActiveAddress();
         });
 
 
         ImportWalletButton.onClick.AddListener(() =>
         {
             NewWalletMnemonicsText.gameObject.SetActive(false);
-            SuiWallet.Instance.RestoreWalletFromMnemonics(MnemonicsInputField.text);
-            ActiveAddressText.text = SuiWallet.Instance.GetActiveAddress();
+            SuiWallet.RestoreWalletFromMnemonics(MnemonicsInputField.text);
+            ActiveAddressText.text = SuiWallet.GetActiveAddress();
         });
     }
 }

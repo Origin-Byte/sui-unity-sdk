@@ -2,26 +2,13 @@ using Suinet.Wallet;
 using UnityEngine;
 
 /// <summary>
-/// Uses PlayerPrefs as store
+/// Simple wallet implementation. Uses PlayerPrefs as store.
 /// </summary>
-public class SuiWallet : MonoBehaviour
+public class SuiWallet
 {
     private const string MnemonicsKey = "MnemonicsKey";
-    public static SuiWallet Instance { get; private set; }
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
-
-    public string GetActiveAddress()
+    public static string GetActiveAddress()
     {
         var keypair = GetActiveKeyPair();
         if (keypair != null)
@@ -32,14 +19,14 @@ public class SuiWallet : MonoBehaviour
         return "0x";
     }
 
-    public string CreateNewWallet()
+    public static string CreateNewWallet()
     {
         var mnemo = Mnemonics.GenerateMnemonic();
         RestoreWalletFromMnemonics(mnemo);
         return mnemo;
     }
 
-    public bool RestoreWalletFromMnemonics(string mnemo)
+    public static bool RestoreWalletFromMnemonics(string mnemo)
     {
         if (!Mnemonics.ValidateMnemonic(mnemo)) return false;
 
@@ -48,7 +35,7 @@ public class SuiWallet : MonoBehaviour
         return true;
     }
 
-    public Ed25519KeyPair GetActiveKeyPair()
+    public static Ed25519KeyPair GetActiveKeyPair()
     {
         if (PlayerPrefs.HasKey(MnemonicsKey))
         {
@@ -59,7 +46,7 @@ public class SuiWallet : MonoBehaviour
         return null;
     }
 
-    public void Logout()
+    public static void Logout()
     {
         PlayerPrefs.DeleteKey(MnemonicsKey);
         PlayerPrefs.Save();
