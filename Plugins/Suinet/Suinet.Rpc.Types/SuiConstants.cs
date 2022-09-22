@@ -2,6 +2,7 @@
 {
     public static class SuiConstants
     {
+        public const string SUI_COIN_TYPE = "0x2::coin::Coin<0x2::sui::SUI>";
         public const string DEVNET_ENDPOINT = "https://gateway.devnet.sui.io:443";
 
         // Sui uses SHA3-256 hence 32 bytes here
