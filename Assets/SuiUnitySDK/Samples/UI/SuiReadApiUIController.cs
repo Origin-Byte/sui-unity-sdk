@@ -1,8 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Suinet.Rpc;
-using Suinet.Rpc.Types;
 using Newtonsoft.Json;
 
 public class SuiReadApiUIController : MonoBehaviour
@@ -13,15 +11,12 @@ public class SuiReadApiUIController : MonoBehaviour
 
     private void Start()
     {
-        Input.text = SuiWallet.Instance.GetActiveAddress();
+        Input.text = SuiWallet.GetActiveAddress();
 
         GetObjectsOwnedByAddressButton.onClick.AddListener(async () =>
         {
-            var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-            var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-
-            var ownedObjectsResult = await suiJsonRpcApi.GetObjectsOwnedByAddressAsync(Input.text);
-
+            var address = Input.text;
+            var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
             Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
         });
     }

@@ -1,4 +1,3 @@
-using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using System.Threading.Tasks;
 using TMPro;
@@ -26,10 +25,7 @@ public class MintNFTUIController : MonoBehaviour
 
         MintNFTButton.onClick.AddListener(async () =>
         {
-            var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
-            var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
-
-            var signer = SuiWallet.Instance.GetActiveAddress();
+            var signer = SuiWallet.GetActiveAddress();
             var packageObjectId = "0x2";
             var module = "devnet_nft";
             var function = "mint";
@@ -38,17 +34,17 @@ public class MintNFTUIController : MonoBehaviour
             var gasObjectId = GasObjectIdInputField.text;
 
             NFTMintedText.gameObject.SetActive(false);
-            var rpcResult = await suiJsonRpcApi.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
 
             if (rpcResult.IsSuccess)
             {
-                var keyPair = SuiWallet.Instance.GetActiveKeyPair();
+                var keyPair = SuiWallet.GetActiveKeyPair();
 
                 var txBytes = rpcResult.Result.TxBytes;
                 var signature = keyPair.Sign(rpcResult.Result.TxBytes);
                 var pkBase64 = keyPair.PublicKeyBase64;
 
-                var txRpcResult = await suiJsonRpcApi.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);
