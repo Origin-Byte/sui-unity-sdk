@@ -14,7 +14,7 @@ public class TransactionsUIController : MonoBehaviour
 
     public TMP_InputField Output;
 
-    private string SharedCounterObjectId = "0xb583a88cea231f54348d0c4df4415fd04201529d";
+    private string SharedCounterObjectId = "0xe5de6824f7c0cedc2489cc06d7e7f2e426edbe42";
 
     private async void Start()
     {
@@ -22,7 +22,7 @@ public class TransactionsUIController : MonoBehaviour
         IncrementCounterButton.onClick.AddListener(async () =>
         {
             var signer = SuiWallet.GetActiveAddress();
-            var packageObjectId = "0xa21da7987c2b75870ddb4d638600f9af950b64c6";
+            var packageObjectId = "0x6295af8a599ee4d9e7addc650d8e2a25c9046a37";
             var module = "counter";
             var function = "increment";
             var typeArgs = System.Array.Empty<string>();
