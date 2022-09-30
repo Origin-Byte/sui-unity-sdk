@@ -15,6 +15,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
+- Samples are using Sui 0.10.0 devnet
 
 ### Try the live example here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
