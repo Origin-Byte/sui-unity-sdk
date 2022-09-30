@@ -29,13 +29,13 @@ public class NftProtocolMintUIController : MonoBehaviour
         NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
         NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
         // Origin Byte NFTs are minted for a given collection. Default collection for samples.
-        NFTCollectionIdInputField.text = "0xd1211d906949786592de54daae392a49edfe197e";
+        NFTCollectionIdInputField.text = "0x0f31c2ef91697057ad51c7914bc90be5b43569a5";
 
         MintNFTButton.onClick.AddListener(async () =>
         {
             var signer = SuiWallet.GetActiveAddress();
             // package id of the Nft Protocol
-            var packageObjectId = "0x1e5a734576e8d8c885cd4cf75665c05d9944ae34";
+            var packageObjectId = "0x4112429a20b9f6bfcc5f43e773dbbf71053cdfa5";
             var module = "std_nft";
             var function = "mint_and_transfer";
             var typeArgs = System.Array.Empty<string>();
