@@ -24,6 +24,7 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             var requestData = Encoding.UTF8.GetBytes(requestJson);
+          //  Debug.Log($"requestJson: {requestJson}");
 
             using (var unityWebRequest = new UnityWebRequest(Endpoint, "POST"))
             {
@@ -62,7 +63,7 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             result.RawRpcResponse = downloadHandler.text;
-            Debug.Log($"Result: {result.RawRpcResponse}");
+          //  Debug.Log($"Result: {result.RawRpcResponse}");
             var res = JsonConvert.DeserializeObject<JsonRpcValidResponse<T>>(result.RawRpcResponse);
 
             if (res.Result != null)

@@ -7,7 +7,8 @@ public static class SuiApi
 
     static SuiApi()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
+        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT);
+        //var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT);
         Client = new SuiJsonRpcApiClient(rpcClient);
     }
 }

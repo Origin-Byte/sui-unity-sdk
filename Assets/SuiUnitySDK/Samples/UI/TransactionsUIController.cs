@@ -50,7 +50,7 @@ public class TransactionsUIController : MonoBehaviour
 
     private async Task RefreshCounter()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
+        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT);
         var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
 
         var rpcResult = await suiJsonRpcApi.GetObjectAsync(SharedCounterObjectId);
