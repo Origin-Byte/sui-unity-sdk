@@ -3,13 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Suinet.Rpc;
 using Suinet.Rpc.Http;
 using Suinet.Rpc.Types;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -19,23 +17,27 @@ public class OnChainGameController : MonoBehaviour
     public TileBase playerTile;
     
     private string _positionObjectId = "";
-    private Timer _updateTimer;
-    private Timer _drawTimer;
     private const string PACKAGE_OBJECT_ID = "0xbcf4c404963ef0ae205bdecd80722543948cbb94";
 
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
 
-    private Dictionary<string, Tuple<UInt64, UInt64>> _playerPositions;
+    private Dictionary<string, Vector3Int> _onChainPlayerPositions;
+    private Dictionary<string, Vector3Int> _playerPositions;
+
+    private HashSet<string> _ongoingRequestIds;
 
     private ulong _latestEventReadTimeStamp = 0;
     
     // Start is called before the first frame update
     async void Start()
     {
-        _playerPositions = new Dictionary<string, Tuple<ulong, ulong>>();
+        _onChainPlayerPositions = new Dictionary<string, Vector3Int>();
+        _playerPositions = new Dictionary<string, Vector3Int>();
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
+
+        _ongoingRequestIds = new HashSet<string>();
         
         if (PlayerPrefs.HasKey("positionObject")) 
         { 
@@ -50,55 +52,63 @@ public class OnChainGameController : MonoBehaviour
         
         print("positionObjectId: " + _positionObjectId);
 
-        _updateTimer = new System.Timers.Timer(500); 
-        _updateTimer.Elapsed += UpdateTimerElapsed; 
-        _updateTimer.AutoReset = true; 
-        _updateTimer.Enabled = true; 
-        
-        _drawTimer = new System.Timers.Timer(250);
-        _drawTimer.Elapsed += DrawTimerElapsed; 
-        _drawTimer.Enabled = true;
-        _drawTimer.AutoReset = true;
+        StartCoroutine(ReadInputWorker());
+        StartCoroutine(GetMovementEventsWorker());
+        StartCoroutine(DrawWorker());
     }
 
-    void OnDestroy()
+    private IEnumerator DrawWorker()
     {
-        _updateTimer.Stop();
-        _updateTimer.Elapsed -= UpdateTimerElapsed;
-        _drawTimer.Stop();
-        _drawTimer.Elapsed -= DrawTimerElapsed;
-    }
-
-    private void DrawTimerElapsed(object sender, ElapsedEventArgs e)
-    {
-        UnityMainThreadDispatcher.Instance().Enqueue(Draw);
+        while (true)
+        {
+            Draw();
+            yield return new WaitForSeconds(0.15f);
+        }
     }
     
-    private void UpdateTimerElapsed(object sender, ElapsedEventArgs e) 
+    private IEnumerator ReadInputWorker() 
     { 
-        UnityMainThreadDispatcher.Instance().Enqueue(async () => await ReadInputAsync());
-        UnityMainThreadDispatcher.Instance().Enqueue(async () => await GetMovementEventsAsync());
+        while (true)
+        {
+            var task = ReadInputAsync();
+            yield return new WaitUntil(()=> task.IsCompleted);
+            //yield return new WaitForSeconds(0.3f);
+        }
+    }
+    
+    private IEnumerator GetMovementEventsWorker() 
+    { 
+        while (true)
+        {
+            var task = GetMovementEventsAsync();
+            yield return new WaitUntil(()=> task.IsCompleted);
+            //yield return new WaitForSeconds(0.3f);
+        }
     }
 
     private void Draw()
     {
-        tilemap.ClearAllTiles();
         foreach (var position in _playerPositions)
         {
+            if (_onChainPlayerPositions.ContainsKey(position.Key)
+                && _onChainPlayerPositions[position.Key] != _playerPositions[position.Key])
+            {
+                tilemap.SetTile(_playerPositions[position.Key], null);
+            }
+        }
 
-            // map from uint storage format
-            var x = Convert.ToInt32(position.Value.Item1) - 100000;
-            var y = Convert.ToInt32(position.Value.Item2) - 100000;
-            var pos = new Vector3Int(x, y);
-            Debug.Log("_playerPositions x " + x + ", y: " + y);
+        _playerPositions.Clear();
 
-            tilemap.SetTile(pos, playerTile);
+        foreach (var position in _onChainPlayerPositions)
+        {
+            tilemap.SetTile(position.Value, playerTile);
+            _playerPositions.Add(position.Key, position.Value);
         }
     }
     
     private async Task ReadInputAsync()
     {
-        Debug.Log("tilemap size: " + tilemap.size);
+       // Debug.Log("ReadInputAsync");
         
         var normalizedHorizontal = Mathf.RoundToInt(Input.GetAxis("Horizontal")) + 1;
         var normalizedVertical = Mathf.RoundToInt(Input.GetAxis("Vertical")) + 1;
@@ -111,10 +121,13 @@ public class OnChainGameController : MonoBehaviour
 
     private async Task GetMovementEventsAsync()
     {
+       // Debug.Log("GetMovementEventsAsync 0");
+
         var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(PACKAGE_OBJECT_ID, "movement_module", 10, _latestEventReadTimeStamp, 10000000000000 );
         if (rpcResult.IsSuccess)
         {
             var movementEvents = JArray.FromObject(rpcResult.Result);
+         //   Debug.Log("GetMovementEventsAsync success");
 
             foreach (var movementEvent in movementEvents)
             {
@@ -130,16 +143,21 @@ public class OnChainGameController : MonoBehaviour
                     }
 
                     byte[] bytes = Convert.FromBase64String(bcs);
-                    var x = BitConverter.ToUInt64(bytes, 0);
-                    var y = BitConverter.ToUInt64(bytes, 8);
+                    var x64 = BitConverter.ToUInt64(bytes, 0);
+                    var y64 = BitConverter.ToUInt64(bytes, 8);
 
-                    if (_playerPositions.ContainsKey(sender))
+                    // map from uint storage format
+                    var x = Convert.ToInt32(x64) - 100000;
+                    var y = Convert.ToInt32(y64) - 100000;
+                    var pos = new Vector3Int(x, y);
+
+                    if (_onChainPlayerPositions.ContainsKey(sender)) 
                     {
-                        _playerPositions[sender] = new Tuple<ulong, ulong>(x, y);
+                        _onChainPlayerPositions[sender] = pos;
                     }
                     else
                     {
-                        _playerPositions.Add(sender, new Tuple<ulong, ulong>(x, y));
+                        _onChainPlayerPositions.Add(sender, pos);
                     }
                 }
             }
@@ -148,6 +166,13 @@ public class OnChainGameController : MonoBehaviour
     
     private async Task DoMoveOnChainAsync(int x, int y)
     {
+        if (_ongoingRequestIds.Count > 0) return;
+        
+        //Debug.Log("DoMoveOnChainAsync");
+        
+        var requestId = Guid.NewGuid().ToString();
+        _ongoingRequestIds.Add(requestId);
+        
         var signer = SuiWallet.GetActiveAddress(); 
         var packageObjectId = PACKAGE_OBJECT_ID; 
         var module = "movement_module"; 
@@ -183,13 +208,14 @@ public class OnChainGameController : MonoBehaviour
             } 
             else 
             { 
-                Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage); 
+                Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
             } 
         } 
         else 
         { 
-            Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage); 
-        } 
+            Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
+        }
+        _ongoingRequestIds.Remove(requestId);
     }
     
     private async Task<string> CreatePositionAsync() 
