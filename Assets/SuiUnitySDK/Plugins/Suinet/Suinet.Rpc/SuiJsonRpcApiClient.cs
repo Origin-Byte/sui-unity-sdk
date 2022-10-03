@@ -44,7 +44,7 @@ namespace Suinet.Rpc
 
         public async Task<RpcResult<SuiTransactionResponse>> ExecuteTransactionAsync(string txBytes, SuiSignatureScheme sigScheme, string signature, string pubKey)
         {
-            return await SendRpcRequestAsync<SuiTransactionResponse>("sui_executeTransaction", BuildParams(txBytes, sigScheme, signature, pubKey));
+            return await SendRpcRequestAsync<SuiTransactionResponse>("sui_executeTransaction", BuildParams(txBytes, sigScheme, signature, pubKey, "ImmediateReturn"));
         }
 
         public async Task<RpcResult<SuiObjectRead>> GetObjectAsync(string objectId)

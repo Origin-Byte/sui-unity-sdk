@@ -86,6 +86,33 @@ public class OnChainGameController : MonoBehaviour
         }
     }
 
+    private IEnumerator ExecuteTransactionWorker() 
+    {
+        {
+            var task = GetMovementEventsAsync();
+            yield return new WaitUntil(()=> task.IsCompleted);
+            //yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    private async Task ExecuteTransactionAsync(string txBytes)
+    {
+        var keyPair = SuiWallet.GetActiveKeyPair(); 
+ 
+        var signature = keyPair.Sign(txBytes); 
+        var pkBase64 = keyPair.PublicKeyBase64; 
+ 
+        var txRpcResult = await _fullNodeClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64); 
+        if (txRpcResult.IsSuccess) 
+        { 
+            // var txEffects = JObject.FromObject(txRpcResult.Result.Effects); 
+        } 
+        else 
+        { 
+            Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
+        } 
+    }
+    
     private void Draw()
     {
         foreach (var position in _playerPositions)
@@ -166,12 +193,12 @@ public class OnChainGameController : MonoBehaviour
     
     private async Task DoMoveOnChainAsync(int x, int y)
     {
-        if (_ongoingRequestIds.Count > 0) return;
+        //if (_ongoingRequestIds.Count > 0) return;
         
         //Debug.Log("DoMoveOnChainAsync");
         
-        var requestId = Guid.NewGuid().ToString();
-        _ongoingRequestIds.Add(requestId);
+       // var requestId = Guid.NewGuid().ToString();
+       // _ongoingRequestIds.Add(requestId);
         
         var signer = SuiWallet.GetActiveAddress(); 
         var packageObjectId = PACKAGE_OBJECT_ID; 
@@ -193,29 +220,18 @@ public class OnChainGameController : MonoBehaviour
         var args = new object[] { _positionObjectId, x, y };
         var rpcResult = await _gatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000); 
  
+        //_ongoingRequestIds.Remove(requestId);
+
         if (rpcResult.IsSuccess) 
         { 
-            var keyPair = SuiWallet.GetActiveKeyPair(); 
- 
-            var txBytes = rpcResult.Result.TxBytes; 
-            var signature = keyPair.Sign(rpcResult.Result.TxBytes); 
-            var pkBase64 = keyPair.PublicKeyBase64; 
- 
-            var txRpcResult = await _gatewayClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64); 
-            if (txRpcResult.IsSuccess) 
-            { 
-               // var txEffects = JObject.FromObject(txRpcResult.Result.Effects); 
-            } 
-            else 
-            { 
-                Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
-            } 
+            var txBytes = rpcResult.Result.TxBytes;
+            ExecuteTransactionAsync(txBytes); // intentionally not awaiting
         } 
         else 
         { 
             Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
         }
-        _ongoingRequestIds.Remove(requestId);
+       // _ongoingRequestIds.Remove(requestId);
     }
     
     private async Task<string> CreatePositionAsync() 
