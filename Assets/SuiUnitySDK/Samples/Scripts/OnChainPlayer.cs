@@ -16,23 +16,32 @@ public class OnChainPlayer : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        var onChainPosition = GetOnChainPositionAsVec2();
+        _rb.position = onChainPosition;
     }
 
     void FixedUpdate()
     {
+        var onChainPosition = GetOnChainPositionAsVec2();
+        var newPos = Vector2.MoveTowards(_rb.position, onChainPosition, SPEED * Time.fixedDeltaTime);
+        _rb.MovePosition(newPos);
+    }
+
+    private Vector2 GetOnChainPositionAsVec2()
+    {
+        var result = _rb.position;
         if (OnChainStateStore.States.ContainsKey(ownerAddress))
         {
             var playerState = OnChainStateStore.States[ownerAddress];
 
             var onChainPosition = playerState.Position;
-            var onChainVelocity = playerState.Velocity;
-            
-            // map from uint storage format
-            var position = onChainPosition.ToVector2();
-            var velocity = onChainVelocity.ToVector2();
+           // var onChainVelocity = playerState.Velocity;
 
-            var newPos = Vector2.MoveTowards(_rb.position, position, SPEED * Time.fixedDeltaTime);
-            _rb.MovePosition(newPos);
+            // map from uint storage format
+            result = onChainPosition.ToVector2();
+           // var velocity = onChainVelocity.ToVector2();
         }
+
+        return result;
     }
 }
