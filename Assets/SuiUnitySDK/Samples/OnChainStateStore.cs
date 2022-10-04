@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
@@ -42,15 +43,11 @@ public class OnChainStateStore : MonoBehaviour
     
     private async Task GetOnChainUpdateEventsAsync()
     {
-        // Debug.Log("GetMovementEventsAsync 0");
-
-        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp, 10000000000000 );
+        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp + 1, 10000000000000 );
         if (rpcResult.IsSuccess)
         {
-            var movementEvents = JArray.FromObject(rpcResult.Result);
-            //   Debug.Log("GetMovementEventsAsync success");
-
-            foreach (var movementEvent in movementEvents)
+            var eventsArray = JArray.FromObject(rpcResult.Result);
+            foreach (var movementEvent in eventsArray)
             {
                 if (movementEvent.SelectToken("Event.moveEvent") != null)
                 {
@@ -62,23 +59,26 @@ public class OnChainStateStore : MonoBehaviour
                     {
                         _latestEventReadTimeStamp = timeStamp;
                     }
-
-                    byte[] bytes = Convert.FromBase64String(bcs);
+                    
+                    // BCS conversion
+                    var bytes = Convert.FromBase64String(bcs);
                     var posX64 = BitConverter.ToUInt64(bytes, 0);
                     var posY64 = BitConverter.ToUInt64(bytes, 8);
                     var velX64 = BitConverter.ToUInt64(bytes, 16);
                     var velY64 = BitConverter.ToUInt64(bytes, 24);
-
-                    //Debug.Log("posX64: " + posX64 + ", posY64: " + posY64 + ", velX64: " + velX64 + "velY64: " + velY64);
+                    var sequenceNumber = BitConverter.ToUInt64(bytes, 32);
                     
                     var position = new OnChainVector2(posX64, posY64);
                     var velocity = new OnChainVector2(velX64, velY64);
 
-                    var state = new OnChainPlayerState(position, velocity);
+                    var state = new OnChainPlayerState(position, velocity, sequenceNumber);
                     
                     if (States.ContainsKey(sender)) 
                     {
-                        States[sender] = state;
+                        if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
+                        {
+                            States[sender] = state;
+                        }
                     }
                     else
                     {
