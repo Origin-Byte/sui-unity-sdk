@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
@@ -32,7 +29,7 @@ public class LocalPlayer : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(onChainStateObjectId))
         {
             await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "reset",
-                new object[] { onChainStateObjectId});
+                new object[] { onChainStateObjectId}, false);
         }
         
         StartCoroutine(UpdateOnChainPlayerStateWorker());
@@ -92,11 +89,11 @@ public class LocalPlayer : MonoBehaviour
         var onChainVelocity = new OnChainVector2(velocity);
         var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++ };
         
-        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args);
+        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, true);
         _lastPosition = position;
     }
 
-    private async Task ExecuteMoveCallTxAsync(string packageObjectId, string module, string function, object[] args)
+    private async Task ExecuteMoveCallTxAsync(string packageObjectId, string module, string function, object[] args, bool immediateReturn)
     {
         var signer = SuiWallet.GetActiveAddress();
 
@@ -119,14 +116,19 @@ public class LocalPlayer : MonoBehaviour
             PlayerPrefs.SetString("gasObjectId", gasObjectId); 
         }
         
-       // Debug.Log("ExecuteMoveCallTxAsync: " + JsonConvert.SerializeObject(args));
-        
         var rpcResult = await _gatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000); 
 
         if (rpcResult.IsSuccess) 
         { 
             var txBytes = rpcResult.Result.TxBytes;
-            await ExecuteTransactionAsync(txBytes);
+            if (immediateReturn)
+            {
+                ExecuteTransactionAsync(txBytes); // intentionally not awaiting
+            }
+            else
+            {
+                await ExecuteTransactionAsync(txBytes);
+            }
         } 
         else 
         { 
