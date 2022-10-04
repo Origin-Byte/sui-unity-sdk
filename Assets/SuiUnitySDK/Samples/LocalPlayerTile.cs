@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class LocalPlayerTile : MonoBehaviour
 {
-    public float moveSpeed = 6.0f;
+    public float moveSpeed = 4.0f;
 
     //private string _onChainStateObjectId = "";
 
@@ -30,19 +30,12 @@ public class LocalPlayerTile : MonoBehaviour
         //     _onChainStateObjectId = PlayerPrefs.GetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY); 
         // } 
         //
-        rb.velocity = Vector2.up * moveSpeed;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
     }
 
     void Update()
     {
-        if (Input.GetAxis("Horizontal") != 0.0f)
-        {
-            var dir = Input.GetAxis("Horizontal") > 0.0f ? 1.0f : -1.0f;
-             rb.velocity = Quaternion.Euler(0, 0, 90 * dir ) * rb.velocity.normalized;
-             rb.velocity *= moveSpeed;
-         }
-
+        rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
     }
     
     private async Task ExecuteTransactionAsync(string txBytes)
@@ -71,7 +64,7 @@ public class LocalPlayerTile : MonoBehaviour
             yield return new WaitUntil(()=> task.IsCompleted);
         }
     }
-    
+     
     private async Task UpdateOnChainPlayerStateAsync(Vector2 position, Vector2 velocity)
     {
         //if (_ongoingRequestIds.Count > 0) return;
@@ -83,7 +76,7 @@ public class LocalPlayerTile : MonoBehaviour
         
        // Debug.Log("UpdateOnChainPlayerStateAsync");
 
-       if (_lastPosition == position)
+       if (_lastPosition == position && velocity.magnitude < 1.0f)
        {
            return;
        }

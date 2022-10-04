@@ -11,8 +11,8 @@ public struct OnChainVector2
 
     private Vector2 _vector2;
 
-    private const ulong SIGNED_OFFSET = 10000000;
-    private const float FLOATING_POINT_SCALE = 10000.0f;
+    private const ulong SIGNED_OFFSET = 1000000;
+    private const float FLOATING_POINT_SCALE = 1000.0f;
     
     public OnChainVector2(ulong x, ulong y)
     {
