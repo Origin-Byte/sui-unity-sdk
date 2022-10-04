@@ -2,39 +2,47 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
 
 public class LocalPlayerTile : MonoBehaviour
 {
-    public float moveSpeed = 8.0f;
-    private const string PACKAGE_OBJECT_ID = "0xddd7d5858fabb04ea48da290d9f9031b7bd645e3";
-    private const string ONCHAIN_STATE_OBJECT_ID_KEY = PACKAGE_OBJECT_ID + "_onChainStateObject";
-    private string _onChainStateObjectId = "";
+    public float moveSpeed = 6.0f;
+
+    //private string _onChainStateObjectId = "";
 
     private Rigidbody2D rb;
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
-    private const int UpdatePeriodInMs = 500;
-
+    private const int UpdatePeriodInMs = 1000;
+    private Vector2 _lastPosition = Vector2.zero;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
         
-        if (PlayerPrefs.HasKey(ONCHAIN_STATE_OBJECT_ID_KEY)) 
-        { 
-            _onChainStateObjectId = PlayerPrefs.GetString(ONCHAIN_STATE_OBJECT_ID_KEY); 
-        } 
-        
+        // if (PlayerPrefs.HasKey(Constants.ONCHAIN_STATE_OBJECT_ID_KEY)) 
+        // { 
+        //     _onChainStateObjectId = PlayerPrefs.GetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY); 
+        // } 
+        //
+        rb.velocity = Vector2.up * moveSpeed;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
     }
 
     void Update()
     {
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
+        if (Input.GetAxis("Horizontal") != 0.0f)
+        {
+            var dir = Input.GetAxis("Horizontal") > 0.0f ? 1.0f : -1.0f;
+             rb.velocity = Quaternion.Euler(0, 0, 90 * dir ) * rb.velocity.normalized;
+             rb.velocity *= moveSpeed;
+         }
+
     }
     
     private async Task ExecuteTransactionAsync(string txBytes)
@@ -60,8 +68,7 @@ public class LocalPlayerTile : MonoBehaviour
         while (true)
         {
             var task = UpdateOnChainPlayerStateAsync(rb.position, rb.velocity);
-            var waitTask = Task.Delay(UpdatePeriodInMs);
-            yield return new WaitUntil(()=> task.IsCompleted && waitTask.IsCompleted);
+            yield return new WaitUntil(()=> task.IsCompleted);
         }
     }
     
@@ -74,8 +81,33 @@ public class LocalPlayerTile : MonoBehaviour
         // var requestId = Guid.NewGuid().ToString();
         // _ongoingRequestIds.Add(requestId);
         
-        var signer = SuiWallet.GetActiveAddress(); 
-        var packageObjectId = PACKAGE_OBJECT_ID; 
+       // Debug.Log("UpdateOnChainPlayerStateAsync");
+
+       if (_lastPosition == position)
+       {
+           return;
+       }
+       
+       var signer = SuiWallet.GetActiveAddress();
+
+        if (string.IsNullOrWhiteSpace(signer))
+        {
+            Debug.Log("signer is null UpdateOnChainPlayerStateAsync early return");
+            return;
+        }
+
+        var onChainStateObjectId = "";
+        if (PlayerPrefs.HasKey(Constants.ONCHAIN_STATE_OBJECT_ID_KEY))
+        {
+            onChainStateObjectId = PlayerPrefs.GetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY);
+        }
+        if (string.IsNullOrWhiteSpace(onChainStateObjectId))
+        {
+            Debug.Log("onChainStateObjectId is null UpdateOnChainPlayerStateAsync early return");
+            return;
+        }
+
+        var packageObjectId = Constants.PACKAGE_OBJECT_ID; 
         var module = "movement2_module"; 
         var function = "do_update"; 
         var typeArgs = System.Array.Empty<string>(); 
@@ -89,23 +121,31 @@ public class LocalPlayerTile : MonoBehaviour
         { 
             gasObjectId = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 1, 10000))[0]; 
             PlayerPrefs.SetString("gasObjectId", gasObjectId); 
-        } 
- 
-        var args = new object[] { _onChainStateObjectId, Convert.ToUInt64((position.x + 100000) * 1000), 
-            Convert.ToUInt64((position.y + 100000) * 1000), Convert.ToUInt64((velocity.x + 100000) * 1000), Convert.ToUInt64((velocity.y + 100000) * 1000) };
+        }
+
+        //Debug.Log("gasobjectid: " + gasObjectId);
+
+        var onChainPosition = new OnChainVector2(position);
+        var onChainVelocity = new OnChainVector2(velocity);
+        
+        var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y };
         var rpcResult = await _gatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000); 
  
         //_ongoingRequestIds.Remove(requestId);
 
+        //Debug.Log(JsonConvert.SerializeObject(rpcResult));
+        
         if (rpcResult.IsSuccess) 
         { 
             var txBytes = rpcResult.Result.TxBytes;
-            ExecuteTransactionAsync(txBytes); // intentionally not awaiting
+            await ExecuteTransactionAsync(txBytes);
         } 
         else 
         { 
             Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
         }
+        
+        _lastPosition = position;
         // _ongoingRequestIds.Remove(requestId);
     }
 }

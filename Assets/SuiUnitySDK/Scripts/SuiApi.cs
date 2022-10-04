@@ -3,12 +3,12 @@ using Suinet.Rpc.Types;
 
 public static class SuiApi
 {
-    public static IJsonRpcApiClient Client { get; private set; }
+    public static IJsonRpcApiClient GatewayClient { get; private set; }
+    public static IJsonRpcApiClient FullnodeClient { get; private set; }
 
     static SuiApi()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT);
-        //var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT);
-        Client = new SuiJsonRpcApiClient(rpcClient);
+        FullnodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
+        GatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
     }
 }

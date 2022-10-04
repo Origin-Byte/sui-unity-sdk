@@ -11,11 +11,14 @@ public class OnChainStateStore : MonoBehaviour
 {
     public static Dictionary<string, OnChainPlayerState> States = new Dictionary<string, OnChainPlayerState>();
     private ulong _latestEventReadTimeStamp = 0;
-    private const string PACKAGE_OBJECT_ID = "0xddd7d5858fabb04ea48da290d9f9031b7bd645e3";
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
 
-    private const int UpdatePeriodInMs = 300;
+    public Transform _playersParent;
+    public OnChainPlayer remotePlayerPrefab;
+    private Dictionary<string, OnChainPlayer> _remotePlayers = new Dictionary<string, OnChainPlayer>();
+
+    private const int UpdatePeriodInMs = 3000;
     
     static OnChainStateStore()
     {}
@@ -33,8 +36,7 @@ public class OnChainStateStore : MonoBehaviour
         while (true)
         {
             var task = GetOnChainUpdateEventsAsync();
-            var waitTask = Task.Delay(UpdatePeriodInMs);
-            yield return new WaitUntil(()=> task.IsCompleted && waitTask.IsCompleted);
+            yield return new WaitUntil(()=> task.IsCompleted);
         }
     }
     
@@ -42,7 +44,7 @@ public class OnChainStateStore : MonoBehaviour
     {
         // Debug.Log("GetMovementEventsAsync 0");
 
-        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp, 10000000000000 );
+        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp, 10000000000000 );
         if (rpcResult.IsSuccess)
         {
             var movementEvents = JArray.FromObject(rpcResult.Result);
@@ -67,8 +69,10 @@ public class OnChainStateStore : MonoBehaviour
                     var velX64 = BitConverter.ToUInt64(bytes, 16);
                     var velY64 = BitConverter.ToUInt64(bytes, 24);
 
-                    var position = new OnChainPlayerState.OnChainVector2(posX64, posY64);
-                    var velocity = new OnChainPlayerState.OnChainVector2(velX64, velY64);
+                    //Debug.Log("posX64: " + posX64 + ", posY64: " + posY64 + ", velX64: " + velX64 + "velY64: " + velY64);
+                    
+                    var position = new OnChainVector2(posX64, posY64);
+                    var velocity = new OnChainVector2(velX64, velY64);
 
                     var state = new OnChainPlayerState(position, velocity);
                     
@@ -80,6 +84,26 @@ public class OnChainStateStore : MonoBehaviour
                     {
                         States.Add(sender, state);
                     }
+                }
+            }
+        }
+
+        UpdateRemotePlayers();
+    }
+
+    private void UpdateRemotePlayers()
+    {
+        var localPlayerAddress = SuiWallet.GetActiveAddress();
+        foreach (var state in States)
+        {
+            if (state.Key != localPlayerAddress)
+            {
+                if (!_remotePlayers.ContainsKey(state.Key))
+                {
+                    var remotePlayerGo = Instantiate(remotePlayerPrefab, _playersParent);
+                    remotePlayerGo.ownerAddress = state.Key;
+                    remotePlayerGo.gameObject.SetActive(true);
+                    _remotePlayers.Add(state.Key, remotePlayerGo);
                 }
             }
         }

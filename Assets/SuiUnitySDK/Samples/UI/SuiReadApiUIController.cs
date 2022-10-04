@@ -16,7 +16,7 @@ public class SuiReadApiUIController : MonoBehaviour
         GetObjectsOwnedByAddressButton.onClick.AddListener(async () =>
         {
             var address = Input.text;
-            var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
+            var ownedObjectsResult = await SuiApi.GatewayClient.GetObjectsOwnedByAddressAsync(address);
             Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
         });
     }

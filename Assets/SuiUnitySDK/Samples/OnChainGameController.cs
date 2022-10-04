@@ -17,9 +17,7 @@ public class OnChainGameController : MonoBehaviour
     public TileBase playerTile;
     
     public static string onChainStateObjectId = "";
-    private const string PACKAGE_OBJECT_ID = "0xddd7d5858fabb04ea48da290d9f9031b7bd645e3";
-    private const string ONCHAIN_STATE_OBJECT_ID_KEY = PACKAGE_OBJECT_ID + "_onChainStateObject";
-    
+
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
 
@@ -37,15 +35,15 @@ public class OnChainGameController : MonoBehaviour
 
         _ongoingRequestIds = new HashSet<string>();
 
-        if (PlayerPrefs.HasKey(ONCHAIN_STATE_OBJECT_ID_KEY)) 
+        if (PlayerPrefs.HasKey(Constants.ONCHAIN_STATE_OBJECT_ID_KEY)) 
         { 
-            onChainStateObjectId = PlayerPrefs.GetString(ONCHAIN_STATE_OBJECT_ID_KEY); 
+            onChainStateObjectId = PlayerPrefs.GetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY); 
         } 
         
         if (string.IsNullOrWhiteSpace(onChainStateObjectId))
         { 
             onChainStateObjectId = await CreateOnChainPlayerStateAsync(); 
-            PlayerPrefs.SetString(ONCHAIN_STATE_OBJECT_ID_KEY, onChainStateObjectId); 
+            PlayerPrefs.SetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY, onChainStateObjectId); 
         } 
         
         print("ONCHAIN_STATE_OBJECT_ID: " + onChainStateObjectId);
@@ -79,20 +77,30 @@ public class OnChainGameController : MonoBehaviour
     private async Task<string> CreateOnChainPlayerStateAsync() 
     { 
         var signer = SuiWallet.GetActiveAddress(); 
-        var packageObjectId = PACKAGE_OBJECT_ID; 
+        var packageObjectId = Constants.PACKAGE_OBJECT_ID; 
         var module = "movement2_module"; 
         var function = "create_playerstate_for_sender"; 
         var typeArgs = System.Array.Empty<string>(); 
  
+        Debug.Log("CreateOnChainPlayerStateAsync");
+        
         var gasObjectId = ""; 
         if (PlayerPrefs.HasKey("gasObjectId")) 
         { 
             gasObjectId = PlayerPrefs.GetString("gasObjectId"); 
         } 
-        else 
-        { 
-            gasObjectId = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 1, 10000))[0]; 
-            PlayerPrefs.SetString("gasObjectId", gasObjectId); 
+        else
+        {
+            var objects = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 1, 10000));
+            if (objects.Count > 0)
+            {
+                gasObjectId =  objects[0];
+                PlayerPrefs.SetString("gasObjectId", gasObjectId);
+            }
+            else
+            {
+                return "";
+            }
         } 
  
         var args = System.Array.Empty<object>(); 
@@ -111,10 +119,8 @@ public class OnChainGameController : MonoBehaviour
             var txRpcResult = await _gatewayClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64); 
             if (txRpcResult.IsSuccess) 
             { 
-                var txEffects = JObject.FromObject(txRpcResult.Result.Effects); 
- 
-                createdObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>(); 
- 
+                var txEffects = JObject.FromObject(txRpcResult.Result.Effects);
+                createdObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
             } 
             else 
             { 

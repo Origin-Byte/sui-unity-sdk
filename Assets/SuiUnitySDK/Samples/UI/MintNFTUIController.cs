@@ -34,7 +34,7 @@ public class MintNFTUIController : MonoBehaviour
             var gasObjectId = GasObjectIdInputField.text;
 
             NFTMintedText.gameObject.SetActive(false);
-            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+            var rpcResult = await SuiApi.GatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
 
             if (rpcResult.IsSuccess)
             {
@@ -44,7 +44,7 @@ public class MintNFTUIController : MonoBehaviour
                 var signature = keyPair.Sign(rpcResult.Result.TxBytes);
                 var pkBase64 = keyPair.PublicKeyBase64;
 
-                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+                var txRpcResult = await SuiApi.GatewayClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);

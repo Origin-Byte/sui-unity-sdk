@@ -24,7 +24,7 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             var requestData = Encoding.UTF8.GetBytes(requestJson);
-            Debug.Log($"requestJson: {requestJson}");
+            //Debug.Log($"requestJson: {requestJson}");
 
             using (var unityWebRequest = new UnityWebRequest(Endpoint, "POST"))
             {

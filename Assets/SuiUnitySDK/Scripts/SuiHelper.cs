@@ -9,7 +9,7 @@ public static class SuiHelper
 {
     public static async Task<List<string>> GetCoinObjectIdsOwnedByAddressAsync(string address, string coinType = SuiConstants.SUI_COIN_TYPE)
     {
-        var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
+        var ownedObjectsResult = await SuiApi.GatewayClient.GetObjectsOwnedByAddressAsync(address);
         return ownedObjectsResult.Result.Where(r => r.Type == coinType).Select(c => c.ObjectId).ToList();
     }
 
@@ -21,7 +21,7 @@ public static class SuiHelper
 
         foreach (var coinObjectId in coinObjectIds)
         {
-            var objectResult = await SuiApi.Client.GetObjectAsync(coinObjectId);
+            var objectResult = await SuiApi.GatewayClient.GetObjectAsync(coinObjectId);
             var jObj = JObject.FromObject(objectResult.Result.Details);
             var coinBalance = jObj.SelectToken("data.fields['balance']").Value<ulong>();
 

@@ -7,7 +7,7 @@ using UnityEngine;
 public class SuiWallet
 {
     private const string MnemonicsKey = "MnemonicsKey";
-
+    
     public static string GetActiveAddress()
     {
         var keypair = GetActiveKeyPair();
@@ -16,7 +16,7 @@ public class SuiWallet
             return keypair.PublicKeySuiAddress;
         }
 
-        return "0x";
+        return "";
     }
 
     public static string CreateNewWallet()
