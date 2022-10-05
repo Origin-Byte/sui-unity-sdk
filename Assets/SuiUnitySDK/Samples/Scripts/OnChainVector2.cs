@@ -42,4 +42,9 @@ public struct OnChainVector2
     {
         return _vector2;
     }
+    
+    public Vector3 ToVector3()
+    {
+        return new Vector3(_vector2.x, 0f, _vector2.y);
+    }
 }

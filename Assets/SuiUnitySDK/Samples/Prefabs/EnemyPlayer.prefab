@@ -118,7 +118,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 986cc6ca5a5afec45873df2de5ab9a2c, type: 2}
+  - {fileID: 2100000, guid: c1365a34f9903b64eb2a6ddb9372cecb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -160,7 +160,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.19339621, g: 1, b: 0.968418, a: 1}
+      key0: {r: 1, g: 0.2228437, b: 0.19215685, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -249,7 +249,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e823430ec5a7194bbb0155e601472b7, type: 2}
+  - {fileID: 2100000, guid: daa9d6efd99817843b73cbc21194b129, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -291,7 +291,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.19339621, g: 1, b: 0.968418, a: 1}
+      key0: {r: 1, g: 0.2730629, b: 0.19215685, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -338,8 +338,9 @@ GameObject:
   - component: {fileID: 5172060472123097124}
   - component: {fileID: 5172060472123097126}
   - component: {fileID: 5172060472123097113}
+  - component: {fileID: 8739869819144152843}
   m_Layer: 0
-  m_Name: Player 5
+  m_Name: EnemyPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -391,6 +392,19 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 84
   m_CollisionDetection: 0
+--- !u!114 &8739869819144152843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5172060472123097125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b44b60032d225b4f8132b8f1d760c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerAddress: 
 --- !u!1001 &5172060471713895589
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -445,7 +459,7 @@ PrefabInstance:
     - target: {fileID: -3454265311695667534, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7c0a17baaf4e8b348842cd30e256e850, type: 2}
+      objectReference: {fileID: 2100000, guid: c72900246359c374187d59dc731e5a50, type: 2}
     - target: {fileID: 919132149155446097, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Name
       value: tron
@@ -457,15 +471,15 @@ PrefabInstance:
     - target: {fileID: 4397690140038825691, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7c0a17baaf4e8b348842cd30e256e850, type: 2}
+      objectReference: {fileID: 2100000, guid: c72900246359c374187d59dc731e5a50, type: 2}
     - target: {fileID: 6932858741734306784, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7c0a17baaf4e8b348842cd30e256e850, type: 2}
+      objectReference: {fileID: 2100000, guid: c72900246359c374187d59dc731e5a50, type: 2}
     - target: {fileID: 8216956656768109393, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 7c0a17baaf4e8b348842cd30e256e850, type: 2}
+      objectReference: {fileID: 2100000, guid: c72900246359c374187d59dc731e5a50, type: 2}
     - target: {fileID: 8311043631388951743, guid: b96ef35f95533ab41a932e4250192161, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

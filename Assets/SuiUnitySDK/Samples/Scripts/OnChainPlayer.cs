@@ -8,22 +8,22 @@ public class OnChainPlayer : MonoBehaviour
 {
     public string ownerAddress;
     
-    private Rigidbody2D _rb;
+    private Rigidbody _rb;
 
     private OnChainPlayerState _lastAppliedPlayerState;
     private const float SPEED = 4.0f;
     
     void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        var onChainPosition = GetOnChainPositionAsVec2();
+        _rb = GetComponent<Rigidbody>();
+        var onChainPosition = GetOnChainPositionAsVec3();
         _rb.position = onChainPosition;
     }
 
     void FixedUpdate()
     {
-        var onChainPosition = GetOnChainPositionAsVec2();
-        var newPos = Vector2.MoveTowards(_rb.position, onChainPosition, SPEED * Time.fixedDeltaTime);
+        var onChainPosition = GetOnChainPositionAsVec3();
+        var newPos = Vector3.MoveTowards(_rb.position, onChainPosition, SPEED * Time.fixedDeltaTime);
         _rb.MovePosition(newPos);
     }
 
@@ -43,5 +43,11 @@ public class OnChainPlayer : MonoBehaviour
         }
 
         return result;
+    }
+
+    private Vector3 GetOnChainPositionAsVec3()
+    {
+        var vec2 = GetOnChainPositionAsVec2();
+        return new Vector3(vec2.x, 0f, vec2.y);
     }
 }

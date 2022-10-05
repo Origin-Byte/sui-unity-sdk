@@ -21,15 +21,15 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 090ac426600cd604987917d9657ee558, type: 3}
+        m_Texture: {fileID: 2800000, guid: 270590c996ab22d44a88404a85655b13, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.102
-    - _GridLineThickness: 0.00113
+    - _Alpha: 0.357
+    - _GridLineThickness: 0.00057
     - _GridSize: 0.027
-    - _Intensity: 0.97
+    - _Intensity: 0.74
     m_Colors:
-    - _GridColour: {r: 0.010507584, g: 0.20069484, b: 0.17127362, a: 0.91764706}
+    - _GridColour: {r: 0.00836596, g: 0.03773582, b: 0.03605754, a: 1}
   m_BuildTextureStacks: []
