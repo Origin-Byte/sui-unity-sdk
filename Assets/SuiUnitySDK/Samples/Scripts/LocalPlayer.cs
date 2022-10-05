@@ -47,19 +47,23 @@ public class LocalPlayer : MonoBehaviour
 
     void Update()
     {
-        var horizontal = Input.GetAxis("Horizontal");
-        if (Input.GetKeyDown("a") || Input.GetKeyDown("d"))
+        var dir = 0f;
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            var dir = MathF.Round(horizontal / MathF.Abs(horizontal));
+            dir = -1f;
+        }
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            dir = 1f;
+        }
+
+        if (dir != 0f)
+        {
             var currentRot = transform.rotation.eulerAngles;
             currentRot.y += 90.0f * dir;
             transform.rotation = Quaternion.Euler(currentRot);
-            //_rb.velocity = currentRot.normalized * moveSpeed;
-           // _rb.velocity = _rb.velocity.Rotate(90.0f * dir);
-           _rb.velocity = Quaternion.Euler(0, 90.0f * dir, 0) * _rb.velocity;
+            _rb.velocity = Quaternion.Euler(0, 90.0f * dir, 0) * _rb.velocity;
         }
-        //_rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
-        //_rb.angularVelocity = Input.GetAxis("Horizontal") * -100.0f;
     }
     
     
@@ -85,7 +89,11 @@ public class LocalPlayer : MonoBehaviour
     { 
         while (true)
         {
-            var task = UpdateOnChainPlayerStateAsync(_rb.position, _rb.velocity);
+            var position = _rb.position;
+            var posVec2 = new Vector3(position.x, position.z);
+            var velocity = _rb.velocity;
+            var velVec2 = new Vector3(velocity.x, velocity.z);
+            var task = UpdateOnChainPlayerStateAsync(posVec2, velVec2);
             yield return new WaitUntil(()=> task.IsCompleted);
         }
     }

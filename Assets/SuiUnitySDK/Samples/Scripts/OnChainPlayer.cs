@@ -11,7 +11,7 @@ public class OnChainPlayer : MonoBehaviour
     private Rigidbody _rb;
 
     private OnChainPlayerState _lastAppliedPlayerState;
-    private const float SPEED = 4.0f;
+    private const float SPEED = 6.0f;
     
     void Start()
     {
