@@ -70,12 +70,12 @@ public class OnChainStateStore : MonoBehaviour
                     
                     var position = new OnChainVector2(posX64, posY64);
                     var velocity = new OnChainVector2(velX64, velY64);
-
+                    
                     var state = new OnChainPlayerState(position, velocity, sequenceNumber);
                     
                     if (States.ContainsKey(sender)) 
                     {
-                        if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
+                        //if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
                         {
                             States[sender] = state;
                         }

@@ -119,8 +119,9 @@ public class LocalPlayer : MonoBehaviour
         var onChainPosition = new OnChainVector2(position);
         var onChainVelocity = new OnChainVector2(velocity);
         var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++ };
-        
-        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, true);
+
+        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, false);
+
         _lastPosition = position;
     }
 
