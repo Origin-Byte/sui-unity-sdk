@@ -1,14 +1,23 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
 
+public static class Vector2Extension
+{
+    public static Vector2 Rotate(this Vector2 v, float degrees)
+    {
+        return Quaternion.Euler(0, 0, degrees) * v;
+    }
+}
+
 public class LocalPlayer : MonoBehaviour
 {
     public float moveSpeed = 4.0f;
 
-    private Rigidbody2D _rb;
+    private Rigidbody _rb;
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
     private Vector2 _lastPosition = Vector2.zero;
@@ -16,7 +25,7 @@ public class LocalPlayer : MonoBehaviour
     
     async void Start()
     {
-        _rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody>();
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
         _sequenceNumber = 0;
@@ -33,12 +42,26 @@ public class LocalPlayer : MonoBehaviour
         }
         
         StartCoroutine(UpdateOnChainPlayerStateWorker());
+        _rb.velocity = Vector3.forward * moveSpeed;
     }
 
     void Update()
     {
-        _rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
+        var horizontal = Input.GetAxis("Horizontal");
+        if (Input.GetKeyDown("a") || Input.GetKeyDown("d"))
+        {
+            var dir = MathF.Round(horizontal / MathF.Abs(horizontal));
+            var currentRot = transform.rotation.eulerAngles;
+            currentRot.y += 90.0f * dir;
+            transform.rotation = Quaternion.Euler(currentRot);
+            //_rb.velocity = currentRot.normalized * moveSpeed;
+           // _rb.velocity = _rb.velocity.Rotate(90.0f * dir);
+           _rb.velocity = Quaternion.Euler(0, 90.0f * dir, 0) * _rb.velocity;
+        }
+        //_rb.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed;
+        //_rb.angularVelocity = Input.GetAxis("Horizontal") * -100.0f;
     }
+    
     
     private async Task ExecuteTransactionAsync(string txBytes)
     {

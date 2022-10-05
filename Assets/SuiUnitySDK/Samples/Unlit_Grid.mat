@@ -27,9 +27,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 0.565
-    - _GridLineThickness: 0.00173
+    - _GridLineThickness: 0.0009
     - _GridSize: 0.045
     - _Intensity: 0.97
     m_Colors:
-    - _GridColour: {r: 0.07176798, g: 1.4087812, b: 1.1976737, a: 0.91764706}
+    - _GridColour: {r: 0.010507584, g: 0.20069484, b: 0.17127362, a: 0.91764706}
   m_BuildTextureStacks: []
