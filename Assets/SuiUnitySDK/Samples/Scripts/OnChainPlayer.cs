@@ -11,7 +11,7 @@ public class OnChainPlayer : MonoBehaviour
     private Rigidbody _rb;
 
     private OnChainPlayerState _lastAppliedPlayerState;
-    private const float SPEED = 9.0f;
+    private const float SPEED = 8.0f;
     private ulong lastSyncedSequenceNumber = 0;
     private float lastSyncedTimeStamp = 0f;
 
@@ -42,7 +42,9 @@ public class OnChainPlayer : MonoBehaviour
                 //_rb.MovePosition(newPos);
                 var onChainVelocity = playerState.Velocity;
                 var onChainVelocityVec3 = onChainVelocity.ToVector3();
-  
+
+                onChainPositionVec3 += onChainVelocityVec3 * (Time.time - lastSyncedTimeStamp);
+                
                 if (onChainVelocityVec3 != _rb.velocity)
                 {
                     Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. correcting");
@@ -54,12 +56,12 @@ public class OnChainPlayer : MonoBehaviour
                     Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. corrected");
 
                 }
-                else if (Vector3.Distance(onChainPositionVec3, _rb.position) > 2f)
+                else if (Vector3.Distance(onChainPositionVec3, _rb.position) > 1f)
                 {
                     //_rb.position = onChainPositionVec3;
                     // TODO calc elapsed time since last sync etc?
-                    var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, 1f);
-                    _rb.MovePosition(newPos);
+                 //   var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, 2f);
+                  //  _rb.MovePosition(newPos);
                     Debug.Log($"FixedUpdate _rb.position { _rb.position }. corrected");
 
                 }
