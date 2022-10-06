@@ -15,7 +15,7 @@ public static class Vector2Extension
 
 public class LocalPlayer : MonoBehaviour
 {
-    public float moveSpeed = 4.0f;
+    public float moveSpeed = 9.0f;
 
     private Rigidbody _rb;
     private IJsonRpcApiClient _fullNodeClient;
@@ -116,11 +116,13 @@ public class LocalPlayer : MonoBehaviour
             return;
         }
 
+        //Debug.Log($"lp position: {position}, velocity: {velocity}");
         var onChainPosition = new OnChainVector2(position);
         var onChainVelocity = new OnChainVector2(velocity);
         var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++ };
+        //Debug.Log($"lp onChainPosition.x: {onChainPosition.x}, onChainPosition.y: {onChainPosition.y}, onChainVelocity.x: {onChainVelocity.x}, onChainVelocity.y {onChainVelocity.y}");
 
-        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, false);
+        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, true);
 
         _lastPosition = position;
     }

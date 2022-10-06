@@ -11,7 +11,7 @@ public class OnChainPlayer : MonoBehaviour
     private Rigidbody _rb;
 
     private OnChainPlayerState _lastAppliedPlayerState;
-    private const float SPEED = 6.0f;
+    private const float SPEED = 9.0f;
     private ulong lastSyncedSequenceNumber = 0;
     private float lastSyncedTimeStamp = 0f;
 
@@ -30,26 +30,38 @@ public class OnChainPlayer : MonoBehaviour
         if (OnChainStateStore.States.ContainsKey(ownerAddress))
         {
             var playerState = OnChainStateStore.States[ownerAddress];
-            Debug.Log($"FixedUpdate position.x:{ playerState.Position.x}, position.y:{ playerState.Position.y} velocity.x:{ playerState.Velocity.x} velocity.y:{ playerState.Velocity.y}");
-            Debug.Log($"FixedUpdate vec2 position:{ playerState.Position.ToVector2()}, velocity:{ playerState.Velocity.ToVector2()}");
-
+  
             if (playerState.SequenceNumber != lastSyncedSequenceNumber)
             {
+               // Debug.Log($"FixedUpdate position.x:{ playerState.Position.x}, position.y:{ playerState.Position.y} velocity.x:{ playerState.Velocity.x} velocity.y:{ playerState.Velocity.y}");
+              //  Debug.Log($"FixedUpdate vec2 position:{ playerState.Position.ToVector2()}, velocity:{ playerState.Velocity.ToVector2()}");
+
                 var onChainPosition = playerState.Position;
                 var onChainPositionVec3 = onChainPosition.ToVector3();
                 //var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, SPEED * Time.fixedDeltaTime);
                 //_rb.MovePosition(newPos);
-                var onChainVelocity = playerState.Position;
+                var onChainVelocity = playerState.Velocity;
                 var onChainVelocityVec3 = onChainVelocity.ToVector3();
   
                 if (onChainVelocityVec3 != _rb.velocity)
                 {
+                    Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. correcting");
+
                     _rb.velocity = onChainVelocityVec3;
                     _rb.position = onChainPositionVec3;
+                    transform.rotation  = Quaternion.Euler(new Vector3(0, Vector3.Angle(Vector3.forward, _rb.velocity), 0 ));
+                    
+                    Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. corrected");
+
                 }
-                else if (Vector3.Distance(onChainPositionVec3, _rb.position) > 5f)
+                else if (Vector3.Distance(onChainPositionVec3, _rb.position) > 2f)
                 {
-                    _rb.position = onChainPositionVec3;
+                    //_rb.position = onChainPositionVec3;
+                    // TODO calc elapsed time since last sync etc?
+                    var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, 1f);
+                    _rb.MovePosition(newPos);
+                    Debug.Log($"FixedUpdate _rb.position { _rb.position }. corrected");
+
                 }
   
                 lastSyncedSequenceNumber = playerState.SequenceNumber;
