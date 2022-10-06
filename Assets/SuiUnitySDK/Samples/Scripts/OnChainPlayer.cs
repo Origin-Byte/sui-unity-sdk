@@ -4,25 +4,19 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class OnChainPlayer : MonoBehaviour
 {
     public string ownerAddress;
     
-    private Rigidbody _rb;
-
+    private Rigidbody2D _rb;
     private OnChainPlayerState _lastAppliedPlayerState;
-    private const float SPEED = 8.0f;
     private ulong lastSyncedSequenceNumber = 0;
     private float lastSyncedTimeStamp = 0f;
 
     void Start()
     {
-        _rb = GetComponent<Rigidbody>();
-        // var onChainPositionAsVec3 = GetOnChainPositionAsVec3();
-        // lastSyncedTimeStamp = Time.time;
-        // _rb.position = onChainPositionAsVec3;
-        //
-        //Debug.Log("Start onChainPositionAsVec3: " + onChainPositionAsVec3);
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
@@ -31,69 +25,38 @@ public class OnChainPlayer : MonoBehaviour
         {
             var playerState = OnChainStateStore.States[ownerAddress];
   
-            if (playerState.SequenceNumber != lastSyncedSequenceNumber)
+            //if (playerState.SequenceNumber != lastSyncedSequenceNumber)
             {
                // Debug.Log($"FixedUpdate position.x:{ playerState.Position.x}, position.y:{ playerState.Position.y} velocity.x:{ playerState.Velocity.x} velocity.y:{ playerState.Velocity.y}");
-              //  Debug.Log($"FixedUpdate vec2 position:{ playerState.Position.ToVector2()}, velocity:{ playerState.Velocity.ToVector2()}");
+               // Debug.Log($"FixedUpdate vec2 position:{ playerState.Position.ToVector2()}, velocity:{ playerState.Velocity.ToVector2()}");
 
-                var onChainPosition = playerState.Position;
-                var onChainPositionVec3 = onChainPosition.ToVector3();
-                //var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, SPEED * Time.fixedDeltaTime);
-                //_rb.MovePosition(newPos);
-                var onChainVelocity = playerState.Velocity;
-                var onChainVelocityVec3 = onChainVelocity.ToVector3();
+                var onChainPosition = playerState.Position.ToVector2();
+                var onChainVelocity = playerState.Velocity.ToVector2();
 
-                onChainPositionVec3 += onChainVelocityVec3 * (Time.time - lastSyncedTimeStamp);
+                var compensatedOnChainPosition = onChainPosition + onChainVelocity * ((Time.time - lastSyncedTimeStamp) / 2f);
                 
-                if (onChainVelocityVec3 != _rb.velocity)
+                if (onChainVelocity != _rb.velocity)
                 {
-                    Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. correcting");
+                  //  Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. correcting");
 
-                    _rb.velocity = onChainVelocityVec3;
-                    _rb.position = onChainPositionVec3;
-                    transform.rotation  = Quaternion.Euler(new Vector3(0, Vector3.Angle(Vector3.forward, _rb.velocity), 0 ));
-                    
+                    _rb.velocity = onChainVelocity;
+                    _rb.position = compensatedOnChainPosition;
+                    transform.rotation  = Quaternion.Euler(new Vector3(0,0, Vector2.Angle(Vector2.up, _rb.velocity) ));
                     Debug.Log($"FixedUpdate _rb.velocity { _rb.velocity }. corrected");
 
                 }
-                else if (Vector3.Distance(onChainPositionVec3, _rb.position) > 1f)
+                else if (Vector2.Distance(compensatedOnChainPosition, _rb.position) > 1f)
                 {
                     //_rb.position = onChainPositionVec3;
                     // TODO calc elapsed time since last sync etc?
-                 //   var newPos = Vector3.MoveTowards(_rb.position, onChainPositionVec3, 2f);
-                  //  _rb.MovePosition(newPos);
-                    Debug.Log($"FixedUpdate _rb.position { _rb.position }. corrected");
-
+                    var newPos = Vector2.MoveTowards(_rb.position, compensatedOnChainPosition, 8.0f * Time.deltaTime);
+                    _rb.MovePosition(newPos);
+                    Debug.Log($"FixedUpdate _rb.position { _rb.position }. corrected. 8.0f * Time.deltaTime: {8.0f * Time.deltaTime}");
                 }
   
                 lastSyncedSequenceNumber = playerState.SequenceNumber;
                 lastSyncedTimeStamp = Time.time;
             }
         }
-    }
-
-    private Vector2 GetOnChainPositionAsVec2()
-    {
-        var result = _rb.position;
-        if (OnChainStateStore.States.ContainsKey(ownerAddress))
-        {
-            var playerState = OnChainStateStore.States[ownerAddress];
-            lastSyncedSequenceNumber = playerState.SequenceNumber;
-            
-            var onChainPosition = playerState.Position;
-           // var onChainVelocity = playerState.Velocity;
-
-            // map from uint storage format
-            result = onChainPosition.ToVector2();
-           // var velocity = onChainVelocity.ToVector2();
-        }
-
-        return result;
-    }
-
-    private Vector3 GetOnChainPositionAsVec3()
-    {
-        var vec2 = GetOnChainPositionAsVec2();
-        return new Vector3(vec2.x, 0f, vec2.y);
     }
 }

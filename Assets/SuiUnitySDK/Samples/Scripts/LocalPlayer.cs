@@ -5,19 +5,12 @@ using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
 
-public static class Vector2Extension
-{
-    public static Vector2 Rotate(this Vector2 v, float degrees)
-    {
-        return Quaternion.Euler(0, 0, degrees) * v;
-    }
-}
-
+[RequireComponent(typeof(Rigidbody2D))]
 public class LocalPlayer : MonoBehaviour
 {
     public float moveSpeed = 9.0f;
 
-    private Rigidbody _rb;
+    private Rigidbody2D _rb;
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
     private Vector2 _lastPosition = Vector2.zero;
@@ -25,7 +18,7 @@ public class LocalPlayer : MonoBehaviour
     
     async void Start()
     {
-        _rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody2D>();
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
         _sequenceNumber = 0;
@@ -42,7 +35,7 @@ public class LocalPlayer : MonoBehaviour
         }
         
         StartCoroutine(UpdateOnChainPlayerStateWorker());
-        _rb.velocity = Vector3.forward * moveSpeed;
+        _rb.velocity = Vector2.up * moveSpeed;
     }
 
     void Update()
@@ -50,19 +43,19 @@ public class LocalPlayer : MonoBehaviour
         var dir = 0f;
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            dir = -1f;
+            dir = 1f;
         }
         else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
-            dir = 1f;
+            dir = -1f;
         }
 
         if (dir != 0f)
         {
             var currentRot = transform.rotation.eulerAngles;
-            currentRot.y += 90.0f * dir;
+            currentRot.z += 90.0f * dir;
             transform.rotation = Quaternion.Euler(currentRot);
-            _rb.velocity = Quaternion.Euler(0, 90.0f * dir, 0) * _rb.velocity;
+            _rb.velocity = _rb.velocity.Rotate(90.0f * dir);
         }
     }
     
@@ -90,10 +83,8 @@ public class LocalPlayer : MonoBehaviour
         while (true)
         {
             var position = _rb.position;
-            var posVec2 = new Vector3(position.x, position.z);
             var velocity = _rb.velocity;
-            var velVec2 = new Vector3(velocity.x, velocity.z);
-            var task = UpdateOnChainPlayerStateAsync(posVec2, velVec2);
+            var task = UpdateOnChainPlayerStateAsync(position, velocity);
             yield return new WaitUntil(()=> task.IsCompleted);
         }
     }
