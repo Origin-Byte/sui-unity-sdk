@@ -3,6 +3,8 @@ using Suinet.Rpc.Types;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using UnityEngine;
 
 // Convenience methods
 public static class SuiHelper
@@ -22,17 +24,20 @@ public static class SuiHelper
         foreach (var coinObjectId in coinObjectIds)
         {
             var objectResult = await SuiApi.GatewayClient.GetObjectAsync(coinObjectId);
-            var jObj = JObject.FromObject(objectResult.Result.Details);
-            var coinBalance = jObj.SelectToken("data.fields['balance']").Value<ulong>();
-
-            if (coinBalance > minBalance)
+            if (objectResult.IsSuccess)
             {
-                result.Add(coinObjectId);
-            }
+                var jObj = JObject.FromObject(objectResult.Result.Details);
+                var coinBalance = jObj.SelectToken("data.fields['balance']").Value<ulong>();
 
-            if (result.Count >= count)
-            {
-                break;
+                if (coinBalance > minBalance)
+                {
+                    result.Add(coinObjectId);
+                }
+
+                if (result.Count >= count)
+                {
+                    break;
+                }
             }
         }
         return result;

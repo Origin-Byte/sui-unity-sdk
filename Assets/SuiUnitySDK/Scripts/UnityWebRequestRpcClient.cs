@@ -24,7 +24,6 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             var requestData = Encoding.UTF8.GetBytes(requestJson);
-            //Debug.Log($"requestJson: {requestJson}");
 
             using (var unityWebRequest = new UnityWebRequest(Endpoint, "POST"))
             {
@@ -33,6 +32,7 @@ public class UnityWebRequestRpcClient : IRpcClient
                 unityWebRequest.SetRequestHeader("Content-Type", "application/json");
 
                 unityWebRequest.SendWebRequest();
+                
                 while (!unityWebRequest.isDone)
                 {
                     await Task.Yield();
@@ -50,7 +50,7 @@ public class UnityWebRequestRpcClient : IRpcClient
                 ErrorMessage = e.Message,
                 RawRpcRequest = requestJson
             };
-            var errorMessage = $"SendAsync Caught exception: {e.Message}";
+            var errorMessage = $"SendAsync Caught exception: {e.Message}. e.StackTrace: {e.StackTrace} e.Source: {e.Source}";
             Debug.LogError(errorMessage);
 
             return result;
@@ -63,17 +63,16 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             result.RawRpcResponse = downloadHandler.text;
-          //  Debug.Log($"Result: {result.RawRpcResponse}");
             var res = JsonConvert.DeserializeObject<JsonRpcValidResponse<T>>(result.RawRpcResponse);
 
-            if (res.Result != null)
+            if (res != null && res.Result != null)
             {
                 result.Result = res.Result;
                 result.IsSuccess = true;
             }
             else
             {
-                var errorRes = JsonConvert.DeserializeObject<JsonRpcErrorResponse>(result.RawRpcResponse);
+                var errorRes = JsonConvert.DeserializeObject<JsonRpcErrorResponse>(result.RawRpcResponse );
                 if (errorRes != null)
                 {
                     result.ErrorMessage = errorRes.Error.Message;

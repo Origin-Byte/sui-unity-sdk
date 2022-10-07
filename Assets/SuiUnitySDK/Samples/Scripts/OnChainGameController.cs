@@ -96,16 +96,17 @@ public class OnChainGameController : MonoBehaviour
             {
                 gasObjectId =  objects[0];
                 PlayerPrefs.SetString("gasObjectId", gasObjectId);
+
             }
             else
             {
+                Debug.LogError("could not retrieve coin objects!");
                 return "";
             }
         } 
  
         var args = System.Array.Empty<object>(); 
         var rpcResult = await _gatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000); 
- 
         var createdObjectId = ""; 
  
         if (rpcResult.IsSuccess) 
