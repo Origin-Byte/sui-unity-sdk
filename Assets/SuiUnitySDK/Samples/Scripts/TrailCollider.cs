@@ -46,5 +46,9 @@ public class TrailCollider : MonoBehaviour
                 }
             }
         }
+        else if (!_isLocalPlayerTrail)
+        {
+            Destroy(gameObject);
+        }
     }
 }
