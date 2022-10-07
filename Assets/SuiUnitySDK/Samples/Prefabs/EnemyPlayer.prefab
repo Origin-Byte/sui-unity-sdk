@@ -338,6 +338,7 @@ GameObject:
   - component: {fileID: 5172060472123097124}
   - component: {fileID: 8739869819144152843}
   - component: {fileID: 1734567206921446409}
+  - component: {fileID: 7168585597369771348}
   m_Layer: 0
   m_Name: EnemyPlayer
   m_TagString: Player
@@ -396,6 +397,23 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &7168585597369771348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5172060472123097125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 186d3c978462e814b81070597dc293fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToSetInactive: {fileID: 5172060472123097125}
+  explosionRoot: {fileID: 0}
+  explosionPrefab: {fileID: 7716345040506453545, guid: 387f6d8e66e733940b4c8c0c104b8de5, type: 3}
+  initialCollisionDetectionDelay: 0
+  useCollisionDetection: 0
 --- !u!1001 &5172060471713895589
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,10 +15,12 @@ public class LocalPlayer : MonoBehaviour
     private IJsonRpcApiClient _gatewayClient;
     private Vector2 _lastPosition = Vector2.zero;
     private ulong _sequenceNumber;
+    private ExplosionController _explosionController;
     
     async void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _explosionController = GetComponent<ExplosionController>();
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
         _sequenceNumber = 0;
@@ -33,9 +35,13 @@ public class LocalPlayer : MonoBehaviour
             await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "reset",
                 new object[] { onChainStateObjectId}, false);
         }
+        else 
+        { 
+            Debug.LogWarning("onChainStateObjectId is null, could not call reset.");
+        }
         
-        StartCoroutine(UpdateOnChainPlayerStateWorker());
         _rb.velocity = Vector2.up * moveSpeed;
+        StartCoroutine(UpdateOnChainPlayerStateWorker());
     }
 
     void Update()
@@ -58,8 +64,7 @@ public class LocalPlayer : MonoBehaviour
             _rb.velocity = _rb.velocity.Rotate(90.0f * dir);
         }
     }
-    
-    
+
     private async Task ExecuteTransactionAsync(string txBytes)
     {
         var keyPair = SuiWallet.GetActiveKeyPair(); 
@@ -68,11 +73,7 @@ public class LocalPlayer : MonoBehaviour
         var pkBase64 = keyPair.PublicKeyBase64; 
  
         var txRpcResult = await _fullNodeClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64); 
-        if (txRpcResult.IsSuccess) 
-        { 
-            // var txEffects = JObject.FromObject(txRpcResult.Result.Effects); 
-        } 
-        else 
+        if (!txRpcResult.IsSuccess)
         { 
             Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
         } 
@@ -110,8 +111,8 @@ public class LocalPlayer : MonoBehaviour
         //Debug.Log($"lp position: {position}, velocity: {velocity}");
         var onChainPosition = new OnChainVector2(position);
         var onChainVelocity = new OnChainVector2(velocity);
-        var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++ };
-        //Debug.Log($"lp onChainPosition.x: {onChainPosition.x}, onChainPosition.y: {onChainPosition.y}, onChainVelocity.x: {onChainVelocity.x}, onChainVelocity.y {onChainVelocity.y}");
+        var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++, _explosionController.IsExploded };
+//        Debug.Log($"lp onChainPosition.x: {onChainPosition.x}, onChainPosition.y: {onChainPosition.y}, onChainVelocity.x: {onChainVelocity.x}, onChainVelocity.y {onChainVelocity.y}. isExploded: {_explosionController.IsExploded}");
 
         await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, true);
 

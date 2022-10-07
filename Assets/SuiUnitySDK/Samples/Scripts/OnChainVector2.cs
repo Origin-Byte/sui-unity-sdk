@@ -50,6 +50,6 @@ public struct OnChainVector2
     
     public Vector3 ToVector3()
     {
-        return new Vector3(_vector2.x, 0f, _vector2.y);
+        return new Vector3(_vector2.x, _vector2.y);
     }
 }

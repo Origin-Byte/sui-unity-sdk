@@ -10,25 +10,31 @@ using UnityEngine;
 
 public class OnChainStateStore : MonoBehaviour
 {
-    public static Dictionary<string, OnChainPlayerState> States = new Dictionary<string, OnChainPlayerState>();
-    private ulong _latestEventReadTimeStamp = 0;
+    public static readonly Dictionary<string, OnChainPlayerState> States = new Dictionary<string, OnChainPlayerState>();
+    public Transform playersParent;
+    public Transform explosionsParent;
+    public Transform trailCollidersParent;
+    public OnChainPlayer remotePlayerPrefab;
+    public TrailCollider trailColliderPrefab;
+    
+    private readonly Dictionary<string, OnChainPlayer> _remotePlayers = new Dictionary<string, OnChainPlayer>();
+    private ulong _latestEventReadTimeStamp;
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
-
-    public Transform _playersParent;
-    public OnChainPlayer remotePlayerPrefab;
-    private Dictionary<string, OnChainPlayer> _remotePlayers = new Dictionary<string, OnChainPlayer>();
-
-    private const int UpdatePeriodInMs = 3000;
+    private string _localPlayerAddress;
     
     static OnChainStateStore()
     {}
 
     private void Start()
     {
+        // start reading events from 1 second ago
+        _latestEventReadTimeStamp = Convert.ToUInt64(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - 1000);
+        
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
-        
+
+        SetLocalPlayerAddress();
         StartCoroutine(GetOnChainUpdateEventsWorker());
     }
     
@@ -40,9 +46,22 @@ public class OnChainStateStore : MonoBehaviour
             yield return new WaitUntil(()=> task.IsCompleted);
         }
     }
+
+    private void SetLocalPlayerAddress()
+    {
+        if (string.IsNullOrWhiteSpace(_localPlayerAddress))
+        {
+            _localPlayerAddress = SuiWallet.GetActiveAddress();
+        }
+        if (string.IsNullOrWhiteSpace(_localPlayerAddress))
+        {
+            Debug.LogError("No active sui address could be retrieved");
+        }
+    }
     
     private async Task GetOnChainUpdateEventsAsync()
     {
+        SetLocalPlayerAddress();
         var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp + 1, 10000000000000 );
         if (rpcResult.IsSuccess)
         {
@@ -59,7 +78,7 @@ public class OnChainStateStore : MonoBehaviour
                     {
                         _latestEventReadTimeStamp = timeStamp;
                     }
-                    
+
                     // BCS conversion
                     var bytes = Convert.FromBase64String(bcs);
                     var posX64 = BitConverter.ToUInt64(bytes, 0);
@@ -67,23 +86,31 @@ public class OnChainStateStore : MonoBehaviour
                     var velX64 = BitConverter.ToUInt64(bytes, 16);
                     var velY64 = BitConverter.ToUInt64(bytes, 24);
                     var sequenceNumber = BitConverter.ToUInt64(bytes, 32);
-                    
+                    var isExploded = BitConverter.ToBoolean(bytes, 40);
+
                     var position = new OnChainVector2(posX64, posY64);
                     var velocity = new OnChainVector2(velX64, velY64);
-                    
-                    var state = new OnChainPlayerState(position, velocity, sequenceNumber);
-                    
+
+                    var state = new OnChainPlayerState(position, velocity, sequenceNumber, isExploded);
+         
                     if (States.ContainsKey(sender)) 
                     {
-                        //if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
+                        if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
                         {
                             States[sender] = state;
                         }
                     }
                     else
                     {
-                        States.Add(sender, state);
+                        var localPlayerAddress = SuiWallet.GetActiveAddress();
+                        if ((sequenceNumber != 0 || sender != localPlayerAddress) && !isExploded)
+                        {
+                            States.Add(sender, state);
+                        }
                     }
+                   // Debug.Log($"DrawSphere: {position.ToVector3()}. sequenceNumber: {sequenceNumber}");
+                  //  GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                  //  cube.transform.position = position.ToVector3() + Vector3.back;
                 }
             }
         }
@@ -93,17 +120,21 @@ public class OnChainStateStore : MonoBehaviour
 
     private void UpdateRemotePlayers()
     {
-        var localPlayerAddress = SuiWallet.GetActiveAddress();
         foreach (var state in States)
         {
-            if (state.Key != localPlayerAddress)
+            if (state.Key != _localPlayerAddress)
             {
                 if (!_remotePlayers.ContainsKey(state.Key))
                 {
-                    var remotePlayerGo = Instantiate(remotePlayerPrefab, _playersParent);
+                    var remotePlayerGo = Instantiate(remotePlayerPrefab, playersParent);
                     remotePlayerGo.ownerAddress = state.Key;
+                    remotePlayerGo.GetComponent<ExplosionController>().explosionRoot = explosionsParent;
                     remotePlayerGo.gameObject.SetActive(true);
                     _remotePlayers.Add(state.Key, remotePlayerGo);
+                    
+                    var trailColliderGo =  Instantiate(trailColliderPrefab, trailCollidersParent);
+                    trailColliderGo.ownerAddress = state.Key;
+                    trailColliderGo.gameObject.SetActive(true);
                 }
             }
         }
