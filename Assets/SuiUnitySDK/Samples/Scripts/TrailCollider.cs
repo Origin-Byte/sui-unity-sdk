@@ -9,12 +9,14 @@ public class TrailCollider : MonoBehaviour
     private ulong _lastSyncedSequenceNumber = 0;
     private EdgeCollider2D _edgeCollider;
     private List<Vector2> _points;
+    private bool _isLocalPlayerTrail;
     
     public void Start()
     {
         if (string.IsNullOrWhiteSpace(ownerAddress))
         {
             ownerAddress = SuiWallet.GetActiveAddress();
+            _isLocalPlayerTrail = true;
         }
         _edgeCollider = GetComponent<EdgeCollider2D>();
         _points = _edgeCollider.points.ToList();
@@ -22,9 +24,9 @@ public class TrailCollider : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (OnChainStateStore.States.ContainsKey(ownerAddress))
+        if (OnChainStateStore.Instance.States.ContainsKey(ownerAddress))
         {
-            var playerState = OnChainStateStore.States[ownerAddress];
+            var playerState = OnChainStateStore.Instance.States[ownerAddress];
 
             if (playerState.SequenceNumber != _lastSyncedSequenceNumber)
             {
@@ -37,6 +39,11 @@ public class TrailCollider : MonoBehaviour
                 _points.Add(playerState.Position.ToVector2());
                 _edgeCollider.SetPoints(_points);
                 _lastSyncedSequenceNumber = playerState.SequenceNumber;
+
+                if (playerState.IsExploded && !_isLocalPlayerTrail)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }

@@ -6,25 +6,22 @@ public class OnChainPlayer : MonoBehaviour
     public string ownerAddress;
     
     private Rigidbody2D _rb;
-    private OnChainPlayerState _lastAppliedPlayerState;
     private ulong _lastSyncedSequenceNumber = 0;
     private ExplosionController _explosionController;
-    private bool _isLocallyExploded;
     
     void Start()
     {
-        _isLocallyExploded = false;
         _rb = GetComponent<Rigidbody2D>();
         _explosionController = GetComponent<ExplosionController>();
     }
 
     void FixedUpdate()
     {
-        if (OnChainStateStore.States.ContainsKey(ownerAddress))
+        if (OnChainStateStore.Instance.States.ContainsKey(ownerAddress))
         {
-            var playerState = OnChainStateStore.States[ownerAddress];
+            var playerState = OnChainStateStore.Instance.States[ownerAddress];
   
-            if (playerState.SequenceNumber != _lastSyncedSequenceNumber && (!_isLocallyExploded || playerState.SequenceNumber == 0))
+            if (playerState.SequenceNumber != _lastSyncedSequenceNumber || playerState.SequenceNumber == 0)
             {
                 
                 var onChainPosition = playerState.Position.ToVector2();
@@ -39,14 +36,11 @@ public class OnChainPlayer : MonoBehaviour
 
                 if (playerState.IsExploded)
                 {
+                    OnChainStateStore.Instance.RemoveRemotePlayer(ownerAddress);
                     _explosionController.Explode();
-                    _isLocallyExploded = true;
+                    Destroy(gameObject);
                 }
-                else
-                {
-                    _isLocallyExploded = false;
-                }
-                
+ 
                 _lastSyncedSequenceNumber = playerState.SequenceNumber;
             }
         }

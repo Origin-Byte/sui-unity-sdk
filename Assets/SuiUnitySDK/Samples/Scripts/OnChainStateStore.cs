@@ -10,7 +10,8 @@ using UnityEngine;
 
 public class OnChainStateStore : MonoBehaviour
 {
-    public static readonly Dictionary<string, OnChainPlayerState> States = new Dictionary<string, OnChainPlayerState>();
+    public static OnChainStateStore Instance { get; private set; }
+    public readonly Dictionary<string, OnChainPlayerState> States = new Dictionary<string, OnChainPlayerState>();
     public Transform playersParent;
     public Transform explosionsParent;
     public Transform trailCollidersParent;
@@ -22,9 +23,11 @@ public class OnChainStateStore : MonoBehaviour
     private IJsonRpcApiClient _fullNodeClient;
     private IJsonRpcApiClient _gatewayClient;
     private string _localPlayerAddress;
-    
-    static OnChainStateStore()
-    {}
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -92,7 +95,9 @@ public class OnChainStateStore : MonoBehaviour
                     var velocity = new OnChainVector2(velX64, velY64);
 
                     var state = new OnChainPlayerState(position, velocity, sequenceNumber, isExploded);
-         
+
+                    bool isLocalSender = sender == _localPlayerAddress;
+                    
                     if (States.ContainsKey(sender)) 
                     {
                         if (sequenceNumber > States[sender].SequenceNumber || sequenceNumber == 0)
@@ -102,8 +107,7 @@ public class OnChainStateStore : MonoBehaviour
                     }
                     else
                     {
-                        var localPlayerAddress = SuiWallet.GetActiveAddress();
-                        if ((sequenceNumber != 0 || sender != localPlayerAddress) && !isExploded)
+                        if ((sequenceNumber != 0 || !isLocalSender) && !isExploded)
                         {
                             States.Add(sender, state);
                         }
@@ -138,5 +142,11 @@ public class OnChainStateStore : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void RemoveRemotePlayer(string address)
+    {
+        States.Remove(address);
+        _remotePlayers.Remove(address);
     }
 }
