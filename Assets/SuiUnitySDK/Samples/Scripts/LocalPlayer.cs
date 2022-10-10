@@ -46,6 +46,13 @@ public class LocalPlayer : MonoBehaviour
         _rb.velocity = Vector2.up * moveSpeed;
         _scoreboardUpdated = false;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
+        StartCoroutine(ExplodeAfterDelay(10));
+    }
+
+    private IEnumerator ExplodeAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _explosionController.Explode();
     }
 
     void Update()
@@ -83,7 +90,7 @@ public class LocalPlayer : MonoBehaviour
         }
         else
         {
-            Debug.Log(JsonConvert.SerializeObject(txRpcResult));
+//            Debug.Log(JsonConvert.SerializeObject(txRpcResult));
         }
     }
     
