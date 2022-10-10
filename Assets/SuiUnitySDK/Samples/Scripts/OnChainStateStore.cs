@@ -32,7 +32,8 @@ public class OnChainStateStore : MonoBehaviour
     private void Start()
     {
         // start reading events from 1 second ago
-        _latestEventReadTimeStamp = Convert.ToUInt64(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - 1000);
+       // _latestEventReadTimeStamp = Convert.ToUInt64(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - 1000);
+        _latestEventReadTimeStamp = 0;
         
         _fullNodeClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_FULLNODE_ENDPOINT));
         _gatewayClient = new SuiJsonRpcApiClient(new UnityWebRequestRpcClient(SuiConstants.DEVNET_GATEWAY_ENDPOINT));
@@ -58,17 +59,18 @@ public class OnChainStateStore : MonoBehaviour
         }
         if (string.IsNullOrWhiteSpace(_localPlayerAddress))
         {
-            Debug.LogError("No active sui address could be retrieved");
+            Debug.LogError("Could not retrieve active Sui address");
         }
     }
     
     private async Task GetOnChainUpdateEventsAsync()
     {
         SetLocalPlayerAddress();
-        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, "movement2_module", 10, _latestEventReadTimeStamp + 1, 10000000000000 );
+        var rpcResult = await _fullNodeClient.GetEventsByModuleAsync(Constants.PACKAGE_OBJECT_ID, Constants.MODULE_NAME, 10, 0, 10000000000000 );
         if (rpcResult.IsSuccess)
         {
             var eventsArray = JArray.FromObject(rpcResult.Result);
+            Debug.Log("GetOnChainUpdateEventsAsync: " + JsonConvert.SerializeObject(eventsArray));
             foreach (var movementEvent in eventsArray)
             {
                 if (movementEvent.SelectToken("Event.moveEvent") != null)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class LocalPlayer : MonoBehaviour
     private Vector2 _lastPosition = Vector2.zero;
     private ulong _sequenceNumber;
     private ExplosionController _explosionController;
+    private bool _scoreboardUpdated = false;
     
     async void Start()
     {
@@ -32,15 +34,17 @@ public class LocalPlayer : MonoBehaviour
         }
         if (!string.IsNullOrWhiteSpace(onChainStateObjectId))
         {
-            await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "reset",
-                new object[] { onChainStateObjectId}, false);
+            await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MODULE_NAME, "reset",
+                new object[] { onChainStateObjectId, TimestampService.UtcTimestamp}, false);
         }
         else 
         { 
             Debug.LogWarning("onChainStateObjectId is null, could not call reset.");
+            return;
         }
         
         _rb.velocity = Vector2.up * moveSpeed;
+        _scoreboardUpdated = false;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
     }
 
@@ -76,7 +80,11 @@ public class LocalPlayer : MonoBehaviour
         if (!txRpcResult.IsSuccess)
         { 
             Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
-        } 
+        }
+        else
+        {
+            Debug.Log(JsonConvert.SerializeObject(txRpcResult));
+        }
     }
     
     private IEnumerator UpdateOnChainPlayerStateWorker() 
@@ -111,12 +119,21 @@ public class LocalPlayer : MonoBehaviour
         //Debug.Log($"lp position: {position}, velocity: {velocity}");
         var onChainPosition = new OnChainVector2(position);
         var onChainVelocity = new OnChainVector2(velocity);
-        var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++, _explosionController.IsExploded };
+        var args = new object[] { onChainStateObjectId, onChainPosition.x, onChainPosition.y, onChainVelocity.x, onChainVelocity.y, _sequenceNumber++, _explosionController.IsExploded, TimestampService.UtcTimestamp };
 //        Debug.Log($"lp onChainPosition.x: {onChainPosition.x}, onChainPosition.y: {onChainPosition.y}, onChainVelocity.x: {onChainVelocity.x}, onChainVelocity.y {onChainVelocity.y}. isExploded: {_explosionController.IsExploded}");
 
-        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MOVEMENT_MODULE_NAME, "do_update", args, true);
+        await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MODULE_NAME, "do_update", args, false);
 
         _lastPosition = position;
+
+        if (_explosionController.IsExploded && ! _scoreboardUpdated)
+        {
+            args = new object[] { onChainStateObjectId, Constants.SCOREBOARD_OBJECT_ID };
+
+            await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MODULE_NAME, "add_to_scoreboard", args, false);
+
+            _scoreboardUpdated = true;
+        }
     }
 
     private async Task ExecuteMoveCallTxAsync(string packageObjectId, string module, string function, object[] args, bool immediateReturn)

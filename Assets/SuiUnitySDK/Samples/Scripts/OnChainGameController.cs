@@ -38,6 +38,7 @@ public class OnChainGameController : MonoBehaviour
         if (PlayerPrefs.HasKey(Constants.ONCHAIN_STATE_OBJECT_ID_KEY)) 
         { 
             onChainStateObjectId = PlayerPrefs.GetString(Constants.ONCHAIN_STATE_OBJECT_ID_KEY); 
+            Debug.Log("OnChainGameController.Awake onChainStateObjectId: " + onChainStateObjectId);
         } 
         
         if (string.IsNullOrWhiteSpace(onChainStateObjectId))
@@ -77,8 +78,8 @@ public class OnChainGameController : MonoBehaviour
     private async Task<string> CreateOnChainPlayerStateAsync() 
     { 
         var signer = SuiWallet.GetActiveAddress(); 
-        var packageObjectId = Constants.PACKAGE_OBJECT_ID; 
-        var module = "movement2_module"; 
+        var packageObjectId = Constants.PACKAGE_OBJECT_ID;
+        var module = Constants.MODULE_NAME; 
         var function = "create_playerstate_for_sender"; 
         var typeArgs = System.Array.Empty<string>(); 
  
@@ -103,9 +104,9 @@ public class OnChainGameController : MonoBehaviour
                 Debug.LogError("could not retrieve coin objects!");
                 return "";
             }
-        } 
- 
-        var args = System.Array.Empty<object>(); 
+        }
+
+        var args = new object[] { TimestampService.UtcTimestamp };
         var rpcResult = await _gatewayClient.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000); 
         var createdObjectId = ""; 
  
@@ -122,6 +123,7 @@ public class OnChainGameController : MonoBehaviour
             { 
                 var txEffects = JObject.FromObject(txRpcResult.Result.Effects);
                 createdObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
+                Debug.Log("CreatedOnChainPlayerStateAsync. createdObjectId: " + createdObjectId);
             } 
             else 
             { 
