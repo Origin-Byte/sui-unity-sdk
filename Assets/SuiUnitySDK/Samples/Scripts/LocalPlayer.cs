@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class LocalPlayer : MonoBehaviour
@@ -18,7 +19,13 @@ public class LocalPlayer : MonoBehaviour
     private ulong _sequenceNumber;
     private ExplosionController _explosionController;
     private bool _scoreboardUpdated = false;
-    
+
+    void Awake()
+    {
+        var randomPosition = GetRandomSpawnPosition();
+        transform.position = randomPosition;
+    }
+
     async void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -34,8 +41,10 @@ public class LocalPlayer : MonoBehaviour
         }
         if (!string.IsNullOrWhiteSpace(onChainStateObjectId))
         {
+           
+            var randomOnChainPosition = new OnChainVector2( transform.position);
             await ExecuteMoveCallTxAsync(Constants.PACKAGE_OBJECT_ID, Constants.MODULE_NAME, "reset",
-                new object[] { onChainStateObjectId, TimestampService.UtcTimestamp}, false);
+                new object[] { onChainStateObjectId, randomOnChainPosition.x, randomOnChainPosition.y, TimestampService.UtcTimestamp}, false);
         }
         else 
         { 
@@ -47,6 +56,13 @@ public class LocalPlayer : MonoBehaviour
         _scoreboardUpdated = false;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
         //StartCoroutine(ExplodeAfterDelay(10));
+    }
+
+    private Vector2 GetRandomSpawnPosition()
+    {
+        const int MAX_POSITION_VALUE = 400;
+        return new Vector2(Random.Range(-MAX_POSITION_VALUE, MAX_POSITION_VALUE),
+            Random.Range(-MAX_POSITION_VALUE, MAX_POSITION_VALUE));
     }
 
     private IEnumerator ExplodeAfterDelay(float delay)
