@@ -46,7 +46,7 @@ public class LocalPlayer : MonoBehaviour
         _rb.velocity = Vector2.up * moveSpeed;
         _scoreboardUpdated = false;
         StartCoroutine(UpdateOnChainPlayerStateWorker());
-        StartCoroutine(ExplodeAfterDelay(10));
+        //StartCoroutine(ExplodeAfterDelay(10));
     }
 
     private IEnumerator ExplodeAfterDelay(float delay)
