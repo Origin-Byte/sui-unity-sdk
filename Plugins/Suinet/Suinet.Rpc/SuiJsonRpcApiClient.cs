@@ -37,7 +37,7 @@ namespace Suinet.Rpc
             return await _rpcClient.SendAsync<T>(request);
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> BatchTransactionAsync(string signer, object[] singleTransactionParams, string gas, ulong gasBudget)
+        public async Task<RpcResult<SuiTransactionBytes>> BatchTransactionAsync(string signer, IEnumerable<object> singleTransactionParams, string gas, ulong gasBudget)
         {
             return await SendRpcRequestAsync<SuiTransactionBytes>("sui_batchTransaction", BuildParams(signer, singleTransactionParams, gas, gasBudget));
         }
@@ -130,6 +130,26 @@ namespace Suinet.Rpc
         public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByTransactionAsync(string digest, uint count)
         {
             return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByTransaction", BuildParams(digest, count));
+        }
+
+        public async Task<RpcResult<SuiTransactionBytes>> MergeCoinsAsync(string signer, string primaryCoinId, string coinToMergeId, string gas, ulong gasBudget)
+        {
+            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_mergeCoins", BuildParams(signer, primaryCoinId, coinToMergeId, gas, gasBudget));
+        }
+
+        public async Task<RpcResult<SuiTransactionBytes>> SplitCoinAsync(string signer, string coinObjectId, IEnumerable<ulong> splitAmounts, string gas, ulong gasBudget)
+        {
+            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_splitCoin", BuildParams(signer, coinObjectId, splitAmounts, gas, gasBudget));
+        }
+
+        public async Task<RpcResult<SuiTransactionBytes>> SplitCoinEqualAsync(string signer, string coinObjectId, ulong splitCount, string gas, ulong gasBudget)
+        {
+            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_splitCoinEqual", BuildParams(signer, coinObjectId, splitCount, gas, gasBudget));
+        }
+
+        public async Task<RpcResult<SuiTransactionBytes>> PayAsync(string signer, IEnumerable<string> inputCoins, IEnumerable<string> recipients, IEnumerable<ulong> amounts, string gas, ulong gasBudget)
+        {
+            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_pay", BuildParams(signer, inputCoins, recipients, amounts, gas, gasBudget));
         }
     }
 }
