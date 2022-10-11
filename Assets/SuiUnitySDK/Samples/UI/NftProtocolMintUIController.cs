@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using Suinet.Rpc.Types;
 using System.Threading.Tasks;
+using Suinet.Rpc;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -41,7 +42,7 @@ public class NftProtocolMintUIController : MonoBehaviour
             var typeArgs = System.Array.Empty<string>();
 
             // We need 2 separate gas objects because both of them will be mutated in a batch transaction
-            var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 2);
+            var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.GatewayClient, signer, 2);
 
             if (gasObjectIds.Count < 2)
             {

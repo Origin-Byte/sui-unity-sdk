@@ -178,7 +178,7 @@ public class LocalPlayer : MonoBehaviour
         } 
         else 
         { 
-            gasObjectId = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 1, 10000))[0]; 
+            gasObjectId = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(_gatewayClient, signer, 1, 10000))[0]; 
             PlayerPrefs.SetString("gasObjectId", gasObjectId); 
         }
         

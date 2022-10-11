@@ -92,7 +92,7 @@ public class OnChainGameController : MonoBehaviour
         } 
         else
         {
-            var objects = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 1, 10000));
+            var objects = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(_gatewayClient, signer, 1, 10000));
             if (objects.Count > 0)
             {
                 gasObjectId =  objects[0];
