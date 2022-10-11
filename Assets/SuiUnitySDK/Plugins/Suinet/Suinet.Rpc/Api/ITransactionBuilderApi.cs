@@ -50,6 +50,51 @@ namespace Suinet.Rpc.Api
         /// <param name="gas"></param>
         /// <param name="gasBudget"></param>
         /// <returns></returns>
-        Task<RpcResult<SuiTransactionBytes>> BatchTransactionAsync(string signer, object[] singleTransactionParams, string gas, ulong gasBudget);
+        Task<RpcResult<SuiTransactionBytes>> BatchTransactionAsync(string signer, IEnumerable<object> singleTransactionParams, string gas, ulong gasBudget);
+
+        /// <summary>
+        /// Create an unsigned transaction to merge multiple coins into one coin.
+        /// </summary>
+        /// <param name="signer"></param>
+        /// <param name="primaryCoinId"></param>
+        /// <param name="coinToMergeId"></param>
+        /// <param name="gas"></param>
+        /// <param name="gasBudget"></param>
+        /// <returns></returns>
+        Task<RpcResult<SuiTransactionBytes>> MergeCoinsAsync(string signer, string primaryCoinId, string coinToMergeId, string gas, ulong gasBudget);
+
+        /// <summary>
+        /// Create an unsigned transaction to split a coin object into multiple coins.
+        /// </summary>
+        /// <param name="signer"></param>
+        /// <param name="coinObjectId"></param>
+        /// <param name="splitAmounts"></param>
+        /// <param name="gas"></param>
+        /// <param name="gasBudget"></param>
+        /// <returns></returns>
+        Task<RpcResult<SuiTransactionBytes>> SplitCoinAsync(string signer, string coinObjectId, IEnumerable<ulong> splitAmounts, string gas, ulong gasBudget);
+
+        /// <summary>
+        /// Create an unsigned transaction to split a coin object into multiple equal-size coins.
+        /// </summary>
+        /// <param name="signer"></param>
+        /// <param name="coinObjectId"></param>
+        /// <param name="splitCount"></param>
+        /// <param name="gas"></param>
+        /// <param name="gasBudget"></param>
+        /// <returns></returns>
+        Task<RpcResult<SuiTransactionBytes>> SplitCoinEqualAsync(string signer, string coinObjectId, ulong splitCount, string gas, ulong gasBudget);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="signer"></param>
+        /// <param name="inputCoins"></param>
+        /// <param name="recipients"></param>
+        /// <param name="amounts"></param>
+        /// <param name="gas"></param>
+        /// <param name="gasBudget"></param>
+        /// <returns></returns>
+        Task<RpcResult<SuiTransactionBytes>> PayAsync(string signer, IEnumerable<string> inputCoins, IEnumerable<string> recipients, IEnumerable<ulong> amounts, string gas, ulong gasBudget);
     }
 }
