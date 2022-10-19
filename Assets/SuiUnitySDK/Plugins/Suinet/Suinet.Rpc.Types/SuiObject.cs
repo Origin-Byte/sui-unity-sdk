@@ -2,9 +2,9 @@
 {
     public class SuiObject
     {
-        public object Data { get; set; }
+        public SuiData Data { get; set; }
 
-        public object Owner { get; set; }
+        public SuiOwner Owner { get; set; }
 
         public string PreviousTransaction { get; set; }
 

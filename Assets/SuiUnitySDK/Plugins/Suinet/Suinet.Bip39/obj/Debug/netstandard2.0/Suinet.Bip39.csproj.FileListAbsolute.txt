@@ -1,0 +1,15 @@
+C:\aldrin\suinet\src\package\lib\netstandard2.0\Suinet.Bip39.deps.json
+C:\aldrin\suinet\src\package\lib\netstandard2.0\Suinet.Bip39.dll
+C:\aldrin\suinet\src\package\lib\netstandard2.0\Suinet.Bip39.pdb
+C:\aldrin\suinet\src\Suinet.Bip39\bin\Debug\netstandard2.0\Suinet.Bip39.deps.json
+C:\aldrin\suinet\src\Suinet.Bip39\bin\Debug\netstandard2.0\Suinet.Bip39.dll
+C:\aldrin\suinet\src\Suinet.Bip39\bin\Debug\netstandard2.0\Suinet.Bip39.pdb
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.csproj.AssemblyReference.cache
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.Resources.resources
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.csproj.GenerateResource.cache
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.GeneratedMSBuildEditorConfig.editorconfig
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.AssemblyInfoInputs.cache
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.AssemblyInfo.cs
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.csproj.CoreCompileInputs.cache
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.dll
+C:\aldrin\suinet\src\Suinet.Bip39\obj\Debug\netstandard2.0\Suinet.Bip39.pdb

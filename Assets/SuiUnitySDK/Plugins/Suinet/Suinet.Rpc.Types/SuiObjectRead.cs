@@ -1,15 +1,46 @@
-﻿namespace Suinet.Rpc.Types
+﻿using Newtonsoft.Json;
+using Suinet.Rpc.Types.Converters;
+
+namespace Suinet.Rpc.Types
 {
+    [JsonConverter(typeof(SuiObjectReadConverter))]
     public class SuiObjectRead
     {
         public SuiObjectReadStatus Status { get; set; }
 
-        public object Details { get; set; }
+        /// <summary>
+        /// SuiObjectReadStatus.Exists
+        /// </summary>
+        public SuiObject Object { get; set; }
+
+        /// <summary>
+        /// SuiObjectReadStatus.Deleted
+        /// </summary>
+        public SuiObjectRef ObjectRef { get; set; }
+
+        /// <summary>
+        /// SuiObjectReadStatus.NotExists
+        /// </summary>
+        public string ObjectId { get; set; }
+
+        public SuiObjectRead(SuiObjectReadStatus status, SuiObject @object, SuiObjectRef objectRef, string objectId)
+        {
+            Status = status;
+            Object = @object;
+            ObjectRef = objectRef;
+            ObjectId = objectId;
+        }
+
+        public SuiObjectRead(SuiObjectReadStatus status)
+        {
+            Status = status;
+        }
     }
 
     public enum SuiObjectReadStatus
     {
-        Exists = 0,
+        None,
+        Exists,
         NotExists,
         Deleted
     }

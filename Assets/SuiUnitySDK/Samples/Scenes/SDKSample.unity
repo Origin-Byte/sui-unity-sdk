@@ -185,8 +185,7 @@ MonoBehaviour:
     a Shared Sui object (a counter from the sui samples). The counter can be incremented
     by anyone calling the increment method. Check the \"value\" field in the output
     field. See source code for more details. \n\nImportant: to be able to execute
-    a transaction you need to have gas in your active wallet. Send SUI to your address
-    and set the gas object id of a valid sui object."
+    a transaction you need to have gas in your active wallet."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16109,7 +16108,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2118773559
 RectTransform:
   m_ObjectHideFlags: 0

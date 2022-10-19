@@ -6,40 +6,41 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Move contract used by this sample:
+/// https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples/basics/sources/counter.move
+/// </summary>
 public class TransactionsUIController : MonoBehaviour
 {
     public Button IncrementCounterButton;
     public Button RefreshCounterButton;
-    public TMP_InputField GasObjectIdInput;
 
     public TMP_InputField Output;
 
-    private string SharedCounterObjectId = "0xe5de6824f7c0cedc2489cc06d7e7f2e426edbe42";
+    private string SharedCounterObjectId = "0x3733da2668b240b1f3035eda5b33569a4635c750";
 
     private async void Start()
     {
-
         IncrementCounterButton.onClick.AddListener(async () =>
         {
             var signer = SuiWallet.GetActiveAddress();
-            var packageObjectId = "0x6295af8a599ee4d9e7addc650d8e2a25c9046a37";
-            var module = "counter";
-            var function = "increment";
-            var typeArgs = System.Array.Empty<string>();
-            var args = new object[] { SharedCounterObjectId };
-            var gasObjectId = GasObjectIdInput.text;
-            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
-            var keyPair = SuiWallet.GetActiveKeyPair();
-
-            var txBytes = rpcResult.Result.TxBytes;
-            var signature = keyPair.Sign(rpcResult.Result.TxBytes);
-            var pkBase64 = keyPair.PublicKeyBase64;
-
-            await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
-            await RefreshCounter();
+            var moveCallTx = new MoveCallTransaction()
+           {
+               Signer = signer,
+               PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
+               Module = "counter",
+               Function = "increment",
+               TypeArguments = ArgumentBuilder.BuildTypeArguments(),
+               Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
+               Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
+               GasBudget = 5000,
+               RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
+           };
+           
+           await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
+           await RefreshCounter();
         });
-
-
+        
         RefreshCounterButton.onClick.AddListener(async () =>
         {
             await RefreshCounter();

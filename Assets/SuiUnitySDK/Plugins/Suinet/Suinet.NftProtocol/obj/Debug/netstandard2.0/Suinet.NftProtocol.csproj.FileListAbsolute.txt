@@ -1,0 +1,13 @@
+C:\aldrin\suinet\src\Suinet.NftProtocol\bin\Debug\netstandard2.0\Suinet.NftProtocol.deps.json
+C:\aldrin\suinet\src\Suinet.NftProtocol\bin\Debug\netstandard2.0\Suinet.NftProtocol.dll
+C:\aldrin\suinet\src\Suinet.NftProtocol\bin\Debug\netstandard2.0\Suinet.NftProtocol.pdb
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.csproj.AssemblyReference.cache
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.GeneratedMSBuildEditorConfig.editorconfig
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.AssemblyInfoInputs.cache
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.AssemblyInfo.cs
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.csproj.CoreCompileInputs.cache
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.dll
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.pdb
+C:\aldrin\suinet\src\Suinet.NftProtocol\bin\Debug\netstandard2.0\Suinet.Rpc.Types.dll
+C:\aldrin\suinet\src\Suinet.NftProtocol\bin\Debug\netstandard2.0\Suinet.Rpc.Types.pdb
+C:\aldrin\suinet\src\Suinet.NftProtocol\obj\Debug\netstandard2.0\Suinet.NftProtocol.csproj.CopyComplete

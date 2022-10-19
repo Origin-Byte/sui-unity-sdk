@@ -1,7 +1,9 @@
 ﻿namespace Suinet.Rpc
 {
     using Newtonsoft.Json.Linq;
+    using Suinet.Rpc.Client;
     using Suinet.Rpc.Types;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,7 +14,7 @@
         public static async Task<List<string>> GetCoinObjectIdsOwnedByAddressAsync(IJsonRpcApiClient client, string address, string coinType = SuiConstants.SUI_COIN_TYPE)
         {
             var ownedObjectsResult = await client.GetObjectsOwnedByAddressAsync(address);
-            return ownedObjectsResult.Result.Where(r => r.Type == coinType).Select(c => c.ObjectId).ToList();
+            return ownedObjectsResult.Result?.Where(r => r.Type == coinType).Select(c => c.ObjectId).ToList();
         }
 
         public static async Task<List<string>> GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(IJsonRpcApiClient client, string address, int count = 10, ulong minBalance = 1000, string coinType = SuiConstants.SUI_COIN_TYPE)
@@ -26,8 +28,8 @@
                 var objectResult = await client.GetObjectAsync(coinObjectId);
                 if (objectResult.IsSuccess)
                 {
-                    var jObj = JObject.FromObject(objectResult.Result.Details);
-                    var coinBalance = jObj.SelectToken("data.fields['balance']").Value<ulong>();
+                    var balanceObject = objectResult.Result.Object.Data.Fields["balance"];
+                    var coinBalance = Convert.ToUInt64(balanceObject);
 
                     if (coinBalance > minBalance)
                     {
