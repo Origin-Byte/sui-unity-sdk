@@ -73,7 +73,7 @@ namespace Suinet.NftProtocol
         {
             var gas = gasObjectId ?? (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(_jsonRpcApiClient, txBuilder.Signer))[0];
 
-            return await _signer.SignAndExecuteMoveCallAsync(txBuilder.ToMoveCallTransaction(gas));
+            return await _signer.SignAndExecuteMoveCallAsync(txBuilder.BuildMoveCallTransaction(gas));
         }
     }
 }
