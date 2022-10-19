@@ -14,7 +14,6 @@ public class TransactionsUIController : MonoBehaviour
 {
     public Button IncrementCounterButton;
     public Button RefreshCounterButton;
-    public TMP_InputField GasObjectIdInput;
 
     public TMP_InputField Output;
 
