@@ -12,5 +12,6 @@ namespace Suinet.Rpc.Types
         public IEnumerable<object> Arguments { get; set; }
         public string Gas { get; set; }
         public ulong GasBudget { get; set; }
+        public SuiExecuteTransactionRequestType RequestType { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Suinet.Rpc
 {
-    public static class TransactionUtils
+    public static class ArgumentBuilder
     {
         public static IEnumerable<object> BuildArguments(params object[] @params)
         {
