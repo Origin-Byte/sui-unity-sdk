@@ -1,13 +1,14 @@
 ﻿using Chaos.NaCl;
 using System;
+using System.IO;
 
 namespace Suinet.Wallet
 {
-    public class Ed25519KeyPair
+    public class Ed25519KeyPair : IKeyPair
     {
         public string PublicKeyBase64 { get; private set; }
         public string PrivateKeyBase64 { get; private set; }
-        public string PublicKeySuiAddress { get; private set; }
+        public string PublicKeyAsSuiAddress { get; private set; }
 
         public byte[] PublicKey { get; private set; }
         public byte[] PrivateKey { get; private set; }
@@ -20,7 +21,7 @@ namespace Suinet.Wallet
             PublicKeyBase64 = CryptoBytes.ToBase64String(publicKey);
             PrivateKeyBase64 = CryptoBytes.ToBase64String(privateKey);
 
-            PublicKeySuiAddress = ToSuiAddress(publicKey);
+            PublicKeyAsSuiAddress = ToSuiAddress(publicKey);
         }
 
         public string ToSuiAddress(byte[] publicKeyBytes)
@@ -51,6 +52,13 @@ namespace Suinet.Wallet
             Ed25519.Sign(new ArraySegment<byte>(signature), new ArraySegment<byte>(message), new ArraySegment<byte>(PrivateKey));
             return signature;
         }
+
+        //public IKeyPair DeriveKeypair(string path = "m/44'/784'/0'/0'/0'")
+        //{
+        //    Ed25519.der
+        //}
+
+       
     }
 
 }

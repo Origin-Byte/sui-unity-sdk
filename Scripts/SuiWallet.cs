@@ -13,7 +13,7 @@ public class SuiWallet
         var keypair = GetActiveKeyPair();
         if (keypair != null)
         {
-            return keypair.PublicKeySuiAddress;
+            return keypair.PublicKeyAsSuiAddress;
         }
 
         return "0x";
@@ -35,7 +35,7 @@ public class SuiWallet
         return true;
     }
 
-    public static Ed25519KeyPair GetActiveKeyPair()
+    public static IKeyPair GetActiveKeyPair()
     {
         if (PlayerPrefs.HasKey(MnemonicsKey))
         {
