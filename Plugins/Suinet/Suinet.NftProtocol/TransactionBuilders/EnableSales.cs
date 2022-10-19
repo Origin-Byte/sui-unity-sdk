@@ -15,7 +15,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public string CollectionType { get; set; }
 
-        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000)
+        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000, SuiExecuteTransactionRequestType RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert)
         {
             return new MoveCallTransaction()
             {
@@ -23,14 +23,15 @@ namespace Suinet.NftProtocol.TransactionBuilders
                 PackageObjectId = PackageObjectId,
                 Module = "fixed_price",
                 Function = "sale_on",
-                TypeArguments = TransactionUtils.BuildTypeArguments(
+                TypeArguments = ArgumentBuilder.BuildTypeArguments(
                     CollectionType
                     ),
-                Arguments = TransactionUtils.BuildArguments(
+                Arguments = ArgumentBuilder.BuildArguments(
                     LaunchpadId
                     ),
                 Gas = gas,
-                GasBudget = gasBudget
+                GasBudget = gasBudget,
+                RequestType = RequestType
             };
         }    
     }

@@ -25,7 +25,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public ulong? TierIndex { get; set; }
 
-        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000)
+        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000, SuiExecuteTransactionRequestType RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert)
         {
             return new MoveCallTransaction()
             {
@@ -33,19 +33,20 @@ namespace Suinet.NftProtocol.TransactionBuilders
                 PackageObjectId = PackageObjectId,
                 Module = "slingshot",
                 Function = "claim_nft_embedded",
-                TypeArguments = TransactionUtils.BuildTypeArguments(
+                TypeArguments = ArgumentBuilder.BuildTypeArguments(
                     CollectionType,
                     $"{PackageObjectId}::fixed_price::FixedPriceMarket",
                     $"{PackageObjectId}::{NftType}"
                     ),
-                Arguments = TransactionUtils.BuildArguments(
+                Arguments = ArgumentBuilder.BuildArguments(
                     LaunchpadId,
                     NftId,
                     CertificateId,
                     Recipient
                     ),
                 Gas = gas,
-                GasBudget = gasBudget
+                GasBudget = gasBudget,
+                RequestType = RequestType,
             };
         }    
     }

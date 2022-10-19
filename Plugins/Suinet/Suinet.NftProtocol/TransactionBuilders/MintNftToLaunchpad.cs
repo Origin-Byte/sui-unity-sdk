@@ -28,7 +28,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public ulong? TierIndex { get; set; }
 
-        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000)
+        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000, SuiExecuteTransactionRequestType RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert)
         {
             return new MoveCallTransaction()
             {
@@ -37,7 +37,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
                 Module = ModuleName,
                 Function = "mint_nft",
                 TypeArguments = Array.Empty<string>(),
-                Arguments = TransactionUtils.BuildArguments(
+                Arguments = ArgumentBuilder.BuildArguments(
                     Name,
                     Description,
                     Url,
@@ -48,7 +48,8 @@ namespace Suinet.NftProtocol.TransactionBuilders
                     MarketId
                     ),
                 Gas = gas,
-                GasBudget = gasBudget
+                GasBudget = gasBudget,
+                RequestType = RequestType
             };
         }
 

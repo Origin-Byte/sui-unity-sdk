@@ -20,7 +20,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public ulong? TierIndex { get; set; }
 
-        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000)
+        public MoveCallTransaction ToMoveCallTransaction(string gas, ulong gasBudget = 4000, SuiExecuteTransactionRequestType RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert)
         {
             return new MoveCallTransaction()
             {
@@ -28,16 +28,17 @@ namespace Suinet.NftProtocol.TransactionBuilders
                 PackageObjectId = PackageObjectId,
                 Module = "fixed_price",
                 Function = "buy_nft_certificate",
-                TypeArguments = TransactionUtils.BuildTypeArguments(
+                TypeArguments = ArgumentBuilder.BuildTypeArguments(
                     CollectionType
                     ),
-                Arguments = TransactionUtils.BuildArguments(
+                Arguments = ArgumentBuilder.BuildArguments(
                     Wallet,
                     LaunchpadId,
                     TierIndex ?? 0
                     ),
                 Gas = gas,
-                GasBudget = gasBudget
+                GasBudget = gasBudget,
+                RequestType = RequestType,
             };
         }    
     }

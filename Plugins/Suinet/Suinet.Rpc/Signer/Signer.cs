@@ -33,9 +33,9 @@ namespace Suinet.Rpc.Signer
             return null;
         }
 
-        public async Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteMoveCallAsync(MoveCallTransaction moveCallTransaction, SuiExecuteTransactionRequestType txRequestType)
+        public async Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteMoveCallAsync(MoveCallTransaction moveCallTransaction)
         {
-            return await SignAndExecuteAsync(() => _rpcApiClient.MoveCallAsync(moveCallTransaction), txRequestType);
+            return await SignAndExecuteAsync(() => _rpcApiClient.MoveCallAsync(moveCallTransaction), moveCallTransaction.RequestType);
         }
     }
 }
