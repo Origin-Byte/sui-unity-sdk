@@ -43,6 +43,11 @@ namespace Suinet.Rpc.Api
         Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(string signer, string packageObjectId, string module, string function, IEnumerable<string> typeArguments, IEnumerable<object> arguments, string gas, ulong gasBudget);
 
         /// <summary>
+        /// Create an unsigned transaction to execute a Move call on the network, by calling the specified function in the module of a given package.
+        /// </summary>
+        Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(MoveCallTransaction transactionParams);
+
+        /// <summary>
         /// Create an unsigned batched transaction.
         /// </summary>
         /// <param name="signer"></param>

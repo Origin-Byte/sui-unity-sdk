@@ -65,20 +65,19 @@ public class NftProtocolMintUIController : MonoBehaviour
                 var signature = keyPair.Sign(rpcResult.Result.TxBytes);
                 var pkBase64 = keyPair.PublicKeyBase64;
 
-                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForEffectsCert);
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);
                     NFTMintedText.gameObject.SetActive(true);
                     NFTMintedReadonlyInputField.gameObject.SetActive(true);
 
-                    var txEffects = JObject.FromObject(txRpcResult.Result.Effects);
+                    var txEffects = JObject.FromObject(txRpcResult.Result.EffectsCert.Effects);
 
                     // check the created object, one is a coin, the other one is the actual NFT
                     var mintedNftObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
                     var createdObject = await SuiApi.Client.GetObjectAsync(mintedNftObjectId);
-                    var createdJobj = JObject.FromObject(createdObject.Result.Details);
-                    if (createdJobj.SelectToken("data.type").Value<string>() == "0x2::coin::Coin<0x2::sui::SUI>")
+                    if (createdObject.Result.Object.Data.Type == "0x2::coin::Coin<0x2::sui::SUI>")
                     {
                         mintedNftObjectId = txEffects.SelectToken("created[1].reference.objectId").Value<string>();
                     }

@@ -1,0 +1,10 @@
+C:\aldrin\suinet\src\Suinet.Rpc.Types\bin\Debug\netstandard2.0\Suinet.Rpc.Types.deps.json
+C:\aldrin\suinet\src\Suinet.Rpc.Types\bin\Debug\netstandard2.0\Suinet.Rpc.Types.dll
+C:\aldrin\suinet\src\Suinet.Rpc.Types\bin\Debug\netstandard2.0\Suinet.Rpc.Types.pdb
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.csproj.AssemblyReference.cache
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.GeneratedMSBuildEditorConfig.editorconfig
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.AssemblyInfoInputs.cache
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.AssemblyInfo.cs
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.csproj.CoreCompileInputs.cache
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.dll
+C:\aldrin\suinet\src\Suinet.Rpc.Types\obj\Debug\netstandard2.0\Suinet.Rpc.Types.pdb

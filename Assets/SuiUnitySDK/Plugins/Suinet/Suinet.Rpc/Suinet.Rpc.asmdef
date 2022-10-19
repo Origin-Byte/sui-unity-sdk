@@ -2,7 +2,8 @@
     "name": "Suinet.Rpc",
     "rootNamespace": "Suinet.Rpc",
     "references": [
-        "GUID:9f081016280de6b49aa9e90afb65c993"
+        "GUID:9f081016280de6b49aa9e90afb65c993",
+        "GUID:7b3c0037940919a42af64600403b87a4"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

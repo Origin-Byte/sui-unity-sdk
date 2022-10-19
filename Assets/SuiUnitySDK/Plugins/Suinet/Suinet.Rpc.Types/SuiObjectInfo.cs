@@ -10,7 +10,7 @@
 
         public string Type { get; set; }
 
-        public object Owner { get; set; }
+        public SuiOwner Owner { get; set; }
 
         public string PreviousTransaction { get; set; }
     }

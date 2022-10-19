@@ -1,4 +1,5 @@
 using Suinet.Rpc;
+using Suinet.Rpc.Client;
 using Suinet.Rpc.Types;
 
 public static class SuiApi

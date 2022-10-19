@@ -1,0 +1,13 @@
+C:\aldrin\suinet\src\Suinet.Wallet\bin\Debug\netstandard2.0\Suinet.Wallet.deps.json
+C:\aldrin\suinet\src\Suinet.Wallet\bin\Debug\netstandard2.0\Suinet.Wallet.dll
+C:\aldrin\suinet\src\Suinet.Wallet\bin\Debug\netstandard2.0\Suinet.Wallet.pdb
+C:\aldrin\suinet\src\Suinet.Wallet\bin\Debug\netstandard2.0\Suinet.Bip39.dll
+C:\aldrin\suinet\src\Suinet.Wallet\bin\Debug\netstandard2.0\Suinet.Bip39.pdb
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.csproj.AssemblyReference.cache
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.GeneratedMSBuildEditorConfig.editorconfig
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.AssemblyInfoInputs.cache
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.AssemblyInfo.cs
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.csproj.CoreCompileInputs.cache
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.csproj.CopyComplete
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.dll
+C:\aldrin\suinet\src\Suinet.Wallet\obj\Debug\netstandard2.0\Suinet.Wallet.pdb

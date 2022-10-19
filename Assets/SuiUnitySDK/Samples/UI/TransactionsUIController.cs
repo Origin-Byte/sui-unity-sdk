@@ -35,7 +35,7 @@ public class TransactionsUIController : MonoBehaviour
             var signature = keyPair.Sign(rpcResult.Result.TxBytes);
             var pkBase64 = keyPair.PublicKeyBase64;
 
-            await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
+            await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForTxCert);
             await RefreshCounter();
         });
 
