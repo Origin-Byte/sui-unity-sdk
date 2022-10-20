@@ -25,20 +25,20 @@ public class TransactionsUIController : MonoBehaviour
         {
             var signer = SuiWallet.GetActiveAddress();
             var moveCallTx = new MoveCallTransaction()
-           {
-               Signer = signer,
-               PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
-               Module = "counter",
-               Function = "increment",
-               TypeArguments = ArgumentBuilder.BuildTypeArguments(),
-               Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
-               Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
-               GasBudget = 5000,
-               RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
-           };
+            {
+                Signer = signer,
+                PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
+                Module = "counter",
+                Function = "increment",
+                TypeArguments = ArgumentBuilder.BuildTypeArguments(),
+                Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
+                Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
+                GasBudget = 5000,
+                RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
+            };
            
-           await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
-           await RefreshCounter();
+            await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
+            await RefreshCounter();
         });
         
         RefreshCounterButton.onClick.AddListener(async () =>

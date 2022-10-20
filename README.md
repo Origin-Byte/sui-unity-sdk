@@ -7,17 +7,17 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
     - Read API
     - Event Read API
     - Transaction Builder Api
+    - Helper methods to build and execute transactions
+    - Typed move calls
 - Wallet Management 
     - Generate and Restore key pairs with Mnemonics (currently Ed25519 supported)
+        - [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) : Universal private key derivation from master private key also supported
     - Sign transactions
     - Store key pair in PlayerPrefs
 - Interact with Origin Byte Nft Protocol https://github.com/Origin-Byte/nft-protocol
-
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
 - Samples are using Sui 0.11.0 devnet
-
-### Try the live example here: https://suiunitysdksample.z13.web.core.windows.net/ 
 
 # Getting Started
 
@@ -50,6 +50,8 @@ https://github.com/Origin-Byte/sui-unity-sdk.git#upm
 
 
 ## Start using the SDK via SuiApi and SuiWallet classes. Also check out the samples below.
+
+# Keep in mind: Sui DevNet resets frequently, and the owned Coins, Nfts will be erased. Also, the package ids have to be updated with newly published versions as well.
 
 # Usage Samples
 
@@ -94,77 +96,83 @@ Enter any address and see the results as formatted JSON.
 
 ![Alt text](/imgs/transactions.png "Transactions")
 
-This sample code calls a function in a published move package that has a ```counter``` module with an ```increment``` function. It modifies a shared object, incrementing the counter by 1. 
+This sample code calls a function in a published move package that has a ```counter``` module with an ```increment``` function. It modifies a shared object, incrementing the counter by 1.
 
 See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples/basics/sources/counter.move
 
 ```csharp
     var signer = SuiWallet.GetActiveAddress();
-    var packageObjectId = "0xa21da7987c2b75870ddb4d638600f9af950b64c6";
-    var module = "counter";
-    var function = "increment";
-    var typeArgs = System.Array.Empty<string>();
-    var args = new object[] { SharedCounterObjectId };
-    var gasObjectId = GasObjectIdInput.text;
-    var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
-    var keyPair = SuiWallet.GetActiveKeyPair();
-
-    var txBytes = rpcResult.Result.TxBytes;
-    var signature = keyPair.Sign(rpcResult.Result.TxBytes);
-    var pkBase64 = keyPair.PublicKeyBase64;
-
-    await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
-    ...
+    var moveCallTx = new MoveCallTransaction()
+    {
+        Signer = signer,
+        PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
+        Module = "counter",
+        Function = "increment",
+        TypeArguments = ArgumentBuilder.BuildTypeArguments(),
+        Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
+        Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
+        GasBudget = 5000,
+        RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
+    };
+    
+    await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
 ```
 
 ## Mint Nft using Origin Byte Nft Protocol
 
-![Alt text](/imgs/nft_protocol_mint.png "Mint Nft using Origin Byte Nft Protocol")
+![Alt text](/imgs/nft_protocol_mint.png "Claim Nft using Origin Byte Nft Protocol")
+
+Our SDK contains the NftProtocolClient class that provide access to Sui using the Nft Protocol.
 
 This sample demonstrates the minting of an Nft for a collection using Origin Byte Nft protocol with RPC calls.
 More info on the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
-In this sample we automatically query for 2 separate SUI coin type objects, because the move call executes in a 
-batch transaction and sui does not allow the same coin object to be used as gas and mutate in the move call as well.
+This sample uses a pre-minted collection of [SUIMARINES](https://github.com/Origin-Byte/nft-protocol/blob/main/sources/examples/suimarines.move) and anyone can claim it.
+
+
+### Setup your collection
+1. Publish https://github.com/Origin-Byte/nft-protocol/blob/main/sources/examples/suimarines.move or a similar, std_collection. More information about the [nft protocol](https://github.com/Origin-Byte/nft-protocol) . It creates a launchpad (basically a fixed priced market in this example) for you as well.
+2. Call NftProtocolClient.EnableSalesAsync method to make the market live
+3. Mint Nfts by calling NftProtocolClient.MintNftAsync
+4. Set the LaunchpadId, packageObjectId, modulename to use
 
 ```csharp
     var signer = SuiWallet.GetActiveAddress();
-    // package id of the Nft Protocol
-    var packageObjectId = "0x1e5a734576e8d8c885cd4cf75665c05d9944ae34";
-    var module = "std_nft";
-    var function = "mint_and_transfer";
-    var typeArgs = System.Array.Empty<string>();
+    var launchpadId = NFTLaunchpadIdInputField.text;
+    var packageObjectId = "0x67a8862cbe93ea36d9bc55eefc94500a00ed5bcd";
+    var moduleName = "suimarines";
+    var collectionType = $"{packageObjectId}::suimarines::SUIMARINES";
+    
+    var launchpadResult = await SuiApi.Client.GetObjectAsync<FixedPriceMarket>(launchpadId);
 
-    // We need 2 separate gas objects because both of them will be mutated in a batch transaction
-    var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(signer, 2);
-
-    if (gasObjectIds.Count < 2)
+    var buyNftTxBuilder = new BuyNftCertificate()
     {
-        Debug.LogError("Could not retrieve 2 sui coin objects with at least 2000 balance. Please send more SUI to your address");
-        return;
-    }
+        Signer = signer,
+        Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
+        LaunchpadId = launchpadId,
+        PackageObjectId = packageObjectId,
+        CollectionType = collectionType,
+        ModuleName = moduleName
+    };
 
-    var args = new object[] { NFTNameInputField.text, NFTUrlInputField.text, false, new object[] { "description" },
-        new object[] { NFTDescriptionInputField.text }, NFTCollectionIdInputField.text, gasObjectIds[0], signer };
-
-    NFTMintedText.gameObject.SetActive(false);
-    NFTMintedReadonlyInputField.gameObject.SetActive(false);
-    var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
-
-    if (rpcResult.IsSuccess)
+    var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
+    var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
+    var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
+    var nftId = buyCertificateRpcResult.Result.NftId;
+    
+    var claimNftTxBuilder = new ClaimNftCertificate()
     {
-        var keyPair = SuiWallet.GetActiveKeyPair();
-
-        var txBytes = rpcResult.Result.TxBytes;
-        var signature = keyPair.Sign(rpcResult.Result.TxBytes);
-        var pkBase64 = keyPair.PublicKeyBase64;
-
-        var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64);
-        
-    }
-    else
-    {
-        Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
-    }
+        Signer = signer,
+        LaunchpadId = launchpadId,
+        PackageObjectId = packageObjectId,
+        CollectionType = collectionType,
+        ModuleName = moduleName,
+        Recipient = signer,
+        CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
+        NftId = nftId,
+        NftType = "unique_nft::Unique"
+    };
+    
+    var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
 
 ```
 
