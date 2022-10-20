@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Suinet.NftProtocol.Collection;
 using Suinet.NftProtocol.Launchpad.Market;
+using Suinet.NftProtocol.Launchpad;
 
 namespace Suinet.NftProtocol
 {
@@ -29,5 +30,7 @@ namespace Suinet.NftProtocol
         Task<RpcResult<IEnumerable<StdCollection>>> GetCollectionsAsync(string[] objectIds);
 
         Task<RpcResult<IEnumerable<FixedPriceMarket>>> GetFixedPriceMarketsAsync(string[] objectIds);
+
+        Task<RpcResult<T>> GetLaunchpad<T>(string id) where T : class, ISlingshot;
     }
 }
