@@ -1,6 +1,12 @@
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using Suinet.Rpc.Types;
 using System.Threading.Tasks;
+using Suinet.NftProtocol;
+using Suinet.NftProtocol.Launchpad;
+using Suinet.NftProtocol.Launchpad.Market;
+using Suinet.NftProtocol.Nft;
+using Suinet.NftProtocol.TransactionBuilders;
 using Suinet.Rpc;
 using TMPro;
 using UnityEngine;
@@ -17,7 +23,7 @@ public class NftProtocolMintUIController : MonoBehaviour
     public TMP_InputField NFTDescriptionInputField;
     public TMP_InputField NFTUrlInputField;
     public TMP_Text NFTMintedText;
-    public TMP_InputField NFTCollectionIdInputField;
+    public TMP_InputField NFTLaunchpadIdInputField;
     public TMP_InputField NFTMintedReadonlyInputField;
 
     public Image NFTImage;
@@ -26,72 +32,67 @@ public class NftProtocolMintUIController : MonoBehaviour
     private void Start()
     {
         // Default text
-        NFTNameInputField.text = "Origin Byte NFT using Nft protocol";
-        NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
-        NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
-        // Origin Byte NFTs are minted for a given collection. Default collection for samples.
-        NFTCollectionIdInputField.text = "0x0f31c2ef91697057ad51c7914bc90be5b43569a5";
+        //NFTNameInputField.text = "Origin Byte NFT using Nft protocol";
+        //NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
+        //NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
+        // Origin Byte NFTs are claimed from a launchpad, that is created for a collection.
+        NFTLaunchpadIdInputField.text = "0x884f0a3d5bd0978856b5ad5dd21b30eee450ee8b";
 
         MintNFTButton.onClick.AddListener(async () =>
         {
-            var signer = SuiWallet.GetActiveAddress();
-            // package id of the Nft Protocol
-            var packageObjectId = "0x4112429a20b9f6bfcc5f43e773dbbf71053cdfa5";
-            var module = "std_nft";
-            var function = "mint_and_transfer";
-            var typeArgs = System.Array.Empty<string>();
-
-            // We need 2 separate gas objects because both of them will be mutated in a batch transaction
-            var gasObjectIds = await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 2);
-
-            if (gasObjectIds.Count < 2)
-            {
-                Debug.LogError("Could not retrieve 2 sui coin objects with at least 1000 balance. Please send more SUI to your address");
-                return;
-            }
-
-            var args = new object[] { NFTNameInputField.text, NFTUrlInputField.text, false, new object[] { "description" },
-                new object[] { NFTDescriptionInputField.text }, NFTCollectionIdInputField.text, gasObjectIds[0], signer };
-
             NFTMintedText.gameObject.SetActive(false);
             NFTMintedReadonlyInputField.gameObject.SetActive(false);
-            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectIds[1], 2000);
+            
+            var signer = SuiWallet.GetActiveAddress();
+            var launchpadId = NFTLaunchpadIdInputField.text;
+            var packageObjectId = "0x67a8862cbe93ea36d9bc55eefc94500a00ed5bcd";
+            var moduleName = "suimarines";
+            var collectionType = $"{packageObjectId}::suimarines::SUIMARINES";
+            
+            var launchpadResult = await SuiApi.Client.GetObjectAsync<FixedPriceMarket>(launchpadId);
 
-            if (rpcResult.IsSuccess)
+            var buyNftTxBuilder = new BuyNftCertificate()
             {
-                var keyPair = SuiWallet.GetActiveKeyPair();
+                Signer = signer,
+                Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
+                LaunchpadId = launchpadId,
+                PackageObjectId = packageObjectId,
+                CollectionType = collectionType,
+                ModuleName = moduleName
+            };
 
-                var txBytes = rpcResult.Result.TxBytes;
-                var signature = keyPair.Sign(rpcResult.Result.TxBytes);
-                var pkBase64 = keyPair.PublicKeyBase64;
+            var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
+            var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
+            var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
+            var nftId = buyCertificateRpcResult.Result.NftId;
+            
+            var claimNftTxBuilder = new ClaimNftCertificate()
+            {
+                Signer = signer,
+                LaunchpadId = launchpadId,
+                PackageObjectId = packageObjectId,
+                CollectionType = collectionType,
+                ModuleName = moduleName,
+                Recipient = signer,
+                CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
+                NftId = nftId,
+                NftType = "unique_nft::Unique"
+            };
+            
+            var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
+            
+            if (claimCertResult.IsSuccess)
+            {
+                var nftResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(nftId);
+                await LoadNFT(nftResult.Result.Data.Fields.Url);
+                NFTMintedText.gameObject.SetActive(true);
+                NFTMintedReadonlyInputField.gameObject.SetActive(true);
 
-                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForEffectsCert);
-                if (txRpcResult.IsSuccess)
-                {
-                    await LoadNFT(NFTUrlInputField.text);
-                    NFTMintedText.gameObject.SetActive(true);
-                    NFTMintedReadonlyInputField.gameObject.SetActive(true);
-
-                    var txEffects = JObject.FromObject(txRpcResult.Result.EffectsCert.Effects);
-
-                    // check the created object, one is a coin, the other one is the actual NFT
-                    var mintedNftObjectId = txEffects.SelectToken("created[0].reference.objectId").Value<string>();
-                    var createdObject = await SuiApi.Client.GetObjectAsync(mintedNftObjectId);
-                    if (createdObject.Result.Object.Data.Type == "0x2::coin::Coin<0x2::sui::SUI>")
-                    {
-                        mintedNftObjectId = txEffects.SelectToken("created[1].reference.objectId").Value<string>();
-                    }
-
-                    NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ mintedNftObjectId;
-                }
-                else
-                {
-                    Debug.LogError("Something went wrong when executing the transaction: " + txRpcResult.ErrorMessage);
-                }
+                NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ nftId;
             }
             else
             {
-                Debug.LogError("Something went wrong with the move call: " + rpcResult.ErrorMessage);
+                Debug.LogError("Something went wrong with the claiming: " + claimCertResult.ErrorMessage);
             }
         });
     }

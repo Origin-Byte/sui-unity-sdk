@@ -1,3 +1,4 @@
+using Suinet.NftProtocol;
 using Suinet.Rpc;
 using Suinet.Rpc.Client;
 using Suinet.Rpc.Signer;
@@ -7,6 +8,7 @@ using Suinet.Wallet;
 public static class SuiApi
 {
     public static IJsonRpcApiClient Client { get; }
+    public static INftProtocolClient NftProtocolClient { get; private set; }
 
     private static IKeyPair _signerKeyPair;
     private static ISigner _signer;
@@ -17,6 +19,7 @@ public static class SuiApi
         var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
         Client = new SuiJsonRpcApiClient(rpcClient);
         _signer = CreateSigner(Client, SuiWallet.GetActiveKeyPair());
+        NftProtocolClient = new NftProtocolClient(Client, _signer);
     }
 
     private static ISigner GetSignerForActiveKeyPair()
@@ -25,6 +28,7 @@ public static class SuiApi
         if (_signerKeyPair == activeKeyPair && _signer != null) return _signer;
         
         _signer = CreateSigner(Client, activeKeyPair);
+        NftProtocolClient = new NftProtocolClient(Client, _signer);
         _signerKeyPair = activeKeyPair;
 
         return _signer;
