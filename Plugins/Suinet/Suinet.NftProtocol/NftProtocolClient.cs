@@ -1,4 +1,5 @@
 ﻿using Suinet.NftProtocol.Collection;
+using Suinet.NftProtocol.Launchpad;
 using Suinet.NftProtocol.Launchpad.Market;
 using Suinet.NftProtocol.TransactionBuilders;
 using Suinet.Rpc;
@@ -69,11 +70,18 @@ namespace Suinet.NftProtocol
             return await ExecuteTxAsync(txParams, gasObjectId);
         }
 
+        public async Task<RpcResult<T>> GetLaunchpad<T>(string id)
+            where T : class, ISlingshot
+        {
+            return await _jsonRpcApiClient.GetObjectAsync<T>(id);
+        }
+
         private async Task<RpcResult<SuiExecuteTransactionResponse>> ExecuteTxAsync(IMoveCallTransactionBuilder txBuilder, string gasObjectId = null)
         {
             var gas = gasObjectId ?? (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(_jsonRpcApiClient, txBuilder.Signer))[0];
 
             return await _signer.SignAndExecuteMoveCallAsync(txBuilder.BuildMoveCallTransaction(gas));
         }
+
     }
 }
