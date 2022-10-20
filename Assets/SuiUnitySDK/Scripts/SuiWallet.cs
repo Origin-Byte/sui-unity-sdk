@@ -2,7 +2,7 @@ using Suinet.Wallet;
 using UnityEngine;
 
 /// <summary>
-/// Simple wallet implementation. Uses PlayerPrefs as store.
+/// Simple wallet implementation. Uses PlayerPrefs as store, so this implementation is not safe for production.
 /// </summary>
 public class SuiWallet
 {
