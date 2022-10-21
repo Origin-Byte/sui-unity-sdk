@@ -17,7 +17,8 @@ public class TransactionsUIController : MonoBehaviour
 
     public TMP_InputField Output;
 
-    private string SharedCounterObjectId = "0x3733da2668b240b1f3035eda5b33569a4635c750";
+    private string SharedCounterObjectId = "0xd1686a5ef6009827077a41fa4bd823502035c0e4";
+    private string PackageObjectId = "0xca947464558162667e35837368662660405f9dd6";
 
     private async void Start()
     {
@@ -27,7 +28,7 @@ public class TransactionsUIController : MonoBehaviour
             var moveCallTx = new MoveCallTransaction()
             {
                 Signer = signer,
-                PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
+                PackageObjectId = PackageObjectId,
                 Module = "counter",
                 Function = "increment",
                 TypeArguments = ArgumentBuilder.BuildTypeArguments(),

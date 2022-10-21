@@ -36,7 +36,7 @@ public class NftProtocolMintUIController : MonoBehaviour
         //NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
         //NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
         // Origin Byte NFTs are claimed from a launchpad, that is created for a collection.
-        NFTLaunchpadIdInputField.text = "0x884f0a3d5bd0978856b5ad5dd21b30eee450ee8b";
+        NFTLaunchpadIdInputField.text = "0x5f4d31a04299a09ed9aa7e7e83d9e12d170614a6";
 
         MintNFTButton.onClick.AddListener(async () =>
         {
@@ -45,7 +45,7 @@ public class NftProtocolMintUIController : MonoBehaviour
             
             var signer = SuiWallet.GetActiveAddress();
             var launchpadId = NFTLaunchpadIdInputField.text;
-            var packageObjectId = "0x67a8862cbe93ea36d9bc55eefc94500a00ed5bcd";
+            var packageObjectId = "0x20b9d090a47133ef60f1d6f5000322a45cb8a571";
             var moduleName = "suimarines";
             var collectionType = $"{packageObjectId}::suimarines::SUIMARINES";
             
