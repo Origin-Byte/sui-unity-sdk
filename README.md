@@ -176,6 +176,22 @@ This sample uses a pre-minted collection of [SUIMARINES](https://github.com/Orig
 
 ```
 
+## Nft loaders
+
+Check out the NftLoaders scene. Contains samples for using Nfts as UI Image sprite, main texture of material.
+
+![Nft loaders](/imgs/nftloaders.png "Nft loaders")
+
+Change the Ids and Address to yours.
+
+![UI Image Nft loader](/imgs/ui_image_nft_loader.png "UI Image Nft loader")
+
+
+![UI Image Nft loader  for address](/imgs/ui_image_nft_loader_for_address.png "UI Image Nft loader for address")
+
+
+![UI Image Nft loader  for address](/imgs/texture_nft_loader.png "Texture nft loader")
+
 # Dependencies
 
 Every dependency used by the SDK can be found in ./Assets/SuiUnitySDK/Plugins.
