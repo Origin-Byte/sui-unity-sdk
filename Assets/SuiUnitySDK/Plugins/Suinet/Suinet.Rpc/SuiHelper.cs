@@ -1,8 +1,8 @@
 ﻿namespace Suinet.Rpc
 {
-    using Newtonsoft.Json.Linq;
     using Suinet.Rpc.Client;
     using Suinet.Rpc.Types;
+    using Suinet.Rpc.Types.MoveTypes;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -42,6 +42,20 @@
                     }
                 }
             }
+            return result;
+        }
+
+        public static async Task<ulong> GetBalanceAsync(IJsonRpcApiClient client, string address)
+        {
+            var coinObjectsResult = await client.GetObjectsOwnedByAddressAsync<SUICoin>(address);
+
+            ulong result = 0;
+           
+            foreach(var coin in coinObjectsResult.Result)
+            {
+                result += coin.Balance;
+            }
+
             return result;
         }
     }
