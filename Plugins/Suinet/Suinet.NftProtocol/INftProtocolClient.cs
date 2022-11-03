@@ -2,10 +2,6 @@
 using Suinet.Rpc.Types;
 using Suinet.Rpc;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Suinet.NftProtocol.Collection;
-using Suinet.NftProtocol.Launchpad.Market;
-using Suinet.NftProtocol.Launchpad;
 
 namespace Suinet.NftProtocol
 {
@@ -20,17 +16,5 @@ namespace Suinet.NftProtocol
 
         Task<RpcResult<SuiExecuteTransactionResponse>> CaimNftCertificateAsync
 (ClaimNftCertificate txParams, string gasObjectId = null);
-
-        Task<RpcResult<IEnumerable<T>>> GetNftsOwnedByAddressAsync<T>(string address) where T : class;
-
-        Task<RpcResult<IEnumerable<StdCollection>>> GetCollectionsOwnedByAddressAsync(string address);
-
-        Task<RpcResult<IEnumerable<T>>> GetNftsAsync<T>(string[] objectIds) where T : class;
-
-        Task<RpcResult<IEnumerable<StdCollection>>> GetCollectionsAsync(string[] objectIds);
-
-        Task<RpcResult<IEnumerable<FixedPriceMarket>>> GetFixedPriceMarketsAsync(string[] objectIds);
-
-        Task<RpcResult<T>> GetLaunchpad<T>(string id) where T : class, ISlingshot;
     }
 }
