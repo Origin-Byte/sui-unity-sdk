@@ -220,7 +220,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8278469651352085758, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
       propertyPath: NftObjectId
-      value: 0x4efcfb2319b97d1862172e99bd906fdf1655d3e0
+      value: 0xd1840489db7a0cbc12391156fa4970f267deff6d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
@@ -692,7 +692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: NftObjectId
-      value: 0x4efcfb2319b97d1862172e99bd906fdf1655d3e0
+      value: 0xd1840489db7a0cbc12391156fa4970f267deff6d
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: TargetTextureName
