@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Suinet.Rpc.Types.MoveTypes;
+using System.Collections.Generic;
 
 namespace Suinet.Rpc.Types
 {
@@ -96,14 +97,16 @@ namespace Suinet.Rpc.Types
 
     public enum SuiEventType
     {
-        None = 0,
-        MoveEvent = 1,
-        Publish = 2,
-        TransferObject = 3,
-        DeleteObject = 4,
-        NewObject = 5,
-        EpochChange = 6,
-        Checkpoint = 7,
+        None,
+        MoveEvent,
+        Publish,
+        TransferObject,
+        DeleteObject,
+        NewObject,
+        EpochChange,
+        Checkpoint,
+        MutateObject,
+        CoinBalanceChange
     }
 
     public enum SuiTransferType

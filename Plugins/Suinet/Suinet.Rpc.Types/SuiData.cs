@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Suinet.Rpc.Types.MoveTypes;
 using System.Collections.Generic;
 
 namespace Suinet.Rpc.Types

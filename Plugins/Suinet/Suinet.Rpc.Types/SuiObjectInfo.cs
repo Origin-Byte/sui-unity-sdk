@@ -1,4 +1,6 @@
-﻿namespace Suinet.Rpc.Types
+﻿using Suinet.Rpc.Types.MoveTypes;
+
+namespace Suinet.Rpc.Types
 {
     public class SuiObjectInfo
     {

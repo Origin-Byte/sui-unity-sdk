@@ -1,9 +1,11 @@
-﻿using Suinet.Rpc.Api;
+﻿using Org.BouncyCastle.Crypto;
+using Suinet.Rpc.Api;
 using Suinet.Rpc.Client;
 using Suinet.Rpc.Http;
 using Suinet.Rpc.JsonRpc;
 using Suinet.Rpc.Types;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace Suinet.Rpc
@@ -99,41 +101,6 @@ namespace Suinet.Rpc
             return await SendRpcRequestAsync<SuiTransactionBytes>("sui_transferSui", ArgumentBuilder.BuildArguments(signer, suiObjectId, gasBudget, recipient, amount));
         }
 
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByModuleAsync(string packageId, string moduleName, uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByModule", ArgumentBuilder.BuildArguments(packageId, moduleName, count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByMoveEventStructNameAsync(string moveEventStructName, uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByMoveEventStructName", ArgumentBuilder.BuildArguments(moveEventStructName, count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByObjectAsync(string objectId, uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByObject", ArgumentBuilder.BuildArguments(objectId, count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByRecipientAsync(object owner, uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByRecipient", ArgumentBuilder.BuildArguments(owner, count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsBySenderAsync(string sender, uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsBySender", ArgumentBuilder.BuildArguments(sender, count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByTimeRangeAsync(uint count, ulong startTime, ulong endTime)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByTimeRange", ArgumentBuilder.BuildArguments(count, startTime, endTime));
-        }
-
-        public async Task<RpcResult<IEnumerable<SuiEventEnvelope>>> GetEventsByTransactionAsync(string digest, uint count)
-        {
-            return await SendRpcRequestAsync<IEnumerable<SuiEventEnvelope>>("sui_getEventsByTransaction", ArgumentBuilder.BuildArguments(digest, count));
-        }
-
         public async Task<RpcResult<SuiTransactionBytes>> MergeCoinsAsync(string signer, string primaryCoinId, string coinToMergeId, string gas, ulong gasBudget)
         {
             return await SendRpcRequestAsync<SuiTransactionBytes>("sui_mergeCoins", ArgumentBuilder.BuildArguments(signer, primaryCoinId, coinToMergeId, gas, gasBudget));
@@ -152,6 +119,11 @@ namespace Suinet.Rpc
         public async Task<RpcResult<SuiTransactionBytes>> PayAsync(string signer, IEnumerable<string> inputCoins, IEnumerable<string> recipients, IEnumerable<ulong> amounts, string gas, ulong gasBudget)
         {
             return await SendRpcRequestAsync<SuiTransactionBytes>("sui_pay", ArgumentBuilder.BuildArguments(signer, inputCoins, recipients, amounts, gas, gasBudget));
+        }
+
+        public async Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, object cursor, ulong limit, bool descendingOrder = false)
+        {
+            return await SendRpcRequestAsync<SuiPage_for_EventEnvelope_and_EventID>("sui_getEvents", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
         }
     }
 
