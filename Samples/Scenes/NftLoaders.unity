@@ -220,7 +220,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8278469651352085758, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
       propertyPath: NftObjectId
-      value: 0xd1840489db7a0cbc12391156fa4970f267deff6d
+      value: 0x2aed810115adc9c1225c5229d1d7a012cabb3b28
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
@@ -589,6 +589,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 554864868}
     m_Modifications:
+    - target: {fileID: 4735260569144797752, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
+      propertyPath: Address
+      value: 0x7438811a9626623e093312d1b552f29567841f7e
+      objectReference: {fileID: 0}
     - target: {fileID: 6722239002838358652, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
       propertyPath: m_Name
       value: AddressNftImages
@@ -692,7 +696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: NftObjectId
-      value: 0xd1840489db7a0cbc12391156fa4970f267deff6d
+      value: 0x2aed810115adc9c1225c5229d1d7a012cabb3b28
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: TargetTextureName
