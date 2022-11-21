@@ -15,7 +15,7 @@ namespace Suinet.Rpc.Types
     /// <summary>
     /// Return events emitted in a specified Move module
     /// </summary>
-    public class SuiMoveModulEventQuery : ISuiEventQuery
+    public class SuiMoveModuleEventQuery : ISuiEventQuery
     {
         public SuiMoveModule MoveModule { get; set; }
 

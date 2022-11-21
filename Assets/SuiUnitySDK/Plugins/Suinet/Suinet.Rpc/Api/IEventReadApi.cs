@@ -14,6 +14,6 @@ namespace Suinet.Rpc.Api
         /// <param name="limit">maximum number of items per page</param>
         /// <param name="query result ordering"></param>
         /// <returns></returns>
-        Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, object cursor, ulong limit, bool descendingOrder = false);
+        Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, SuiEventId cursor, ulong limit, bool descendingOrder = false);
     }
 }

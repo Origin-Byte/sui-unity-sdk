@@ -2,7 +2,7 @@
 {
     public class SuiEventEnvelope
     {
-        public object Event { get; set; }
+        public SuiEvent Event { get; set; }
 
         public ulong Timestamp { get; set; }
 
