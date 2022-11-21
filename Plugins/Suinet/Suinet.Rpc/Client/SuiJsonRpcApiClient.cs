@@ -121,7 +121,7 @@ namespace Suinet.Rpc
             return await SendRpcRequestAsync<SuiTransactionBytes>("sui_pay", ArgumentBuilder.BuildArguments(signer, inputCoins, recipients, amounts, gas, gasBudget));
         }
 
-        public async Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, object cursor, ulong limit, bool descendingOrder = false)
+        public async Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, SuiEventId cursor, ulong limit, bool descendingOrder = false)
         {
             return await SendRpcRequestAsync<SuiPage_for_EventEnvelope_and_EventID>("sui_getEvents", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
         }
