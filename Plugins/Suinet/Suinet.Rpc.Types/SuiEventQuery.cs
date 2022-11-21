@@ -5,13 +5,11 @@ namespace Suinet.Rpc.Types
 {
     public interface ISuiEventQuery
     {
-        SuiEventQueryType QueryType { get; }
     }
 
     [JsonConverter(typeof(SuiAllEventQueryConverter))]
     public class SuiAllEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.All;
     }
 
     /// <summary>
@@ -19,14 +17,14 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiMoveModulEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.MoveModule;
-
         public SuiMoveModule MoveModule { get; set; }
 
         public class SuiMoveModule
         {
+            [JsonProperty("module")]
             public string Module { get; set; }
 
+            [JsonProperty("package")]
             public string Package { get; set; }
         }
     }
@@ -36,8 +34,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiMoveEventEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.MoveEvent;
-
         public string MoveEvent { get; set; }
     }
 
@@ -46,8 +42,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiEventTypeEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.EventType;
-
         public SuiEventType MoveEvent { get; set; }
     }
 
@@ -56,8 +50,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiSenderEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.Sender;
-
         public string Sender { get; set; }
     }
 
@@ -66,8 +58,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiRecipientEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.Recipient;
-
         public string Recipient { get; set; }
     }
 
@@ -76,8 +66,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiObjectEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.Object;
-
         public string Object { get; set; }
     }
 
@@ -86,8 +74,6 @@ namespace Suinet.Rpc.Types
     /// </summary>
     public class SuiTimeRangeEventQuery : ISuiEventQuery
     {
-        public SuiEventQueryType QueryType => SuiEventQueryType.TimeRange;
-
         public SuiTimeRange TimeRange { get; set; }
 
         public class SuiTimeRange
@@ -102,20 +88,7 @@ namespace Suinet.Rpc.Types
             /// left endpoint of time interval, inclusive
             /// </summary>
             [JsonProperty("start_time")]
-            public ulong StarTime { get; set; }
+            public ulong StartTime { get; set; }
         }
-    }
-
-    public enum SuiEventQueryType
-    {
-        All,
-        Transaction,
-        MoveModule,
-        MoveEvent,
-        EventType,
-        Sender,
-        Recipient,
-        Object,
-        TimeRange
     }
 }

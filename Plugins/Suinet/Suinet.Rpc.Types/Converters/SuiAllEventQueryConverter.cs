@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Suinet.Rpc.Types.Converters
 {
@@ -16,7 +14,7 @@ namespace Suinet.Rpc.Types.Converters
 
         public override void WriteJson(JsonWriter writer, SuiAllEventQuery value, JsonSerializer serializer)
         {
-            writer.WriteValue(SuiEventQueryType.All.ToString());
+            writer.WriteValue("All");
         }
     }
 }
