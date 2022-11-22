@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Suinet.NftProtocol.Nft;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class UIImageNftLoader : MonoBehaviour
@@ -16,28 +15,28 @@ public class UIImageNftLoader : MonoBehaviour
 
         if (getObjectRpcResult.IsSuccess)
         {
-            await LoadNFT(getObjectRpcResult.Result.Data.Fields.Url);
+            await LoadNFTAsync(getObjectRpcResult.Result.Data.Fields.Url);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
     
-    private async Task LoadNFT(string url)
+    public async Task LoadNFTAsync(string url)
     {
-        using var req = new UnityWebRequest(url, "GET");
-
-        req.downloadHandler = new DownloadHandlerBuffer();
-        req.SendWebRequest();
-        while (!req.isDone)
-        {
-            await Task.Yield();
-        }
+        var req = await UnityWebRequests.GetAsync(url);
         var data = req.downloadHandler.data;
-
+        SetSpriteFromData(data);
+    }
+    
+    public void LoadNFT(string url)
+    {
+        UnityWebRequests.Get(url, req =>
+        {
+            var data = req.downloadHandler.data;
+            SetSpriteFromData(data);
+        });
+    }
+    
+    private void SetSpriteFromData(byte[] data)
+    {
         var tex = new Texture2D((int)NFTImage.preferredWidth, (int)NFTImage.preferredHeight);
         tex.LoadImage(data);
         var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));

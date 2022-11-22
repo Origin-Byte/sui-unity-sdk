@@ -224,6 +224,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
+--- !u!23 &58956174 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8124817349403666084, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+  m_PrefabInstance: {fileID: 943360525}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &375730321
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,10 +577,84 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &943360525
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8124817349403666086, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_Name
+      value: TextureNftLoader (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: NftObjectId
+      value: 0x84a303bb640adad87cfdcc2e7d7664fd2cc6647c
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: TargetRenderer
+      value: 
+      objectReference: {fileID: 58956174}
+    - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: TargetTextureName
+      value: _MainTex
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.687
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.438
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.18683475
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.17514749
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.03387335
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.9660583
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 7.521
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -19.182
+      objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666090, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -159.381
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
 --- !u!224 &1060195929 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6722239002838358653, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
   m_PrefabInstance: {fileID: 6722239003254690852}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1773272770 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8124817349403666084, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+  m_PrefabInstance: {fileID: 8124817350125437538}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &2103195782 stripped
 RectTransform:
@@ -698,6 +777,10 @@ PrefabInstance:
       propertyPath: NftObjectId
       value: 0x2aed810115adc9c1225c5229d1d7a012cabb3b28
       objectReference: {fileID: 0}
+    - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
+      propertyPath: TargetRenderer
+      value: 
+      objectReference: {fileID: 1773272770}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: TargetTextureName
       value: _MainTex
