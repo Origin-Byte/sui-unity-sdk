@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 using Suinet.NftProtocol.Nft;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class TextureNftLoader : MonoBehaviour
 {
     public string NftObjectId;
     public string TargetTextureName;
-    public Material TargetMaterial;
+    public Renderer TargetRenderer;
 
     void Awake()
     {
@@ -21,24 +20,30 @@ public class TextureNftLoader : MonoBehaviour
 
         if (getObjectRpcResult.IsSuccess)
         {
-            await LoadNFT(getObjectRpcResult.Result.Data.Fields.Url);
+            LoadNFT(getObjectRpcResult.Result.Data.Fields.Url);
         }
     }
 
-    private async Task LoadNFT(string url)
+    public async Task LoadNFTAsync(string url)
     {
-        using var req = new UnityWebRequest(url, "GET");
-
-        req.downloadHandler = new DownloadHandlerBuffer();
-        req.SendWebRequest();
-        while (!req.isDone)
-        {
-            await Task.Yield();
-        }
+        var req = await UnityWebRequests.GetAsync(url);
         var data = req.downloadHandler.data;
+        SetTextureFromData(data);
+    }
 
+    public void LoadNFT(string url)
+    {
+        StartCoroutine(UnityWebRequests.Get(url, onSuccess: req =>
+        {
+            var data = req.downloadHandler.data;
+            SetTextureFromData(data);
+        }));
+    }
+
+    private void SetTextureFromData(byte[] data)
+    {
         var tex = new Texture2D(256, 256);
         tex.LoadImage(data);
-        TargetMaterial.SetTexture(TargetTextureName, tex);
+        TargetRenderer.material.SetTexture(TargetTextureName, tex);
     }
 }
