@@ -1,15 +1,9 @@
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityWebSocket;
 using System;
 
-public enum SubscriptionType { NONE, accountSubscribe, accountUnsubscribe };
 public class WebSocketService
 {
-    public SubscriptionType _subscriptionTypeReference;
-
-    private SubscriptionModel _subscriptionModel;
-    private UnsubsciptionModel _unsubscriptionModel;
     private IWebSocket _socket;
 
     public IWebSocket Socket => _socket;
@@ -37,30 +31,19 @@ public class WebSocketService
 
         _socket.CloseAsync();
     }
-
-    /// <summary>
-    /// Subscribes wallet to websocket events
-    /// </summary>
-    /// <param name="pubKey">Pub key of the wallet which want to subscribe to websocket wvents</param>
-    public void SubscribeToWalletAccountEvents(string pubKey)
+    
+    public void SubscribeToEvents(string eventFilterString)
     {
         if (_socket is null) return;
 
-        _subscriptionTypeReference = SubscriptionType.accountSubscribe;
-        SendParameter(ReturnSubscribeParameter(pubKey));
+        SendParameter(ReturnSubscribeParameter(eventFilterString));
     }
-
-    /// <summary>
-    /// Unsubscribes wallet from websocket events
-    /// </summary>
-    public void UnSubscribeToWalletAccountEvents()
+    
+    public void UnSubscribeToEvents(ulong streamId)
     {
         if (_socket is null) return;
-        if (_subscriptionModel is null) return;
 
-        _subscriptionTypeReference = SubscriptionType.accountUnsubscribe;
-        SendParameter(ReturnUnsubscribeParameter());
-        _subscriptionModel = null;
+        SendParameter(ReturnUnsubscribeParameter(streamId));
     }
 
     /// <summary>
@@ -90,9 +73,7 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnClose(object sender, CloseEventArgs e)
     {
-        _subscriptionModel = null;
         _socket = null;
-        _subscriptionTypeReference = SubscriptionType.NONE;
         MainThreadDispatcher.Instance().Enqueue(() => { WebSocketActions.CloseWebSocketConnectionAction?.Invoke(); });
     }
 
@@ -104,30 +85,14 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnMessage(object sender, MessageEventArgs e)
     {
-        switch (_subscriptionTypeReference)
+        try
         {
-            case SubscriptionType.accountSubscribe:
-                try
-                {
-                    _subscriptionModel = JsonConvert.DeserializeObject<SubscriptionModel>(e.Data);
-                    MainThreadDispatcher.Instance().Enqueue(() => { WebSocketActions.WebSocketAccountSubscriptionAction.Invoke(true); });
-                }
-                catch (Exception ex)
-                {
-                    Debug.Log(ex);
-                }
-                break;
-            case SubscriptionType.accountUnsubscribe:
-                try
-                {
-                    _unsubscriptionModel = JsonConvert.DeserializeObject<UnsubsciptionModel>(e.Data);
-                    MainThreadDispatcher.Instance().Enqueue(() => { WebSocketActions.WebSocketAccountSubscriptionAction.Invoke(false); });
-                }
-                catch (Exception ex)
-                {
-                    Debug.Log(ex);
-                }
-                break;
+            //var data = JsonConvert.DeserializeObject<SubscriptionModel>(e.Data);
+            MainThreadDispatcher.Instance().Enqueue(() => { WebSocketActions.WebSocketEventAction.Invoke(e.Data); });
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
         }
     }
 
@@ -143,41 +108,26 @@ public class WebSocketService
     }
 
     /// <summary>
-    /// Returns JSONRPC message for account subscription
+    /// Returns JSONRPC message for event subscription
     /// </summary>
-    /// <param name="pubkey">Pub key of account with which we want to subscribe to the websocket</param>
     /// <returns></returns>
-    private string ReturnSubscribeParameter(string pubkey)
+    private string ReturnSubscribeParameter(string eventFilterString)
     {
         if (_socket is null) return null;
 
-        string parameterToSend = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"accountSubscribe\",\"params\":[\"" + pubkey + "\",{\"encoding\":\"jsonParsed\"}]}";
+        string parameterToSend = "{\"jsonrpc\":\"2.0\", \"id\": 1, \"method\": \"sui_subscribeEvent\", \"params\": [" + eventFilterString + "]}";
+        Debug.Log(parameterToSend);
         return parameterToSend;
     }
 
     /// <summary>
-    /// Returns JSONRPC message for account unsubscription
+    /// Returns JSONRPC message for event unsubscription
     /// </summary>
-    /// <param name="pubkey">Pub key of account with which we want to unsubscribe from the websocket</param>
-    /// <returns></returns>
-    private string ReturnUnsubscribeParameter()
+    private string ReturnUnsubscribeParameter(ulong streamId)
     {
         if (_socket is null) return null;
 
-        string unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"accountUnsubscribe\", \"params\":[" + _subscriptionModel.result + "]}";
+        string unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"sui_unsubscribeEvent\", \"params\":[" + streamId + "]}";
         return unsubscribeParameter;
     }
-}
-
-public class SubscriptionModel
-{
-    public string jsonrpc { get; set; }
-    public int result { get; set; }
-    public int id { get; set; }
-}
-public class UnsubsciptionModel
-{
-    public string jsonrpc { get; set; }
-    public bool result { get; set; }
-    public int id { get; set; }
 }
