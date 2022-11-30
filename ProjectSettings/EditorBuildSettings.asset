@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/SuiUnitySDK/Samples/Scenes/SDKSample.unity
     guid: 232afea96ca427149ab6a349e2511a8c
+  - enabled: 1
+    path: Assets/SuiUnitySDK/Samples/Scenes/NftLoaders.unity
+    guid: 2bc7091f1e4b029458b33e24f8e9d0d2
   m_configObjects: {}
