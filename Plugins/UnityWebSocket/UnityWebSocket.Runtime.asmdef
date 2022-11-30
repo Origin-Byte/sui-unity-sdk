@@ -1,0 +1,16 @@
+{
+    "name": "UnityWebSocket.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:598dd202aecde604faf4e70165071c1b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
