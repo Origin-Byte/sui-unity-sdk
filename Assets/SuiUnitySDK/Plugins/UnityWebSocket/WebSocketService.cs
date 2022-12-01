@@ -28,9 +28,7 @@ public class WebSocketService
     /// </summary>
     public void CloseConnection()
     {
-        if (_socket == null) return;
-
-        _socket.CloseAsync();
+        _socket?.CloseAsync();
     }
     
     public void SubscribeToEvents(string eventFilterString)
@@ -54,8 +52,7 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnError(object sender, ErrorEventArgs e)
     {
-        Debug.LogError("OnError " + JsonConvert.SerializeObject(e));
-        //todo
+        Debug.LogError("OnError: " + JsonConvert.SerializeObject(e));
     }
 
     /// <summary>
@@ -65,8 +62,6 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnOpen(object sender, OpenEventArgs e)
     {
-        Debug.Log("OnOpen " + JsonConvert.SerializeObject(e));
-        //todo
     }
 
     /// <summary>
@@ -118,8 +113,7 @@ public class WebSocketService
     {
         if (_socket is null) return null;
 
-        string parameterToSend = "{\"jsonrpc\":\"2.0\", \"id\": 1, \"method\": \"sui_subscribeEvent\", \"params\": [" + eventFilterString + "]}";
-        Debug.Log(parameterToSend);
+        var parameterToSend = "{\"jsonrpc\":\"2.0\", \"id\": 1, \"method\": \"sui_subscribeEvent\", \"params\": [" + eventFilterString + "]}";
         return parameterToSend;
     }
 
@@ -130,7 +124,8 @@ public class WebSocketService
     {
         if (_socket is null) return null;
 
-        string unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"sui_unsubscribeEvent\", \"params\":[" + streamId + "]}";
+        var unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"sui_unsubscribeEvent\", \"params\":[" + streamId + "]}";
         return unsubscribeParameter;
     }
 }
+
