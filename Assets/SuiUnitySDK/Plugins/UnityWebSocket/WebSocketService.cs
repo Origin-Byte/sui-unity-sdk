@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityWebSocket;
 using System;
+using Newtonsoft.Json;
 
 public class WebSocketService
 {
@@ -53,6 +54,7 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnError(object sender, ErrorEventArgs e)
     {
+        Debug.LogError("OnError " + JsonConvert.SerializeObject(e));
         //todo
     }
 
@@ -63,6 +65,7 @@ public class WebSocketService
     /// <param name="e">Received message arguments</param>
     private void OnOpen(object sender, OpenEventArgs e)
     {
+        Debug.Log("OnOpen " + JsonConvert.SerializeObject(e));
         //todo
     }
 
