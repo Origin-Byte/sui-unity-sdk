@@ -21,6 +21,13 @@ public class SuiEventStream : MonoBehaviour
             webSocketService.StartConnection(WebsocketEndpoint);
             WebSocketActions.WebSocketEventAction += WebSocketEventAction;
             WebSocketActions.CloseWebSocketConnectionAction += CloseWebSocketConnectionAction;
+        }
+    }
+
+    public virtual void Start()
+    {
+        if (autoConnectOnStartup)
+        {
             webSocketService.SubscribeToEvents("{\"MoveEventType\":\"0x2::devnet_nft::MintNFTEvent\"}");
         }
     }
