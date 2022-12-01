@@ -1,24 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SuiEventStream : MonoBehaviour
 {
-    [HideInInspector]
-    public WebSocketService webSocketService;
+    private WebSocketService _webSocketService;
 
     public bool autoConnectOnStartup = true;
 
-    //private const string WebsocketEndpoint = "wss://pubsub.devnet.sui.io:443";
-    private const string WebsocketEndpoint = "ws://pubsub.devnet.sui.io:80";
-    
+    private const string WebsocketEndpoint = "wss://pubsub.devnet.sui.io:443";
+
     public virtual void Awake()
     {
-        webSocketService = new WebSocketService();
+        _webSocketService = new WebSocketService();
 
         if (autoConnectOnStartup)
         {
-            webSocketService.StartConnection(WebsocketEndpoint);
+            _webSocketService.StartConnection(WebsocketEndpoint);
             WebSocketActions.WebSocketEventAction += WebSocketEventAction;
             WebSocketActions.CloseWebSocketConnectionAction += CloseWebSocketConnectionAction;
         }
@@ -28,7 +24,7 @@ public class SuiEventStream : MonoBehaviour
     {
         if (autoConnectOnStartup)
         {
-            webSocketService.SubscribeToEvents("{\"MoveEventType\":\"0x2::devnet_nft::MintNFTEvent\"}");
+            _webSocketService.SubscribeToEvents("{\"MoveEventType\":\"0x2::devnet_nft::MintNFTEvent\"}");
         }
     }
 
@@ -45,6 +41,6 @@ public class SuiEventStream : MonoBehaviour
 
     public void OnDestroy()
     {
-        webSocketService.CloseConnection();
+        _webSocketService.CloseConnection();
     }
 }
