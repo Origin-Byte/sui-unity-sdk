@@ -23,7 +23,7 @@ namespace Suinet.NftProtocol.Nft
 
     public class UniqueNftDataFields
     {
-        public Dictionary<string, object> Attributes { get; set; }
+        public UniqueNftAttributes Attributes { get; set; }
 
         [JsonProperty("collection_id")]
         public string CollectionId { get; set; }
@@ -35,5 +35,29 @@ namespace Suinet.NftProtocol.Nft
         public string Name { get; set; }
 
         public string Url { get; set; }
+    }
+
+    public class UniqueNftAttributes
+    {
+        public string Type { get; set; }
+
+        public UniqueNftAttributeFields Fields { get; set; }
+    }
+
+    public class UniqueNftAttributeFields
+    {
+        public string[] Keys { get; set; }
+
+        public string[] Values { get; set; }
+
+        public IDictionary<string, string> ToDictionary()
+        {
+            var result = new Dictionary<string, string>();
+            for(int i = 0; i < Keys.Length; i++)
+            {
+                result.Add(Keys[i], Values[i]);
+            }
+            return result;
+        }
     }
 }
