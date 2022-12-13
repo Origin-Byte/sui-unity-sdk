@@ -6,7 +6,7 @@ public class SuiEventStream : MonoBehaviour
 
     public bool autoConnectOnStartup = true;
 
-    private const string WebsocketEndpoint = "wss://pubsub.devnet.sui.io:443";
+    private const string WebsocketEndpoint = "wss://fullnode.devnet.sui.io:443";
 
     public virtual void Awake()
     {
