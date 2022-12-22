@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using UnityEngine;
 using Unity.VectorGraphics;
 
@@ -40,7 +43,31 @@ public class SpriteSVGNftLoader : MonoBehaviour {
     private async Task<SVGParser.SceneInfo> LoadSVGAsync(string url)
     {
         var svgText = await DownladSVGTextAsync(url);
-        using (var reader = new StringReader(svgText))
+        
+        var doc = XDocument.Parse(svgText);
+        var svgElement = doc.Elements().First();
+        var style = "";
+        var styleElements = new List<XElement>();
+        foreach (var element in svgElement.Elements())
+        {
+            if (element.Name == "{http://www.w3.org/2000/svg}style")
+            {
+                style += element.Value;
+                style += Environment.NewLine;
+                
+                styleElements.Add(element);
+            }
+        }
+
+        var firstStyleElement = styleElements.First();
+        firstStyleElement.Value = style;
+        styleElements.Remove(firstStyleElement);
+        foreach (var se in styleElements)
+        {
+            se.Remove();
+        }
+        
+        using (var reader = new StringReader(doc.ToString()))
         {
             return SVGParser.ImportSVG(reader);
         }
