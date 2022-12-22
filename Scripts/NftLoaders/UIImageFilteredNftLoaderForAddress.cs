@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
 {
     public string Address;
-    public Image[] Images;
+    public Image ImagePrefab;
     public string FilterAttributeName;
     public string FilterAttributeValue;
     
@@ -27,18 +27,9 @@ public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
                     continue;;
                 }
                 
-                if (Images.Length > i)
-                {
-                    await LoadNFTsAsync(nftData.Data.Fields.Url, Images[i]);
-                }
-                
-                i++;
-            }
-
-            while (i < Images.Length)
-            {
-                Images[i].gameObject.SetActive(false);
-                i++;
+                var imageGo = Instantiate(ImagePrefab, transform);
+                await LoadNFTsAsync(nftData.Data.Fields.Url, imageGo);
+                imageGo.gameObject.SetActive(true);
             }
         }
     }
