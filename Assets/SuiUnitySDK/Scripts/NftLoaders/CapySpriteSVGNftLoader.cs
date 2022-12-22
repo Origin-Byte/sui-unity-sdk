@@ -1,14 +1,17 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Xml.Linq;
 using Unity.VectorGraphics;
 
 public class CapySpriteSVGNftLoader : MonoBehaviour {
     
     public string NftObjectId;
     public SpriteSVGNftLoader AccessoryPrefab;
+    public bool LoadAccessories = false;
     
     private async void Start()
     {
@@ -21,13 +24,17 @@ public class CapySpriteSVGNftLoader : MonoBehaviour {
             var sceneInfo = await LoadSVGAsync(url);
             DrawSVG(sceneInfo);
 
-            foreach (var accessoryDynamicObjectField in accessoryObjectsRpcResult.Result)
+            if (LoadAccessories)
             {
-                var dynamicObjectFieldResult = await SuiApi.Client.GetObjectAsync(accessoryDynamicObjectField.ObjectId);
-                var dynamicObjectFieldId = dynamicObjectFieldResult.Result.Object.Data.Fields["value"] as string;
-                var accessoryLoader = Instantiate(AccessoryPrefab, transform);
-                accessoryLoader.NftObjectId = dynamicObjectFieldId;
-                accessoryLoader.gameObject.SetActive(true);
+                foreach (var accessoryDynamicObjectField in accessoryObjectsRpcResult.Result)
+                {
+                    var dynamicObjectFieldResult =
+                        await SuiApi.Client.GetObjectAsync(accessoryDynamicObjectField.ObjectId);
+                    var dynamicObjectFieldId = dynamicObjectFieldResult.Result.Object.Data.Fields["value"] as string;
+                    var accessoryLoader = Instantiate(AccessoryPrefab, transform);
+                    accessoryLoader.NftObjectId = dynamicObjectFieldId;
+                    accessoryLoader.gameObject.SetActive(true);
+                }
             }
         }
     }
@@ -52,7 +59,32 @@ public class CapySpriteSVGNftLoader : MonoBehaviour {
     private async Task<SVGParser.SceneInfo> LoadSVGAsync(string url)
     {
         var svgText = await DownladSVGTextAsync(url);
-        using (var reader = new StringReader(svgText))
+        
+        // xml cleanup
+        var doc = XDocument.Parse(svgText);
+        var svgElement = doc.Elements().First();
+        var style = "";
+        var styleElements = new List<XElement>();
+        foreach (var element in svgElement.Elements())
+        {
+            if (element.Name == "{http://www.w3.org/2000/svg}style")
+            {
+                style += element.Value;
+                style += Environment.NewLine;
+                
+                styleElements.Add(element);
+            }
+        }
+
+        var firstStyleElement = styleElements.First();
+        firstStyleElement.Value = style;
+        styleElements.Remove(firstStyleElement);
+        foreach (var se in styleElements)
+        {
+            se.Remove();
+        }
+
+        using (var reader = new StringReader(doc.ToString()))
         {
             return SVGParser.ImportSVG(reader);
         }
