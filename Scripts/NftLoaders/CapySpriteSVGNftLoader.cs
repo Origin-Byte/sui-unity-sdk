@@ -5,18 +5,30 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Unity.VectorGraphics;
 
-public class SpriteSVGNftLoader : MonoBehaviour {
+public class CapySpriteSVGNftLoader : MonoBehaviour {
+    
     public string NftObjectId;
+    public SpriteSVGNftLoader AccessoryPrefab;
     
     private async void Start()
     {
-        var objectRpcResult = await SuiApi.Client.GetObjectAsync(NftObjectId);
+        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync(NftObjectId);
+        var accessoryObjectsRpcResult = await SuiApi.Client.GetObjectsOwnedByObjectAsync(NftObjectId);
         
-        if (objectRpcResult.IsSuccess)
+        if (capyObjectRpcResult.IsSuccess)
         {
-            var url =  objectRpcResult.Result.Object.Data.Fields["url"] as string;
+            var url =  capyObjectRpcResult.Result.Object.Data.Fields["url"] as string;
             var sceneInfo = await LoadSVGAsync(url);
             DrawSVG(sceneInfo);
+
+            foreach (var accessoryDynamicObjectField in accessoryObjectsRpcResult.Result)
+            {
+                var dynamicObjectFieldResult = await SuiApi.Client.GetObjectAsync(accessoryDynamicObjectField.ObjectId);
+                var dynamicObjectFieldId = dynamicObjectFieldResult.Result.Object.Data.Fields["value"] as string;
+                var accessoryLoader = Instantiate(AccessoryPrefab, transform);
+                accessoryLoader.NftObjectId = dynamicObjectFieldId;
+                accessoryLoader.gameObject.SetActive(true);
+            }
         }
     }
  
@@ -51,4 +63,5 @@ public class SpriteSVGNftLoader : MonoBehaviour {
         var req = await UnityWebRequests.GetAsync(url);
         return req.downloadHandler.text;
     }
+
 }
