@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIImageNftLoaderForAddress : MonoBehaviour
 {
     public string Address;
-    public Image[] Images;
+    public Image ImagePrefab;
     
     async void Start()
     {
@@ -14,21 +14,11 @@ public class UIImageNftLoaderForAddress : MonoBehaviour
 
         if (getObjectRpcResult.IsSuccess)
         {
-            int i = 0;
             foreach (var nftData in getObjectRpcResult.Result)
             {
-                if (Images.Length > i)
-                {
-                    await LoadNFTsAsync(nftData.Data.Fields.Url, Images[i]);
-                }
-                
-                i++;
-            }
-
-            while (i < Images.Length)
-            {
-                Images[i].gameObject.SetActive(false);
-                i++;
+                var imageGo = Instantiate(ImagePrefab, transform);
+                await LoadNFTsAsync(nftData.Data.Fields.Url, imageGo);
+                imageGo.gameObject.SetActive(true);
             }
         }
     }
