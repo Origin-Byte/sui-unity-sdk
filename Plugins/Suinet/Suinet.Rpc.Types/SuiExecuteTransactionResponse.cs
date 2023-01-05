@@ -8,19 +8,6 @@ namespace Suinet.Rpc.Types
     {
         public SuiExecuteTransactionRequestType ExecuteTransactionRequestType { get; set; }
 
-        /// <summary>
-        /// SuiExecuteTransactionRequestType.ImmediateReturn
-        /// </summary>
-        public SuiImmediateReturn ImmediateReturn { get; set; }
-
-        /// <summary>
-        /// SuiExecuteTransactionRequestType.WaitForTxCert
-        /// </summary>
-        public SuiTxCert TxCert { get; set; }
-
-        /// <summary>
-        /// SuiExecuteTransactionRequestType.WaitForEffectsCert
-        /// </summary>
         public SuiEffectsCert EffectsCert { get; set; }
 
         public class SuiImmediateReturn
@@ -39,6 +26,9 @@ namespace Suinet.Rpc.Types
             public SuiCertifiedTransaction Certificate { get; set; }
 
             public SuiCertifiedTransactionEffects Effects { get; set; }
+
+            [JsonProperty("confirmed_local_execution")]
+            public bool ConfirmedLocalExecution { get; set; }
         }
     }
 }
