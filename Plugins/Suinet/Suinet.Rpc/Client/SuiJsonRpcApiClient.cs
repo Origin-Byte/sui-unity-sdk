@@ -83,12 +83,12 @@ namespace Suinet.Rpc
 
         public async Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(string signer, string packageObjectId, string module, string function, IEnumerable<string> typeArguments, IEnumerable<object> arguments, string gas, ulong gasBudget)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_moveCall", ArgumentBuilder.BuildArguments(signer, packageObjectId, module, function, typeArguments, arguments, gas, gasBudget));
+            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_moveCall", ArgumentBuilder.BuildArguments(signer, packageObjectId, module, function, typeArguments, SuiJsonSanitizer.SanitizeArguments(arguments), gas, gasBudget));
         }
 
         public async Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(MoveCallTransaction transactionParams)
         {
-            return await MoveCallAsync(transactionParams.Signer, transactionParams.PackageObjectId, transactionParams.Module, transactionParams.Function, transactionParams.TypeArguments, transactionParams.Arguments, transactionParams.Gas, transactionParams.GasBudget);
+            return await MoveCallAsync(transactionParams.Signer, transactionParams.PackageObjectId, transactionParams.Module, transactionParams.Function, transactionParams.TypeArguments, SuiJsonSanitizer.SanitizeArguments(transactionParams.Arguments), transactionParams.Gas, transactionParams.GasBudget);
         }
 
         public async Task<RpcResult<SuiTransactionBytes>> TransferObjectAsync(string signer, string objectId, string gas, ulong gasBudget, string recipient)
