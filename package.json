@@ -2,7 +2,7 @@
     "name": "com.originbyte.suiunitysdk",
     "displayName": "SuiUnitySDK",
     "author": { "name": "Origin Byte", "url": "https://github.com/Origin-Byte" },
-    "version": "0.1.20",
+    "version": "0.2.0",
     "unity": "2021.3",
     "description": "Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.",
     "keywords": [ "web3", "blockchain", "gaming", "SuiUnitySDK" ],
@@ -11,12 +11,13 @@
       "url": "https://github.com/Origin-Byte/sui-unity-sdk/issues"
     },
     "dependencies": {
-      "com.unity.nuget.newtonsoft-json": "3.0.2"
+      "com.unity.nuget.newtonsoft-json": "3.0.2",
+	  "com.unity.vectorgraphics": "2.0.0-preview.20"
     },
     "samples": [
       {
         "displayName": "SDK Samples",
-        "description": "SDK Sample scene",
+        "description": "SDK Sample scenes",
         "path": "Samples~"
       }
     ],
