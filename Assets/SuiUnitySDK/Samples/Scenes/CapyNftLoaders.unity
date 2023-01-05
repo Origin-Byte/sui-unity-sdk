@@ -317,7 +317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: NftObjectId
-      value: 0x09013dfa4fc275654fe3530b5cbe9274b4381fc0
+      value: c5e2a5e7131b4ab576071301e08e2cfadf685921
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: AccessoryPrefab
@@ -673,7 +673,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: NftObjectId
-      value: 0x09013dfa4fc275654fe3530b5cbe9274b4381fc0
+      value: c5e2a5e7131b4ab576071301e08e2cfadf685921
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: AccessoryPrefab
@@ -758,7 +758,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491348119430231939, guid: 0fd7b46e47fc1f74b850555fe8417ef6, type: 3}
       propertyPath: NftObjectId
-      value: 0x61862209d4934d2d4fa598fdc4956272d068db8b
+      value: c5e2a5e7131b4ab576071301e08e2cfadf685921
       objectReference: {fileID: 0}
     - target: {fileID: 5491348119430231941, guid: 0fd7b46e47fc1f74b850555fe8417ef6, type: 3}
       propertyPath: m_Name
@@ -943,7 +943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: NftObjectId
-      value: 0x09013dfa4fc275654fe3530b5cbe9274b4381fc0
+      value: c5e2a5e7131b4ab576071301e08e2cfadf685921
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: AccessoryPrefab
@@ -1040,7 +1040,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: NftObjectId
-      value: 0x09013dfa4fc275654fe3530b5cbe9274b4381fc0
+      value: c5e2a5e7131b4ab576071301e08e2cfadf685921
       objectReference: {fileID: 0}
     - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: AccessoryPrefab
