@@ -15,9 +15,12 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
     - Sign transactions
     - Store key pair in PlayerPrefs
 - Interact with Origin Byte Nft Protocol https://github.com/Origin-Byte/nft-protocol
+- Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 0.12.2 devnet
+- Samples are using Sui 0.20.0 devnet
+
+![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 
 # Getting Started
 
@@ -187,10 +190,19 @@ Change the Ids and Address to yours.
 ![UI Image Nft loader](/imgs/ui_image_nft_loader.png "UI Image Nft loader")
 
 
-![UI Image Nft loader  for address](/imgs/ui_image_nft_loader_for_address.png "UI Image Nft loader for address")
+![UI Image Nft loader for address](/imgs/ui_image_nft_loader_for_address.png "UI Image Nft loader for address")
 
 
-![UI Image Nft loader  for address](/imgs/texture_nft_loader.png "Texture nft loader")
+![UI Image Nft loader for address](/imgs/texture_nft_loader.png "Texture nft loader")
+
+## Capy Loader
+
+You can also import Capys! This uses the experimental Vector Graphics package to render the SVG images as PNGs. Check out the CapyNftLoaders scene to see it in action!
+
+![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
+![Capy Image Nft loader configuration](/imgs/capy_loader_2.webp "Capy Image Nft loader configuration")
+
+The srcipt can load the whole hierarchy of accessories for the Capy, or just the main Capy object.
 
 # Dependencies
 
