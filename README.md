@@ -7,6 +7,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
     - Read API
     - Event Read API
     - Transaction Builder Api
+    - Event streaming support
     - Helper methods to build and execute transactions
     - Typed move calls
 - Wallet Management 
