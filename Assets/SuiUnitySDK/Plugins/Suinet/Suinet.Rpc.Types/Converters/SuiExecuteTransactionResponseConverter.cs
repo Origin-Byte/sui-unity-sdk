@@ -11,15 +11,7 @@ namespace Suinet.Rpc.Types.Converters
             serializer.Populate(reader, response);
 
             var suiExecuteTransactionRequestType = SuiExecuteTransactionRequestType.None;
-            if (response.ImmediateReturn != null)
-            {
-                suiExecuteTransactionRequestType = SuiExecuteTransactionRequestType.ImmediateReturn;
-            }
-            else if (response.TxCert != null)
-            {
-                suiExecuteTransactionRequestType = SuiExecuteTransactionRequestType.WaitForTxCert;
-            } 
-            else if (response.EffectsCert != null)
+            if (response.EffectsCert != null)
             {
                 suiExecuteTransactionRequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert;
             }

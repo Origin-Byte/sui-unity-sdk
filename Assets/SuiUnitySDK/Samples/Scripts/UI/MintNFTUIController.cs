@@ -44,7 +44,7 @@ public class MintNFTUIController : MonoBehaviour
                 var signature = keyPair.Sign(rpcResult.Result.TxBytes);
                 var pkBase64 = keyPair.PublicKeyBase64;
 
-                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForTxCert);
+                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForEffectsCert);
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);
