@@ -215,6 +215,10 @@ Nuget packages are in ./Assets/SuiUnitySDK/Plugins/NuGetPackages.
 - `Chaos.NaCl.Standard`
 - `Portable.BouncyCastle`
 - `Newtonsoft.Json` (included in recent Unity versions by default)
+- `com.unity.vectorgraphics`
+    - if you got compilation errors, you need to add this entry to your .Packages/manifest.json file's dependencies section:
+
+    `"com.unity.vectorgraphics": "2.0.0-preview.20"`
 
 ## Samples dependencies
 
