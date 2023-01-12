@@ -1,12 +1,12 @@
-﻿using Suinet.Rpc;
-using Suinet.Rpc.Types;
+﻿using Suinet.Rpc.Types;
+using Suinet.Rpc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Suinet.NftProtocol.TransactionBuilders
 {
-    public class MintNftToLaunchpad : IMoveCallTransactionBuilder
+    public class MintNft : IMoveCallTransactionBuilder
     {
         public string Signer { get; set; }
 
@@ -22,11 +22,9 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public Dictionary<string, object> Attributes { get; set; }
 
-        public string MintAuthority { get; set; }
+        public string MintCap { get; set; }
 
-        public string MarketId { get; set; }
-
-        public ulong? TierIndex { get; set; }
+        public string Recipient { get; set; }
 
         public MoveCallTransaction BuildMoveCallTransaction(string gas, ulong gasBudget = 4000, SuiExecuteTransactionRequestType RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert)
         {
@@ -35,7 +33,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
                 Signer = Signer,
                 PackageObjectId = PackageObjectId,
                 Module = ModuleName,
-                Function = "mint_nft",
+                Function = "airdrop",
                 TypeArguments = Array.Empty<string>(),
                 Arguments = ArgumentBuilder.BuildArguments(
                     Name,
@@ -43,9 +41,8 @@ namespace Suinet.NftProtocol.TransactionBuilders
                     Url,
                     Attributes.Keys.ToArray(),
                     Attributes.Values.ToArray(),
-                    MintAuthority,
-                    TierIndex ?? 0,
-                    MarketId
+                    MintCap,
+                    Recipient
                     ),
                 Gas = gas,
                 GasBudget = gasBudget,
@@ -53,6 +50,6 @@ namespace Suinet.NftProtocol.TransactionBuilders
             };
         }
 
-    
+
     }
 }
