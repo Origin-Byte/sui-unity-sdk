@@ -68,3 +68,16 @@ UserSettings/EditorUserSettings.asset
 UserSettings/Layouts/default-2021.dwlt
 
 .idea/.idea.sui-unity-sdk/.idea/
+
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Wallet/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Wallet/bin/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Rpc/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Rpc/bin/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Rpc.Types/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Rpc.Types/bin/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.NftProtocol/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.NftProtocol/bin/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Faucet/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Faucet/bin/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Bip39/obj/
+Assets/SuiUnitySDK/Plugins/Suinet/Suinet.Bip39/bin/
