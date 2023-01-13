@@ -11,7 +11,7 @@ public class SpriteSVGNftLoader : MonoBehaviour {
         {
             var url =  objectRpcResult.Result.Object.Data.Fields["url"] as string;
             var sceneInfo = await SVGHelper.LoadSVGAsync(url);
-            SVGHelper.DrawSVGAsSprite(sceneInfo, gameObject.GetComponent<SpriteRenderer>());
+            gameObject.GetComponent<SpriteRenderer>().sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);
         }
     }
 }

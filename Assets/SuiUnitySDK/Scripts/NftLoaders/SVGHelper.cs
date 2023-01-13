@@ -9,7 +9,7 @@ using Unity.VectorGraphics;
 
 public static class SVGHelper
 {
-    public static void DrawSVGAsSprite(SVGParser.SceneInfo sceneInfo, SpriteRenderer spriteRenderer) {
+    public static Sprite ConvertSVGToSprite(SVGParser.SceneInfo sceneInfo) {
         // Dynamically import the SVG data, and tessellate the resulting vector scene.
         var tesselationOptions = new VectorUtils.TessellationOptions()
         {
@@ -21,8 +21,7 @@ public static class SVGHelper
         var geoms = VectorUtils.TessellateScene(sceneInfo.Scene, tesselationOptions);
  
         // Build a sprite with the tessellated geometry.
-        var sprite = VectorUtils.BuildSprite(geoms, 100.0f, VectorUtils.Alignment.SVGOrigin, Vector2.zero, 256, true);
-        spriteRenderer.sprite = sprite;
+        return VectorUtils.BuildSprite(geoms, 100.0f, VectorUtils.Alignment.SVGOrigin, Vector2.zero, 256, true);
     }
  
     public static async Task<SVGParser.SceneInfo> LoadSVGAsync(string url)
