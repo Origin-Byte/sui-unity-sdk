@@ -86,6 +86,13 @@ namespace Suinet.NftProtocol
                 nft.Name = domain?.DisplayName;
                 nft.Description = domain?.Description;
             }
+
+            var attributesDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<AttributesDomain>(bagObjectId);
+
+            if (attributesDomainResult != null && attributesDomainResult.IsSuccess)
+            {
+                nft.Attributes = attributesDomainResult.Result.FirstOrDefault()?.Attributes;
+            }
         }
     }
 }

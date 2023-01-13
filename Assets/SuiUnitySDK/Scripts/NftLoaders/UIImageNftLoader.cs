@@ -11,11 +11,11 @@ public class UIImageNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(NftObjectId);
+        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<ArtNft>(NftObjectId);
 
         if (getObjectRpcResult.IsSuccess)
         {
-            await LoadNFTAsync(getObjectRpcResult.Result.Data.Fields.Url);
+            await LoadNFTAsync(getObjectRpcResult.Result.Url);
         }
     }
     

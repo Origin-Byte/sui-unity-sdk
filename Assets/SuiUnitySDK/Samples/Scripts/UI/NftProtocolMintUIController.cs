@@ -51,49 +51,49 @@ public class NftProtocolMintUIController : MonoBehaviour
             
             var launchpadResult = await SuiApi.Client.GetObjectAsync<FixedPriceMarket>(launchpadId);
 
-            var buyNftTxBuilder = new BuyNftCertificate()
-            {
-                Signer = signer,
-                Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
-                LaunchpadId = launchpadId,
-                PackageObjectId = packageObjectId,
-                CollectionType = collectionType,
-                ModuleName = moduleName
-            };
-
-            var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
-            var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
-            var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
-            var nftId = buyCertificateRpcResult.Result.NftId;
-            
-            var claimNftTxBuilder = new ClaimNftCertificate()
-            {
-                Signer = signer,
-                LaunchpadId = launchpadId,
-                PackageObjectId = packageObjectId,
-                CollectionType = collectionType,
-                ModuleName = moduleName,
-                Recipient = signer,
-                CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
-                NftId = nftId,
-                NftType = "unique_nft::Unique"
-            };
-            
-            var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
-            
-            if (claimCertResult.IsSuccess)
-            {
-                var nftResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(nftId);
-                await LoadNFT(nftResult.Result.Data.Fields.Url);
-                NFTMintedText.gameObject.SetActive(true);
-                NFTMintedReadonlyInputField.gameObject.SetActive(true);
-
-                NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ nftId;
-            }
-            else
-            {
-                Debug.LogError("Something went wrong with the claiming: " + claimCertResult.ErrorMessage);
-            }
+            // var buyNftTxBuilder = new BuyNftCertificate()
+            // {
+            //     Signer = signer,
+            //     Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
+            //     LaunchpadId = launchpadId,
+            //     PackageObjectId = packageObjectId,
+            //     CollectionType = collectionType,
+            //     ModuleName = moduleName
+            // };
+            //
+            // var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
+            // var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
+            // var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
+            // var nftId = buyCertificateRpcResult.Result.NftId;
+            //
+            // var claimNftTxBuilder = new ClaimNftCertificate()
+            // {
+            //     Signer = signer,
+            //     LaunchpadId = launchpadId,
+            //     PackageObjectId = packageObjectId,
+            //     CollectionType = collectionType,
+            //     ModuleName = moduleName,
+            //     Recipient = signer,
+            //     CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
+            //     NftId = nftId,
+            //     NftType = "unique_nft::Unique"
+            // };
+            //
+            // var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
+            //
+            // if (claimCertResult.IsSuccess)
+            // {
+            //     var nftResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(nftId);
+            //     await LoadNFT(nftResult.Result.Data.Fields.Url);
+            //     NFTMintedText.gameObject.SetActive(true);
+            //     NFTMintedReadonlyInputField.gameObject.SetActive(true);
+            //
+            //     NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ nftId;
+            // }
+            // else
+            // {
+            //     Debug.LogError("Something went wrong with the claiming: " + claimCertResult.ErrorMessage);
+            // }
         });
     }
 

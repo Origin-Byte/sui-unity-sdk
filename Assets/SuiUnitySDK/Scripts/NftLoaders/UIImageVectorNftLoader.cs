@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Suinet.NftProtocol.Nft;
 using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,9 +13,9 @@ public class UIImageVectorNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(NftObjectId);
+        //var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<ArtNft>(NftObjectId);
 
-        if (getObjectRpcResult.IsSuccess)
+        //if (getObjectRpcResult.IsSuccess)
         {
             //await LoadNFTAsync(getObjectRpcResult.Result.Data.Fields.Url);
             initSVG();

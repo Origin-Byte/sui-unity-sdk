@@ -16,11 +16,11 @@ public class TextureNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(NftObjectId);
+        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<ArtNft>(NftObjectId);
 
         if (getObjectRpcResult.IsSuccess)
         {
-            LoadNFT(getObjectRpcResult.Result.Data.Fields.Url);
+            LoadNFT(getObjectRpcResult.Result.Url);
         }
     }
 
