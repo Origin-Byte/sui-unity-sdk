@@ -1,3 +1,4 @@
+using Suinet.Rpc.Types.MoveTypes;
 using UnityEngine;
 
 public class CapySpriteSVGNftLoader : MonoBehaviour {
@@ -8,13 +9,13 @@ public class CapySpriteSVGNftLoader : MonoBehaviour {
     
     private async void Start()
     {
-        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync(NftObjectId);
+        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync<CapyNft>(NftObjectId);
 
         if (!capyObjectRpcResult.IsSuccess) return;
         
-        var url =  capyObjectRpcResult.Result.Object.Data.Fields["url"] as string;
+        var url =  capyObjectRpcResult.Result.Url;
         var sceneInfo = await SVGHelper.LoadSVGAsync(url);
-        SVGHelper.DrawSVGAsSprite(sceneInfo, gameObject.GetComponent<SpriteRenderer>());
+        gameObject.GetComponent<SpriteRenderer>().sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);
 
         if (!LoadAccessories) return;
         
