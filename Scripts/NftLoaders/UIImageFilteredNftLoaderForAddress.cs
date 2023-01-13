@@ -12,23 +12,23 @@ public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
     
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync<UniqueNft>(Address);
+        var getObjectRpcResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync<ArtNft>(Address);
 
         if (getObjectRpcResult.IsSuccess)
         {
             int i = 0;
             foreach (var nftData in getObjectRpcResult.Result)
             {
-                var attributes = nftData.Data.Fields.Attributes.Fields.ToDictionary();
-
+                var attributes = nftData.Attributes;
+                
                 if (!attributes.ContainsKey(FilterAttributeName) ||
-                    attributes[FilterAttributeName] != FilterAttributeValue)
+                    !attributes[FilterAttributeName].Contains(FilterAttributeValue))
                 {
-                    continue;;
+                    continue;
                 }
                 
                 var imageGo = Instantiate(ImagePrefab, transform);
-                await LoadNFTsAsync(nftData.Data.Fields.Url, imageGo);
+                await LoadNFTsAsync(nftData.Url, imageGo);
                 imageGo.gameObject.SetActive(true);
             }
         }
