@@ -3,7 +3,7 @@ using Suinet.NftProtocol.Nft;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIImageNftLoader : MonoBehaviour
+public class UIImageArtNftLoader : MonoBehaviour
 {
     public string NftObjectId;
     public Image NFTImage;
@@ -11,7 +11,7 @@ public class UIImageNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<ArtNft>(NftObjectId);
+        var getObjectRpcResult = await SuiApi.NftProtocolClient.GetArtNftAsync(NftObjectId);
 
         if (getObjectRpcResult.IsSuccess)
         {

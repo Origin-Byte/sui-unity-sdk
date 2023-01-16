@@ -601,14 +601,6 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1858411093147489552, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489552, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489552, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -648,42 +640,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489554, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_Size.x
-      value: 19.338398
-      objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489554, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_Size.y
-      value: 21.323784
-      objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489554, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 70632ddfe8e71b04b8f90ef7e29a9e98, type: 3}
-    - target: {fileID: 1858411093147489554, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489554, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 73ddb2958e9cd451c82f37c26efa5eb0, type: 2}
     - target: {fileID: 1858411093147489557, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
       propertyPath: m_Name
       value: CapySpriteSVGNftLoader
       objectReference: {fileID: 0}
-    - target: {fileID: 1858411093147489557, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: NftObjectId
-      value: 0x80f79590361c52aa5507a1234ccd1289daf67c8a
-      objectReference: {fileID: 0}
-    - target: {fileID: 5336578054776271697, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
-      propertyPath: AccessoryPrefab
-      value: 
-      objectReference: {fileID: 5491348119430231939, guid: 0fd7b46e47fc1f74b850555fe8417ef6, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec80bc139e5aaf44a5d977299d3f543, type: 3}
 --- !u!1001 &848216410

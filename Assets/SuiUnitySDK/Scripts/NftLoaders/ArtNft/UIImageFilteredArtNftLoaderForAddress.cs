@@ -3,7 +3,7 @@ using Suinet.NftProtocol.Nft;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
+public class UIImageFilteredArtNftLoaderForAddress : MonoBehaviour
 {
     public string Address;
     public Image ImagePrefab;
@@ -12,7 +12,7 @@ public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
     
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync<ArtNft>(Address);
+        var getObjectRpcResult = await SuiApi.NftProtocolClient.GetArtNftsOwnedByAddressAsync(Address);
 
         if (getObjectRpcResult.IsSuccess)
         {
@@ -21,7 +21,7 @@ public class UIImageFilteredNftLoaderForAddress : MonoBehaviour
             {
                 var attributes = nftData.Attributes;
                 
-                if (!attributes.ContainsKey(FilterAttributeName) ||
+                if (attributes == null || !attributes.ContainsKey(FilterAttributeName) ||
                     !attributes[FilterAttributeName].Contains(FilterAttributeValue))
                 {
                     continue;
