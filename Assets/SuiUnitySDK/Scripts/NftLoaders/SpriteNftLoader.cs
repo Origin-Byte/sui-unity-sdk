@@ -19,9 +19,10 @@ public class SpriteNftLoader : MonoBehaviour
 
         if (capyObjectRpcResult.IsSuccess && !string.IsNullOrWhiteSpace(capyObjectRpcResult.Result.Url))
         {
-            var sceneInfo = await SVGHelper.LoadSVGAsync(capyObjectRpcResult.Result.Url);
-            TargetRenderer.sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);
-            transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            // var sceneInfo = await SVGHelper.LoadSVGAsync(capyObjectRpcResult.Result.Url);
+            // TargetRenderer.sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);
+            // transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+           // Svg.SvgDocument.OpenAsBitmap()
             TargetRenderer.enabled = true;
         }
         else
