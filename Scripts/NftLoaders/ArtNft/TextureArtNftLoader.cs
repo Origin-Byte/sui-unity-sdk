@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using Suinet.NftProtocol.Nft;
+using Suinet.Rpc.Types.MoveTypes;
 using UnityEngine;
 
-public class TextureNftLoader : MonoBehaviour
+public class TextureArtNftLoader : MonoBehaviour
 {
     public string NftObjectId;
     public string TargetTextureName;
@@ -16,7 +17,7 @@ public class TextureNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var getObjectRpcResult = await SuiApi.Client.GetObjectAsync<ArtNft>(NftObjectId);
+        var getObjectRpcResult = await SuiApi.NftProtocolClient.GetArtNftAsync(NftObjectId);
 
         if (getObjectRpcResult.IsSuccess)
         {

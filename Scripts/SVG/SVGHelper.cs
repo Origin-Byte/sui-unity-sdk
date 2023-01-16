@@ -21,7 +21,7 @@ public static class SVGHelper
         var geoms = VectorUtils.TessellateScene(sceneInfo.Scene, tesselationOptions);
  
         // Build a sprite with the tessellated geometry.
-        return VectorUtils.BuildSprite(geoms, 100.0f, VectorUtils.Alignment.SVGOrigin, Vector2.zero, 256, true);
+        return VectorUtils.BuildSprite(geoms, 100.0f, VectorUtils.Alignment.Center, new Vector2(0.5f, 0.5f), 256, true);
     }
  
     public static async Task<SVGParser.SceneInfo> LoadSVGAsync(string url)
