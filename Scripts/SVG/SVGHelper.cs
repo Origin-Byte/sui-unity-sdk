@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -24,9 +25,9 @@ public static class SVGHelper
         return VectorUtils.BuildSprite(geoms, 100.0f, VectorUtils.Alignment.Center, new Vector2(0.5f, 0.5f), 256, true);
     }
 
-    public static void LoadSVG(string url, Action<SVGParser.SceneInfo> onSceneInfoReady)
+    public static IEnumerator LoadSVG(string url, Action<SVGParser.SceneInfo> onSceneInfoReady)
     {
-        DownloadSVGText(url,svgText =>
+        yield return DownloadSVGText(url,svgText =>
         {
             var sceneInfo = ParseSVG(svgText);
             onSceneInfoReady(sceneInfo);
@@ -74,9 +75,9 @@ public static class SVGHelper
         return req.downloadHandler.text;
     }
 
-    private static void DownloadSVGText(string url, Action<string> onTextResultReady)
+    private static IEnumerator DownloadSVGText(string url, Action<string> onTextResultReady)
     {
-        UnityWebRequests.Get(url, req =>
+        yield return UnityWebRequests.Get(url, req =>
         {
             var data = req.downloadHandler.text;
             onTextResultReady(data);
