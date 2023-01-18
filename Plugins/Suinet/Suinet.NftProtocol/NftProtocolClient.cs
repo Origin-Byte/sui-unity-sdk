@@ -5,7 +5,6 @@ using Suinet.Rpc;
 using Suinet.Rpc.Client;
 using Suinet.Rpc.Signer;
 using Suinet.Rpc.Types;
-using Suinet.Rpc.Types.MoveTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,57 +40,66 @@ namespace Suinet.NftProtocol
             return await _signer.SignAndExecuteMoveCallAsync(txBuilder.BuildMoveCallTransaction(gas));
         }
 
-        public async Task<RpcResult<ArtNft>> GetArtNftAsync(string objectId)
+        public async Task<RpcResult<ArtNft>> GetArtNftAsync(string objectId, params Type[] withDomains)
         {
             var nftResult = await _jsonRpcApiClient.GetObjectAsync<ArtNft>(objectId);
 
             if (nftResult == null || !nftResult.IsSuccess) return nftResult;
 
-            await LoadDomainsForArtNftAsync(nftResult.Result);
+            await LoadDomainsForArtNftAsync(nftResult.Result, withDomains);
 
             return nftResult;
         }
 
 
-        public async Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsOwnedByAddressAsync(string address)
+        public async Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsOwnedByAddressAsync(string address, params Type[] withDomains)
         {
             var nftsResult = await _jsonRpcApiClient.GetObjectsOwnedByAddressAsync<ArtNft>(address);
 
             if (nftsResult == null || !nftsResult.IsSuccess) return nftsResult;
 
+            // TODO test is Task.WhenAll works correctly on webgl
             foreach (var nft in nftsResult.Result)
             {
-                await LoadDomainsForArtNftAsync(nft);
+                await LoadDomainsForArtNftAsync(nft, withDomains);
             }
 
             return nftsResult;
         }
 
-        private async Task LoadDomainsForArtNftAsync(ArtNft nft)
+        private async Task LoadDomainsForArtNftAsync(ArtNft nft, params Type[] withDomains)
         {
             var bagObjectId = nft.Bag.Fields.Id.Id;
 
-            var urlDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<UrlDomain>(bagObjectId);
+            bool filterDomains = withDomains != null && withDomains.Any();
 
-            if (urlDomainResult != null && urlDomainResult.IsSuccess)
+            if (!filterDomains || withDomains.Contains(typeof(UrlDomain)))
             {
-                nft.Url = urlDomainResult.Result.FirstOrDefault()?.Url;
+                var urlDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<UrlDomain>(bagObjectId);
+                if (urlDomainResult != null && urlDomainResult.IsSuccess)
+                {
+                    nft.Url = urlDomainResult.Result.FirstOrDefault()?.Url;
+                }
             }
 
-            var displayDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<DisplayDomain>(bagObjectId);
-
-            if (displayDomainResult != null && displayDomainResult.IsSuccess)
+            if (!filterDomains || withDomains.Contains(typeof(DisplayDomain)))
             {
-                var domain = displayDomainResult.Result.FirstOrDefault();
-                nft.Name = domain?.DisplayName;
-                nft.Description = domain?.Description;
+                var displayDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<DisplayDomain>(bagObjectId);
+                if (displayDomainResult != null && displayDomainResult.IsSuccess)
+                {
+                    var domain = displayDomainResult.Result.FirstOrDefault();
+                    nft.Name = domain?.DisplayName;
+                    nft.Description = domain?.Description;
+                }
             }
 
-            var attributesDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<AttributesDomain>(bagObjectId);
-
-            if (attributesDomainResult != null && attributesDomainResult.IsSuccess)
+            if (!filterDomains || withDomains.Contains(typeof(AttributesDomain)))
             {
-                nft.Attributes = attributesDomainResult.Result.FirstOrDefault()?.Attributes;
+                var attributesDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<AttributesDomain>(bagObjectId);
+                if (attributesDomainResult != null && attributesDomainResult.IsSuccess)
+                {
+                    nft.Attributes = attributesDomainResult.Result.FirstOrDefault()?.Attributes;
+                }
             }
         }
     }

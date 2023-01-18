@@ -14,7 +14,7 @@
         public static async Task<List<string>> GetCoinObjectIdsOwnedByAddressAsync(IJsonRpcApiClient client, string address, string coinType = SuiConstants.SUI_COIN_TYPE)
         {
             var ownedObjectsResult = await client.GetObjectsOwnedByAddressAsync(address);
-            return ownedObjectsResult.Result?.Where(r => r.Type == coinType).Select(c => c.ObjectId).ToList();
+            return ownedObjectsResult.Result?.Where(r => r.Type.Type == coinType).Select(c => c.ObjectId).ToList();
         }
 
         public static async Task<List<string>> GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(IJsonRpcApiClient client, string address, int count = 10, ulong minBalance = 1000, string coinType = SuiConstants.SUI_COIN_TYPE)
