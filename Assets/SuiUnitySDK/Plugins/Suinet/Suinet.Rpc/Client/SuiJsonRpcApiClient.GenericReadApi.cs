@@ -69,7 +69,7 @@ namespace Suinet.Rpc
         public async Task<IEnumerable<T>> GetObjectsAsync<T>(IEnumerable<SuiObjectInfo> objectInfos) where T : class
         {
             var objectType = typeof(T);
-            objectInfos = objectInfos.Where(x => MoveTypeHelper.IsMatchingMoveType(objectType, x.Type)).ToArray();
+            objectInfos = objectInfos.Where(x => MoveTypeHelper.IsMatchingMoveType(objectType, x.Type.Type)).ToArray();
 
             return await GetObjectsAsync<T>(objectInfos.Select(o => o.ObjectId));
         }

@@ -8,10 +8,7 @@ namespace Suinet.Rpc.Types
     {
         public string DataType { get; set; }
 
-        /// <summary>
-        /// Move type (e.g., "0x2::coin::Coin<0x2::sui::SUI>")
-        /// </summary>
-        public string Type { get; set; }
+        public MoveType Type { get; set; }
 
         [JsonProperty("has_public_transfer")]
         public bool HasPublicTransfer { get; set; }

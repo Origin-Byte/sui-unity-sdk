@@ -1,5 +1,4 @@
 ﻿using Suinet.Rpc.Types.MoveTypes;
-
 namespace Suinet.Rpc.Types
 {
     public class SuiObjectInfo
@@ -10,7 +9,7 @@ namespace Suinet.Rpc.Types
 
         public string Digest { get; set; }
 
-        public string Type { get; set; }
+        public MoveType Type { get; set; }
 
         public SuiOwner Owner { get; set; }
 
