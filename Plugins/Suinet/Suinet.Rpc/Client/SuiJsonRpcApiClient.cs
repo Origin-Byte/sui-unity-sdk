@@ -1,11 +1,14 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using Chaos.NaCl;
+using Org.BouncyCastle.Crypto;
 using Suinet.Rpc.Api;
 using Suinet.Rpc.Client;
 using Suinet.Rpc.Http;
 using Suinet.Rpc.JsonRpc;
 using Suinet.Rpc.Types;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Suinet.Rpc
@@ -43,7 +46,25 @@ namespace Suinet.Rpc
 
         public async Task<RpcResult<SuiExecuteTransactionResponse>> ExecuteTransactionAsync(string txBytes, SuiSignatureScheme sigScheme, string signature, string pubKey, SuiExecuteTransactionRequestType suiExecuteTransactionRequestType)
         {
-            return await SendRpcRequestAsync<SuiExecuteTransactionResponse>("sui_executeTransaction", ArgumentBuilder.BuildArguments(txBytes, sigScheme, signature, pubKey, suiExecuteTransactionRequestType));
+            // Todo refact this logic from here
+            var signatureBytes = CryptoBytes.FromBase64String(signature);
+            var publicKeyBytes = CryptoBytes.FromBase64String(pubKey);
+            var finalSignatureBytes = new byte[signatureBytes.Length + 1 + publicKeyBytes.Length];
+
+            finalSignatureBytes[0] = SignatureSchemeToByte(sigScheme);
+            Array.Copy(signatureBytes, 0, finalSignatureBytes, 1, signatureBytes.Length);
+            Array.Copy(publicKeyBytes, 0, finalSignatureBytes, signatureBytes.Length + 1, publicKeyBytes.Length);
+
+            var serializedSignature = CryptoBytes.ToBase64String(finalSignatureBytes);
+
+            return await SendRpcRequestAsync<SuiExecuteTransactionResponse>("sui_executeTransaction", ArgumentBuilder.BuildArguments(txBytes, serializedSignature, suiExecuteTransactionRequestType));
+        }
+
+        byte SignatureSchemeToByte(SuiSignatureScheme suiSignatureScheme)
+        {
+            if (suiSignatureScheme == SuiSignatureScheme.ED25519) return 0;
+
+            return 1;
         }
 
         public async Task<RpcResult<SuiObjectRead>> GetObjectAsync(string objectId)
@@ -124,6 +145,11 @@ namespace Suinet.Rpc
         public async Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, SuiEventId cursor, ulong limit, bool descendingOrder = false)
         {
             return await SendRpcRequestAsync<SuiPage_for_EventEnvelope_and_EventID>("sui_getEvents", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
+        }
+
+        public async Task<RpcResult<SuiPage_for_DynamicFieldInfo_and_ObjectID>> GetDynamicFieldsAsync(string objectId)
+        {
+            return await SendRpcRequestAsync<SuiPage_for_DynamicFieldInfo_and_ObjectID>("sui_getDynamicFields", ArgumentBuilder.BuildArguments(objectId));
         }
     }
 

@@ -9,8 +9,6 @@ namespace Suinet.NftProtocol.Nft
     {
         public UID Id { get; set; }
 
-        public BagData Bag { get; set; }
-
         [JsonProperty("logical_owner")]
         public string LogicalOwner { get; set; }
     }

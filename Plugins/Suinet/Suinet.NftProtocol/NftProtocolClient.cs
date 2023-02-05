@@ -69,36 +69,52 @@ namespace Suinet.NftProtocol
 
         private async Task LoadDomainsForArtNftAsync(ArtNft nft, params Type[] withDomains)
         {
-            var bagObjectId = nft.Bag.Fields.Id.Id;
+            var dynamicFields = await _jsonRpcApiClient.GetDynamicFieldsAsync(nft.Id.Id);
 
             bool filterDomains = withDomains != null && withDomains.Any();
 
             if (!filterDomains || withDomains.Contains(typeof(UrlDomain)))
             {
-                var urlDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<UrlDomain>(bagObjectId);
-                if (urlDomainResult != null && urlDomainResult.IsSuccess)
+                var objectFieldInfo = dynamicFields.Result.Data.FirstOrDefault(d => d.ObjectType.Struct == nameof(UrlDomain));
+
+                if (objectFieldInfo != null) 
                 {
-                    nft.Url = urlDomainResult.Result.FirstOrDefault()?.Url;
+                    var domainResult = await _jsonRpcApiClient.GetObjectAsync<UrlDomain>(objectFieldInfo.ObjectId);
+                    if (domainResult != null && domainResult.IsSuccess)
+                    {
+                        nft.Url = domainResult.Result.Url;
+                    }
                 }
             }
 
             if (!filterDomains || withDomains.Contains(typeof(DisplayDomain)))
             {
-                var displayDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<DisplayDomain>(bagObjectId);
-                if (displayDomainResult != null && displayDomainResult.IsSuccess)
+                var objectFieldInfo = dynamicFields.Result.Data.FirstOrDefault(d => d.ObjectType.Struct == nameof(DisplayDomain));
+
+                if (objectFieldInfo != null)
                 {
-                    var domain = displayDomainResult.Result.FirstOrDefault();
-                    nft.Name = domain?.DisplayName;
-                    nft.Description = domain?.Description;
+                    var domainResult = await _jsonRpcApiClient.GetObjectAsync<DisplayDomain>(objectFieldInfo.ObjectId);
+                    if (domainResult != null && domainResult.IsSuccess)
+                    {
+                        var domain = domainResult.Result;
+                        nft.Name = domain?.Name;
+                        nft.Description = domain?.Description;
+                    }
                 }
             }
 
             if (!filterDomains || withDomains.Contains(typeof(AttributesDomain)))
             {
-                var attributesDomainResult = await _jsonRpcApiClient.GetObjectsOwnedByObjectAsync<AttributesDomain>(bagObjectId);
-                if (attributesDomainResult != null && attributesDomainResult.IsSuccess)
+                var objectFieldInfo = dynamicFields.Result.Data.FirstOrDefault(d => d.ObjectType.Struct == nameof(AttributesDomain));
+
+                if (objectFieldInfo != null)
                 {
-                    nft.Attributes = attributesDomainResult.Result.FirstOrDefault()?.Attributes;
+                    var domainResult = await _jsonRpcApiClient.GetObjectAsync<AttributesDomain>(objectFieldInfo.ObjectId);
+
+                    if (domainResult != null && domainResult.IsSuccess)
+                    {
+                        nft.Attributes = domainResult.Result.Attributes;
+                    }
                 }
             }
         }
