@@ -15,11 +15,11 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
         - [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) : Universal private key derivation from master private key also supported
     - Sign transactions
     - Store key pair in PlayerPrefs
-- Interact with Origin Byte Nft Protocol https://github.com/Origin-Byte/nft-protocol
+- Interact with Origin Byte Nft Protocol (0.21) https://github.com/Origin-Byte/nft-protocol
 - Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 0.20.0 devnet
+- Samples are using Sui 0.24.0 devnet
 
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 
