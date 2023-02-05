@@ -224,7 +224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8278469651352085758, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
       propertyPath: NftObjectId
-      value: 0x218a177af0d88926c1b42d9e113e3103aea1df85
+      value: 0x86a0fbf7b4354ce281bb6fcde7e8b5263dce6a3b
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b68816adf6d2484d8f5dfe363563c6f, type: 3}
@@ -599,7 +599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: NftObjectId
-      value: 0x218a177af0d88926c1b42d9e113e3103aea1df85
+      value: 0x86a0fbf7b4354ce281bb6fcde7e8b5263dce6a3b
       objectReference: {fileID: 0}
     - target: {fileID: 8124817349403666088, guid: 950fbadea8e2ecf4db7a1b7ca654be56, type: 3}
       propertyPath: TargetRenderer
@@ -725,7 +725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 539349531932313786, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
       propertyPath: NftObjectId
-      value: 0x218a177af0d88926c1b42d9e113e3103aea1df85
+      value: 0x86a0fbf7b4354ce281bb6fcde7e8b5263dce6a3b
       objectReference: {fileID: 0}
     - target: {fileID: 539349531932313787, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
       propertyPath: m_Name
@@ -789,6 +789,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 539349531932313786, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
+      propertyPath: NftObjectId
+      value: 0x86a0fbf7b4354ce281bb6fcde7e8b5263dce6a3b
+      objectReference: {fileID: 0}
     - target: {fileID: 539349531932313787, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
       propertyPath: m_Name
       value: SpriteNftLoader
@@ -802,6 +806,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 554864868}
     m_Modifications:
+    - target: {fileID: 3666481815676293546, guid: 6def9ac4a65ca984a9d740398c5e5402, type: 3}
+      propertyPath: Address
+      value: 0xfd265b697c11defbe61a289cdfccc080eda28a6a
+      objectReference: {fileID: 0}
     - target: {fileID: 5298871264423989558, guid: 6def9ac4a65ca984a9d740398c5e5402, type: 3}
       propertyPath: m_Name
       value: UIImageFilteredArtNftLoaderForAddress
@@ -903,6 +911,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 554864868}
     m_Modifications:
+    - target: {fileID: 4735260569144797752, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
+      propertyPath: Address
+      value: 0xfd265b697c11defbe61a289cdfccc080eda28a6a
+      objectReference: {fileID: 0}
     - target: {fileID: 6722239002838358652, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
       propertyPath: m_Name
       value: AddressNftImages
