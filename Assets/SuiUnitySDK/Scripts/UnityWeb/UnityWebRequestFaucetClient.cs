@@ -1,7 +1,4 @@
 using Newtonsoft.Json;
-using Suinet.Rpc;
-using Suinet.Rpc.Http;
-using Suinet.Rpc.JsonRpc;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +32,13 @@ public class UnityWebRequestFaucetClient : IFaucetClient
             {
                 await Task.Yield();
             }
-            
-           return unityWebRequest.result == UnityWebRequest.Result.Success;
+
+            if (unityWebRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(unityWebRequest.error);
+            }
+
+            return unityWebRequest.result == UnityWebRequest.Result.Success;
         }
     }
 }
