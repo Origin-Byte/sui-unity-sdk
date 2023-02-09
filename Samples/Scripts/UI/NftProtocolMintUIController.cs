@@ -1,13 +1,12 @@
+using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using Suinet.Rpc.Types;
 using System.Threading.Tasks;
 using Suinet.NftProtocol;
-using Suinet.NftProtocol.Launchpad;
-using Suinet.NftProtocol.Launchpad.Market;
-using Suinet.NftProtocol.Nft;
 using Suinet.NftProtocol.TransactionBuilders;
-using Suinet.Rpc;
+using Suinet.Rpc.Signer;
+using Suinet.Rpc.Types;
+using Suinet.Rpc.Types.MoveTypes;
+using Suinet.Wallet;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -19,81 +18,95 @@ using UnityEngine.UI;
 public class NftProtocolMintUIController : MonoBehaviour
 {
     public Button MintNFTButton;
-    public TMP_InputField NFTNameInputField;
-    public TMP_InputField NFTDescriptionInputField;
-    public TMP_InputField NFTUrlInputField;
     public TMP_Text NFTMintedText;
-    public TMP_InputField NFTLaunchpadIdInputField;
+    public TMP_InputField NFTMintCapIdField;
     public TMP_InputField NFTMintedReadonlyInputField;
+    public TMP_InputField TargetWalletAddressInputField;
 
     public Image NFTImage;
-
+    
+    private const string SAMPLE_SIGNER_MNEMONIC = "bus indicate leave science minor clip embrace faculty wink industry addict track soup burger scissors another enrich muscle loop fever vacuum buyer paddle roof";
 
     private void Start()
     {
-        // Default text
-        //NFTNameInputField.text = "Origin Byte NFT using Nft protocol";
-        //NFTDescriptionInputField.text = "NFT minted using SuiUnitySDK by Origin Byte";
-        //NFTUrlInputField.text = "https://avatars.githubusercontent.com/u/112119979";
-        // Origin Byte NFTs are claimed from a launchpad, that is created for a collection.
-        NFTLaunchpadIdInputField.text = "0x9f1f5e2a86b8c9a6904ee30b585f82f387466120";
-
+        NFTMintCapIdField.text = "0xbf4d29d07175fcb83d5e7af19f909e9b87f45e57";
+        TargetWalletAddressInputField.text = SuiWallet.GetActiveAddress();
+        
         MintNFTButton.onClick.AddListener(async () =>
         {
             NFTMintedText.gameObject.SetActive(false);
             NFTMintedReadonlyInputField.gameObject.SetActive(false);
             
-            var signer = SuiWallet.GetActiveAddress();
-            var launchpadId = NFTLaunchpadIdInputField.text;
-            var packageObjectId = "0x383ddb4a14b8ea9be1e0c2bb279da4aed47b2033";
-            var moduleName = "suimarines";
-            var collectionType = $"{packageObjectId}::suimarines::SUIMARINES";
+            var mintCapId = NFTMintCapIdField.text;
             
-            var launchpadResult = await SuiApi.Client.GetObjectAsync<FixedPriceMarket>(launchpadId);
+            var mintCapResult = await SuiApi.Client.GetObjectAsync(mintCapId);
 
-            // var buyNftTxBuilder = new BuyNftCertificate()
-            // {
-            //     Signer = signer,
-            //     Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
-            //     LaunchpadId = launchpadId,
-            //     PackageObjectId = packageObjectId,
-            //     CollectionType = collectionType,
-            //     ModuleName = moduleName
-            // };
-            //
-            // var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
-            // var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
-            // var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
-            // var nftId = buyCertificateRpcResult.Result.NftId;
-            //
-            // var claimNftTxBuilder = new ClaimNftCertificate()
-            // {
-            //     Signer = signer,
-            //     LaunchpadId = launchpadId,
-            //     PackageObjectId = packageObjectId,
-            //     CollectionType = collectionType,
-            //     ModuleName = moduleName,
-            //     Recipient = signer,
-            //     CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
-            //     NftId = nftId,
-            //     NftType = "unique_nft::Unique"
-            // };
-            //
-            // var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
-            //
-            // if (claimCertResult.IsSuccess)
-            // {
-            //     var nftResult = await SuiApi.Client.GetObjectAsync<UniqueNft>(nftId);
-            //     await LoadNFT(nftResult.Result.Data.Fields.Url);
-            //     NFTMintedText.gameObject.SetActive(true);
-            //     NFTMintedReadonlyInputField.gameObject.SetActive(true);
-            //
-            //     NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/"+ nftId;
-            // }
-            // else
-            // {
-            //     Debug.LogError("Something went wrong with the claiming: " + claimCertResult.ErrorMessage);
-            // }
+            if (mintCapResult.IsSuccess)
+            {
+                var mintCapType = mintCapResult.Result.Object.Data.Type;
+
+                var deadBytesTypeString = mintCapType.Struct.Replace("MintCap<", "");
+                deadBytesTypeString = deadBytesTypeString.Remove(deadBytesTypeString.Length - 1, 1);
+                var deadBytesType = new MoveType(deadBytesTypeString);
+                
+                // we can sign the mint transaction with the wallet that deployed the contract
+                var signerKeyPair = Mnemonics.GetKeypairFromMnemonic(SAMPLE_SIGNER_MNEMONIC);
+                var signer = new Signer(SuiApi.Client, signerKeyPair);
+                var nftProtocolClient = new NftProtocolClient(SuiApi.Client, signer);
+
+                var randomFaceIndex = Random.Range(1, 9);
+                var txParams = new MintNft()
+                {
+                    Attributes = new Dictionary<string, object>()
+                    {
+                        { "nft_type", "face" },
+                    },
+                    Description = "You can use this as a face of your character in the game!",
+                    MintCap = NFTMintCapIdField.text,
+                    Recipient = TargetWalletAddressInputField.text,
+                    ModuleName =  deadBytesType.Module,
+                    Name = $"Face {randomFaceIndex}",
+                    PackageObjectId = mintCapType.PackageId,
+                    Signer = signerKeyPair.PublicKeyAsSuiAddress,
+                    Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
+                };
+
+                // if we pass null, it will automatically select a gas object
+                var mintRpcResult = await nftProtocolClient.MintNftAsync(txParams, null);
+                if (mintRpcResult is { IsSuccess: true })
+                {
+                    // we query the top level nft object
+                    var nftId = mintRpcResult.Result.Effects.Effects.Created.FirstOrDefault(c => c.Owner.Type == SuiOwnerType.AddressOwner)?.Reference.ObjectId;
+                    if (!string.IsNullOrWhiteSpace(nftId))
+                    {
+                        var artNftResult = await SuiApi.NftProtocolClient.GetArtNftAsync(nftId);
+                        if (artNftResult.IsSuccess)
+                        {
+                            await LoadNFT(artNftResult.Result.Url);
+                            NFTMintedText.gameObject.SetActive(true);
+                            NFTMintedReadonlyInputField.gameObject.SetActive(true);
+
+                            NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/" + nftId;
+                        }
+                        else
+                        {
+                            Debug.LogError("Something went wrong with the minting 3: " + artNftResult.ErrorMessage);
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Something went wrong with the minting 2: " + mintRpcResult.RawRpcResponse);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Something went wrong with the minting 1: " + mintRpcResult.ErrorMessage);
+                }
+            }
+            else
+            {
+                Debug.LogError("Something went wrong with the minting 0: " + mintCapResult.ErrorMessage);
+            }
         });
     }
 
