@@ -1417,12 +1417,12 @@ GameObject:
   - component: {fileID: 164446766}
   - component: {fileID: 164446765}
   m_Layer: 5
-  m_Name: NameText
+  m_Name: WalletAddressText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &164446764
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1463,7 +1463,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Name:'
+  m_text: 'Wallet:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2620,7 +2620,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Claim your own Nft using Origin Byte Nft Protocol from the given launchpad:'
+  m_text: Mint your own awesome random color Deadbytes Nft using OriginByte Nft Protocol,
+    instantly to the target wallet!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5241,7 +5242,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Claim NFT
+  m_text: Mint NFT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8647,7 +8648,7 @@ GameObject:
   - component: {fileID: 881966915}
   - component: {fileID: 881966913}
   m_Layer: 5
-  m_Name: NFTLaunchpadIdInputField
+  m_Name: NFTMintCapIdInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9555,12 +9556,12 @@ GameObject:
   - component: {fileID: 1000176071}
   - component: {fileID: 1000176069}
   m_Layer: 5
-  m_Name: NFTNameInputField
+  m_Name: WalletAddressInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1000176069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10895,7 +10896,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Launchpad Id:'
+  m_text: 'MintCap Id:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11698,7 +11699,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1454543081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11712,12 +11713,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MintNFTButton: {fileID: 728873855}
-  NFTNameInputField: {fileID: 1000176069}
-  NFTDescriptionInputField: {fileID: 1267033142}
-  NFTUrlInputField: {fileID: 1731063435}
   NFTMintedText: {fileID: 279619512}
-  NFTLaunchpadIdInputField: {fileID: 881966913}
+  NFTMintCapIdField: {fileID: 881966913}
   NFTMintedReadonlyInputField: {fileID: 2136250397}
+  TargetWalletAddressInputField: {fileID: 1000176069}
   NFTImage: {fileID: 259002218}
 --- !u!114 &1454543082
 MonoBehaviour:

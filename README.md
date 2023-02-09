@@ -15,11 +15,11 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
         - [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) : Universal private key derivation from master private key also supported
     - Sign transactions
     - Store key pair in PlayerPrefs
-- Interact with Origin Byte Nft Protocol (0.21) https://github.com/Origin-Byte/nft-protocol
+- Interact with Origin Byte Nft Protocol (0.22) https://github.com/Origin-Byte/nft-protocol
 - Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 0.24.0 devnet
+- Samples are using Sui 0.25.0 devnet
 
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 
@@ -128,56 +128,41 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 
 Our SDK contains the NftProtocolClient class that provide access to Sui using the Nft Protocol.
 
-This sample demonstrates the minting of an Nft for a collection using Origin Byte Nft protocol with RPC calls.
+This sample demonstrates the minting of an Nft using Origin Byte Nft protocol with RPC calls.
 More info on the protocol can be found here: https://github.com/Origin-Byte/nft-protocol
-This sample uses a pre-minted collection of [SUIMARINES](https://github.com/Origin-Byte/nft-protocol/blob/main/sources/examples/suimarines.move) and anyone can claim it.
+This sample uses a pre-minted collection of [DEADBYTES](https://github.com/tomfurrier/nft-protocol/blob/dead-bytes/sources/collection/deadbytes.move).
 
 
 ### Setup your collection
-1. Publish https://github.com/Origin-Byte/nft-protocol/blob/main/sources/examples/suimarines.move or a similar, std_collection. More information about the [nft protocol](https://github.com/Origin-Byte/nft-protocol) . It creates a launchpad (basically a fixed priced market in this example) for you as well.
-2. Call NftProtocolClient.EnableSalesAsync method to make the market live
+1. Publish https://github.com/tomfurrier/nft-protocol/blob/dead-bytes/sources/collection/deadbytes.move or a similar, std_collection. More information about the [nft protocol](https://github.com/Origin-Byte/nft-protocol) .
+2. update the MintCapId and signer if needed
 3. Mint Nfts by calling NftProtocolClient.MintNftAsync
-4. Set the LaunchpadId, packageObjectId, modulename to use
 
 ```csharp
-    var signer = SuiWallet.GetActiveAddress();
-    var launchpadId = NFTLaunchpadIdInputField.text;
-    var packageObjectId = "0x67a8862cbe93ea36d9bc55eefc94500a00ed5bcd";
-    var moduleName = "suimarines";
-    var collectionType = $"{packageObjectId}::suimarines::SUIMARINES";
-    
-    var launchpadResult = await SuiApi.Client.GetObjectAsync<FixedPriceMarket>(launchpadId);
+    // we can sign the mint transaction with the wallet that deployed the contract
+	var signerKeyPair = Mnemonics.GetKeypairFromMnemonic(SAMPLE_SIGNER_MNEMONIC);
+	var signer = new Signer(SuiApi.Client, signerKeyPair);
+	var nftProtocolClient = new NftProtocolClient(SuiApi.Client, signer);
 
-    var buyNftTxBuilder = new BuyNftCertificate()
-    {
-        Signer = signer,
-        Wallet = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1))[0],
-        LaunchpadId = launchpadId,
-        PackageObjectId = packageObjectId,
-        CollectionType = collectionType,
-        ModuleName = moduleName
-    };
+	var randomFaceIndex = Random.Range(1, 9);
+	var txParams = new MintNft()
+	{
+		Attributes = new Dictionary<string, object>()
+		{
+			{ "nft_type", "face" },
+		},
+		Description = "You can use this as a face of your character in the game!",
+		MintCap = NFTMintCapIdField.text,
+		Recipient = TargetWalletAddressInputField.text,
+		ModuleName =  deadBytesType.Module,
+		Name = $"Face {randomFaceIndex}",
+		PackageObjectId = mintCapType.PackageId,
+		Signer = signerKeyPair.PublicKeyAsSuiAddress,
+		Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
+	};
 
-    var buyCertResponse = await SuiApi.NftProtocolClient.BuyNftCertificateAsync(buyNftTxBuilder);
-    var certificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId;
-    var buyCertificateRpcResult = await SuiApi.Client.GetObjectAsync<NftCertificate>(certificateId);
-    var nftId = buyCertificateRpcResult.Result.NftId;
-    
-    var claimNftTxBuilder = new ClaimNftCertificate()
-    {
-        Signer = signer,
-        LaunchpadId = launchpadId,
-        PackageObjectId = packageObjectId,
-        CollectionType = collectionType,
-        ModuleName = moduleName,
-        Recipient = signer,
-        CertificateId = buyCertResponse.Result.EffectsCert.Effects.Effects.Created.First().Reference.ObjectId,
-        NftId = nftId,
-        NftType = "unique_nft::Unique"
-    };
-    
-    var claimCertResult = await SuiApi.NftProtocolClient.CaimNftCertificateAsync(claimNftTxBuilder);
-
+	// if we pass null, it will automatically select a gas object
+	var mintRpcResult = await nftProtocolClient.MintNftAsync(txParams, null);
 ```
 
 ## Nft loaders
