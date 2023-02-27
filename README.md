@@ -19,7 +19,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 - Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 0.25.0 devnet
+- Samples are using Sui 0.27.0 devnet
 
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 
