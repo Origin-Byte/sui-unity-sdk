@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Suinet.Rpc.Types
@@ -7,8 +8,16 @@ namespace Suinet.Rpc.Types
     {
         public static T ToObject<T>(this Dictionary<string, object> dict)
         {
-            var jsonString = JsonConvert.SerializeObject(dict);
-            return JsonConvert.DeserializeObject<T>(jsonString);
+            try
+            {
+                var jsonString = JsonConvert.SerializeObject(dict);
+                return JsonConvert.DeserializeObject<T>(jsonString);
+            }
+            catch(Exception e)
+            {
+                var a = 5;
+            }
+            return default(T);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Suinet.NftProtocol.TransactionBuilders
 
         public string Url { get; set; }
 
-        public Dictionary<string, object> Attributes { get; set; }
+        public Dictionary<string, object> Attributes { get; set; } = new Dictionary<string, object>();
 
         public string MintCap { get; set; }
 
