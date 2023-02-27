@@ -1,6 +1,7 @@
 ﻿using Suinet.Rpc.Api;
 using Suinet.Rpc.Types;
 using Suinet.Rpc.Types.MoveTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,6 +89,22 @@ namespace Suinet.Rpc
             }
 
             return typedObjects;
+        }
+
+        public async Task<RpcResult<T>> GetDynamicFieldObjectAsync<T>(string parentObjectId, string fieldName) where T : class
+        {
+            var result = await GetDynamicFieldObjectAsync(parentObjectId, fieldName);
+
+            var dynamicFieldResult = result.Result.Object.Data.Fields.ToObject<DynamicField>();
+
+            return new RpcResult<T>
+            {
+                IsSuccess = result.IsSuccess,
+                RawRpcRequest = result.RawRpcRequest,
+                RawRpcResponse = result.RawRpcResponse,
+                ErrorMessage = result.ErrorMessage,
+                Result = result.IsSuccess ? dynamicFieldResult.Value.Fields.ToObject<T>() : null
+            };
         }
 
     }

@@ -61,5 +61,14 @@ namespace Suinet.Rpc.Api
         /// <param name="objectId">The ID of the parent object</param>
         /// <returns></returns>
         Task<RpcResult<SuiPage_for_DynamicFieldInfo_and_ObjectID>> GetDynamicFieldsAsync(string objectId);
+
+
+        /// <summary>
+        /// Return the dynamic field object information for a specified object
+        /// </summary>
+        /// <param name="parentObjectId"></param>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
+        Task<RpcResult<SuiObjectRead>> GetDynamicFieldObjectAsync(string parentObjectId, string fieldName);
     }
 }

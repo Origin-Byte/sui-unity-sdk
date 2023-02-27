@@ -11,9 +11,11 @@ namespace Suinet.NftProtocol.Domains
         {
             get
             {
-                return null;
+                return Map.ToDictionary();
             }
         }
+
+        public VecMap<string, string> Map { get; set; }
     }
 
     public class AttributesMap

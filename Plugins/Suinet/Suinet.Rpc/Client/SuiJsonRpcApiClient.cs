@@ -72,6 +72,11 @@ namespace Suinet.Rpc
             return await SendRpcRequestAsync<SuiObjectRead>("sui_getObject", ArgumentBuilder.BuildArguments(objectId));
         }
 
+        public async Task<RpcResult<SuiObjectRead>> GetDynamicFieldObjectAsync(string parentObjectId, string fieldName)
+        {
+            return await SendRpcRequestAsync<SuiObjectRead>("sui_getDynamicFieldObject", ArgumentBuilder.BuildArguments(parentObjectId, fieldName));
+        }
+
         public async Task<RpcResult<IEnumerable<SuiObjectInfo>>> GetObjectsOwnedByAddressAsync(string address)
         {
             return await SendRpcRequestAsync<IEnumerable<SuiObjectInfo>>("sui_getObjectsOwnedByAddress", ArgumentBuilder.BuildArguments(address));
