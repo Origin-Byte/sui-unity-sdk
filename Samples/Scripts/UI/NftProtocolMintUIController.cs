@@ -29,7 +29,7 @@ public class NftProtocolMintUIController : MonoBehaviour
 
     private void Start()
     {
-        NFTMintCapIdField.text = "0xbf4d29d07175fcb83d5e7af19f909e9b87f45e57";
+        NFTMintCapIdField.text = "0xa6feff4e40c90bf34abafed94d523744050df63b";
         TargetWalletAddressInputField.text = SuiWallet.GetActiveAddress();
         
         MintNFTButton.onClick.AddListener(async () =>
