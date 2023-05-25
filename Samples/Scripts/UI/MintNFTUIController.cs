@@ -1,9 +1,12 @@
 using Suinet.Rpc.Types;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Math;
+using Suinet.Wallet;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using BigInteger = System.Numerics.BigInteger;
 
 public class MintNFTUIController : MonoBehaviour
 {
@@ -31,20 +34,20 @@ public class MintNFTUIController : MonoBehaviour
             var function = "mint";
             var typeArgs = System.Array.Empty<string>();
             var args = new object[] { NFTNameInputField.text, NFTDescriptionInputField.text, NFTUrlInputField.text };
-            var gasObjectId = GasObjectIdInputField.text;
-
+            var gasBudget = BigInteger.Parse("1000000");
+            
             NFTMintedText.gameObject.SetActive(false);
-            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasObjectId, 2000);
+            var rpcResult = await SuiApi.Client.MoveCallAsync(signer, packageObjectId, module, function, typeArgs, args, gasBudget);
 
             if (rpcResult.IsSuccess)
             {
                 var keyPair = SuiWallet.GetActiveKeyPair();
 
                 var txBytes = rpcResult.Result.TxBytes;
-                var signature = keyPair.Sign(rpcResult.Result.TxBytes);
-                var pkBase64 = keyPair.PublicKeyBase64;
+                var rawSigner = new RawSigner(keyPair);
+                var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
 
-                var txRpcResult = await SuiApi.Client.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, pkBase64, SuiExecuteTransactionRequestType.WaitForEffectsCert);
+                var txRpcResult = await SuiApi.Client.ExecuteTransactionBlockAsync(txBytes, new[] {signature.Value}, TransactionBlockResponseOptions.ShowAll(), ExecuteTransactionRequestType.WaitForLocalExecution);
                 if (txRpcResult.IsSuccess)
                 {
                     await LoadNFT(NFTUrlInputField.text);

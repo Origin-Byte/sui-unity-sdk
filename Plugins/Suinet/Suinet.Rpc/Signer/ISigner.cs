@@ -6,8 +6,8 @@ namespace Suinet.Rpc.Signer
 {
     public interface ISigner
     {
-        Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteAsync(Func<Task<RpcResult<SuiTransactionBytes>>> method, SuiExecuteTransactionRequestType txRequestType);
+        Task<RpcResult<TransactionBlockResponse>> SignAndExecuteAsync(Func<Task<RpcResult<TransactionBlockBytes>>> method, ExecuteTransactionRequestType txRequestType);
 
-        Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteMoveCallAsync(MoveCallTransaction moveCallTransaction);
+        //Task<RpcResult<TransactionBlockResponse>> SignAndExecuteMoveCallAsync(MoveCallTransaction moveCallTransaction);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace Suinet.Rpc.Types
 {
@@ -11,7 +12,7 @@ namespace Suinet.Rpc.Types
         public IEnumerable<string> TypeArguments { get; set; }
         public IEnumerable<object> Arguments { get; set; }
         public string Gas { get; set; }
-        public ulong GasBudget { get; set; }
-        public SuiExecuteTransactionRequestType RequestType { get; set; }
+        public BigInteger GasBudget { get; set; }
+        public ExecuteTransactionRequestType RequestType { get; set; }
     }
 }

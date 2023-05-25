@@ -13,7 +13,7 @@ namespace Suinet.Faucet
             var airdropRequest = new AirdropRequest(recipient);
             var json = JsonConvert.SerializeObject(airdropRequest);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("https://faucet.devnet.sui.io/gas", content);
+            var response = await httpClient.PostAsync("https://faucet.testnet.sui.io/gas", content);
             return response.IsSuccessStatusCode;
         }
     }

@@ -13,11 +13,23 @@ namespace Suinet.Rpc.Types
                 var jsonString = JsonConvert.SerializeObject(dict);
                 return JsonConvert.DeserializeObject<T>(jsonString);
             }
-            catch(Exception e)
+            catch(Exception)
             {
-                var a = 5;
             }
-            return default(T);
+            return default;
+        }
+
+        public static T ToObject<T>(this Dictionary<string, string> dict)
+        {
+            try
+            {
+                var jsonString = JsonConvert.SerializeObject(dict);
+                return JsonConvert.DeserializeObject<T>(jsonString);
+            }
+            catch (Exception)
+            {
+            }
+            return default;
         }
     }
 }

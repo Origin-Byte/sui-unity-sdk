@@ -19,13 +19,13 @@ public class UIImageFilteredArtNftLoaderForAddress : MonoBehaviour
             int i = 0;
             foreach (var nftData in getObjectRpcResult.Result)
             {
-                var attributes = nftData.Attributes;
-                
-                if (attributes == null || !attributes.ContainsKey(FilterAttributeName) ||
-                    !attributes[FilterAttributeName].Contains(FilterAttributeValue))
-                {
-                    continue;
-                }
+                // var attributes = nftData.Attributes;
+                //
+                // if (attributes == null || !attributes.ContainsKey(FilterAttributeName) ||
+                //     !attributes[FilterAttributeName].Contains(FilterAttributeValue))
+                // {
+                //     continue;
+                // }
                 
                 var imageGo = Instantiate(ImagePrefab, transform);
                 await LoadNFTsAsync(nftData.Url, imageGo);
