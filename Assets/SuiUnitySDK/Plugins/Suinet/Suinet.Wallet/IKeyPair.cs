@@ -12,5 +12,7 @@
         string ToSuiAddress(byte[] publicKeyBytes);
         string Sign(string base64message);
         byte[] Sign(byte[] message);
+
+        SignatureScheme GetKeyScheme();
     }
 }

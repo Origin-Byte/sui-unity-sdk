@@ -2620,8 +2620,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Mint your own awesome random color Deadbytes Nft using OriginByte Nft Protocol,
-    instantly to the target wallet!
+  m_text: Mint your own awesome random color OriginByte Nft, instantly to the target
+    wallet!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8648,7 +8648,7 @@ GameObject:
   - component: {fileID: 881966915}
   - component: {fileID: 881966913}
   m_Layer: 5
-  m_Name: NFTMintCapIdInputField
+  m_Name: NFTPackageIdInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10896,7 +10896,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'MintCap Id:'
+  m_text: 'PackageId:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11714,7 +11714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MintNFTButton: {fileID: 728873855}
   NFTMintedText: {fileID: 279619512}
-  NFTMintCapIdField: {fileID: 881966913}
+  NFTPackageObjectIdField: {fileID: 881966913}
   NFTMintedReadonlyInputField: {fileID: 2136250397}
   TargetWalletAddressInputField: {fileID: 1000176069}
   NFTImage: {fileID: 259002218}

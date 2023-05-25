@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Suinet.Rpc.Types.Converters;
+using Suinet.Rpc.Types.JsonConverters;
 
 namespace Suinet.Rpc.Types
 {
