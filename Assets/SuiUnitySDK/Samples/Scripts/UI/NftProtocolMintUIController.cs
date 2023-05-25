@@ -61,27 +61,37 @@ public class NftProtocolMintUIController : MonoBehaviour
             var mintRpcResult = await nftProtocolClient.MintNftAsync(txParams, null);
             if (mintRpcResult is { IsSuccess: true })
             {
-                // we query the top level nft object
-                var nftId = mintRpcResult.Result.Effects.Created.FirstOrDefault(c => c.Owner.Type == SuiOwnerType.AddressOwner)?.Reference.ObjectId;
-                if (!string.IsNullOrWhiteSpace(nftId))
-                {
-                    var artNftResult = await SuiApi.NftProtocolClient.GetArtNftAsync(nftId);
-                    if (artNftResult.IsSuccess)
-                    {
-                        await LoadNFT(artNftResult.Result.Url);
-                        NFTMintedText.gameObject.SetActive(true);
-                        NFTMintedReadonlyInputField.gameObject.SetActive(true);
+                // let's get the art nft, may have to skip the new coin created 
+                Debug.Log("mintRpcResult status: " + mintRpcResult.Result.Effects.Status.Status);
 
-                        NFTMintedReadonlyInputField.text = "https://explorer.devnet.sui.io/objects/" + nftId;
+                Debug.Log("number of objects created: " + mintRpcResult.Result.Effects.Created.Count);
+                foreach (var createdRef in mintRpcResult.Result.Effects.Created)
+                {
+                    var nftId = createdRef.Reference.ObjectId;
+                    if (!string.IsNullOrWhiteSpace(nftId))
+                    {
+                        await Task.Delay(3000); // wait a bit... leave time to the blockchain to process the transaction
+                        var artNftResult = await SuiApi.NftProtocolClient.GetArtNftAsync(nftId);
+                        if (artNftResult.IsSuccess && artNftResult.Result != null)
+                        {
+                            Debug.Log("this might be good: " + nftId);
+
+                            await LoadNFT(artNftResult.Result.Url);
+                            NFTMintedText.gameObject.SetActive(true);
+                            NFTMintedReadonlyInputField.gameObject.SetActive(true);
+
+                            NFTMintedReadonlyInputField.text = "https://suiexplorer.com/object/" + nftId + "?network=testnet";
+                            return;
+                        }
+                        else
+                        {
+                            Debug.Log("skipping, this is not artnft: " + artNftResult.ErrorMessage);
+                        }
                     }
                     else
                     {
-                        Debug.LogError("Something went wrong with the minting 3: " + artNftResult.ErrorMessage);
+                        Debug.LogError("Something went wrong with the minting 2: " + mintRpcResult.RawRpcResponse);
                     }
-                }
-                else
-                {
-                    Debug.LogError("Something went wrong with the minting 2: " + mintRpcResult.RawRpcResponse);
                 }
             }
             else
