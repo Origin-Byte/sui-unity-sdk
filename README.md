@@ -94,10 +94,10 @@ Now you are ready to execute transactions that require signature.
 Enter any address and see the results as formatted JSON.
 
 ```csharp
-   var address = Input.text;
-	var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
-	var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(address, new ObjectResponseQuery() { Filter = filter }, null, null);
-	Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
+var address = Input.text;
+var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
+var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(address, new ObjectResponseQuery() { Filter = filter }, null, null);
+Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
 ```
 
 ## RPC Move call and execute transaction samples
@@ -109,27 +109,28 @@ This sample code calls a function in a published move package that has a ```coun
 See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmability/examples/basics/sources/counter.move
 
 ```csharp
-    var signer = SuiWallet.GetActiveAddress();
-	var moveCallTx = new MoveCallTransaction()
-	{
-		Signer = signer,
-		PackageObjectId = PackageObjectId,
-		Module = "counter",
-		Function = "increment",
-		TypeArguments = ArgumentBuilder.BuildTypeArguments(),
-		Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
-		Gas =null,
-		GasBudget = 10000000,
-		RequestType = ExecuteTransactionRequestType.WaitForLocalExecution
-	};
-   
-	var moveCallResult = await SuiApi.Client.MoveCallAsync(moveCallTx);
+var signer = SuiWallet.GetActiveAddress();
+var moveCallTx = new MoveCallTransaction()
+{
+	Signer = signer,
+	PackageObjectId = PackageObjectId,
+	Module = "counter",
+	Function = "increment",
+	TypeArguments = ArgumentBuilder.BuildTypeArguments(),
+	Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
+	Gas =null,
+	GasBudget = 10000000,
+	RequestType = ExecuteTransactionRequestType.WaitForLocalExecution
+};
 
-	var txBytes = moveCallResult.Result.TxBytes;
-	var rawSigner = new RawSigner(SuiWallet.GetActiveKeyPair());
-	var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
+var moveCallResult = await SuiApi.Client.MoveCallAsync(moveCallTx);
+
+var txBytes = moveCallResult.Result.TxBytes;
+var rawSigner = new RawSigner(SuiWallet.GetActiveKeyPair());
+var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
   
-	var txResponse = await SuiApi.Client.ExecuteTrans
+var txResponse = await SuiApi.Client.ExecuteTransactionBlockAsync(txBytes, new[] { signature.Value }, TransactionBlockResponseOptions.ShowAll(), ExecuteTransactionRequestType.WaitForLocalExecution); 
+            
 ```
 
 ## Mint Nft using Origin Byte Nft Protocol
@@ -148,28 +149,28 @@ This sample uses a pre-minted collection of [DEADBYTES](https://github.com/tomfu
 3. Mint Nfts by calling NftProtocolClient.MintNftAsync
 
 ```csharp
-    var keypair = SuiWallet.GetActiveKeyPair();
-	var nftProtocolClient = new NftProtocolClient(SuiApi.Client, SuiWallet.GetActiveKeyPair());
+var keypair = SuiWallet.GetActiveKeyPair();
+var nftProtocolClient = new NftProtocolClient(SuiApi.Client, SuiWallet.GetActiveKeyPair());
 
-	var randomFaceIndex = Random.Range(1, 9);
-	var txParams = new MintSuitradersNft()
+var randomFaceIndex = Random.Range(1, 9);
+var txParams = new MintSuitradersNft()
+{
+	Attributes = new Dictionary<string, object>()
 	{
-		Attributes = new Dictionary<string, object>()
-		{
-			{ "nft_type", "face" },
-		},
-		Description = "You can use this as a face of your character in the game!",
-		Recipient = TargetWalletAddressInputField.text,
-		ModuleName =  "suitraders",
-		Function = "airdrop_nft",
-		Name = $"Face {randomFaceIndex}",
-		PackageObjectId = NFTPackageObjectIdField.text,
-		Signer = keypair.PublicKeyAsSuiAddress,
-		Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
-	};
+		{ "nft_type", "face" },
+	},
+	Description = "You can use this as a face of your character in the game!",
+	Recipient = TargetWalletAddressInputField.text,
+	ModuleName =  "suitraders",
+	Function = "airdrop_nft",
+	Name = $"Face {randomFaceIndex}",
+	PackageObjectId = NFTPackageObjectIdField.text,
+	Signer = keypair.PublicKeyAsSuiAddress,
+	Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
+};
 
-	// if we pass null, it will automatically select a gas object
-	var mintRpcResult = await nftProtocolClient.MintNftAsync(txParams, null);
+// if we pass null, it will automatically select a gas object
+var mintRpcResult = await nftProtocolClient.MintNftAsync(txParams, null);
 ```
 
 ## Nft loaders
