@@ -24,7 +24,18 @@ namespace Suinet.Rpc.Types.JsonConverters
 
         public override void WriteJson(JsonWriter writer, Data value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (value is MoveObjectData moveObjectData)
+            {
+                serializer.Serialize(writer, moveObjectData);
+            }
+            else if (value is PackageData packageData)
+            {
+                serializer.Serialize(writer, packageData);
+            }
+            else
+            {
+                throw new JsonSerializationException($"Unsupported type: {value.GetType().FullName}");
+            }
         }
     }
 
