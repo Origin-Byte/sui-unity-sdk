@@ -46,7 +46,7 @@ public class TransactionsUIController : MonoBehaviour
             var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
           
             var txResponse = await SuiApi.Client.ExecuteTransactionBlockAsync(txBytes, new[] { signature.Value }, TransactionBlockResponseOptions.ShowAll(), ExecuteTransactionRequestType.WaitForLocalExecution); 
-            ;
+            
             await RefreshCounter();
         });
         
