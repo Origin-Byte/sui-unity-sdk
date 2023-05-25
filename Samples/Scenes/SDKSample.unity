@@ -7366,9 +7366,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Important: to be able to execute a transaction you need to have SUI coin
-    in your active wallet. We will automatically query for coin objects with balance
-    over 1000.'
+  m_text: 'Important: to be able to execute a transaction you need to have 2 SUI
+    coin objects in your active wallet. There is a slight delay before loading the
+    minted nft image.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
