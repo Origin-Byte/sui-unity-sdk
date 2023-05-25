@@ -3,7 +3,8 @@
     "rootNamespace": "Suinet.NftProtocol",
     "references": [
         "Suinet.Rpc",
-        "Suinet.Rpc.Types"
+        "Suinet.Rpc.Types",
+        "Suinet.Wallet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

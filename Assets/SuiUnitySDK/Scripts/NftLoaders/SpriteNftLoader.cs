@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
 using Suinet.Rpc.Types.MoveTypes;
+using Suinet.Rpc.Types.Nfts;
+using Suinet.Rpc.Types.ObjectDataParsers;
 using UnityEngine;
 
 /// <summary>
@@ -13,13 +15,13 @@ public class SpriteNftLoader : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync<CapyNft>(NftObjectId);
+        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync<CapySuiFren>(NftObjectId, new CapySuiFrenParser());
 
         TargetRenderer.enabled = false;
 
-        if (capyObjectRpcResult.IsSuccess && !string.IsNullOrWhiteSpace(capyObjectRpcResult.Result.Url))
+        if (capyObjectRpcResult.IsSuccess && !string.IsNullOrWhiteSpace(capyObjectRpcResult.Result.Display.ImageUrl))
         {
-            var sceneInfo = await SVGHelper.LoadSVGAsync(capyObjectRpcResult.Result.Url);
+            var sceneInfo = await SVGHelper.LoadSVGAsync(capyObjectRpcResult.Result.Display.ImageUrl);
             TargetRenderer.sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);
             transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
             TargetRenderer.enabled = true;

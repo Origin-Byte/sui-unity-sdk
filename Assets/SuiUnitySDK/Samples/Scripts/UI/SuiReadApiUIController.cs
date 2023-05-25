@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using Suinet.Rpc.Types;
 
 public class SuiReadApiUIController : MonoBehaviour
 {
@@ -16,7 +17,9 @@ public class SuiReadApiUIController : MonoBehaviour
         GetObjectsOwnedByAddressButton.onClick.AddListener(async () =>
         {
             var address = Input.text;
-            var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
+            var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
+            var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(address,
+                new ObjectResponseQuery() { Filter = filter }, null, null);
             Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
         });
     }

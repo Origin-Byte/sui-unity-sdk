@@ -16,10 +16,10 @@ public static class SuiApi
 
     static SuiApi()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
+        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.TESTNET_FULLNODE);
         Client = new SuiJsonRpcApiClient(rpcClient);
         _signer = CreateSigner(Client, SuiWallet.GetActiveKeyPair());
-        NftProtocolClient = new NftProtocolClient(Client, _signer);
+        NftProtocolClient = new NftProtocolClient(Client, SuiWallet.GetActiveKeyPair());
     }
 
     private static ISigner GetSignerForActiveKeyPair()
@@ -28,7 +28,7 @@ public static class SuiApi
         if (_signerKeyPair == activeKeyPair && _signer != null) return _signer;
         
         _signer = CreateSigner(Client, activeKeyPair);
-        NftProtocolClient = new NftProtocolClient(Client, _signer);
+        NftProtocolClient = new NftProtocolClient(Client, SuiWallet.GetActiveKeyPair());
         _signerKeyPair = activeKeyPair;
 
         return _signer;

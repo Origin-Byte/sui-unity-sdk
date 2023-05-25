@@ -17,25 +17,20 @@ namespace Suinet.Rpc.Signer
             _keyPair = keyPair;
         }
 
-        public async Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteAsync(Func<Task<RpcResult<SuiTransactionBytes>>> method,
-            SuiExecuteTransactionRequestType txRequestType)
+        public async Task<RpcResult<TransactionBlockResponse>> SignAndExecuteAsync(Func<Task<RpcResult<TransactionBlockBytes>>> method,
+            ExecuteTransactionRequestType txRequestType)
         {
-            var buildTxCallResult = await method();
-            if (buildTxCallResult.IsSuccess)
-            {
-                var txBytes = buildTxCallResult.Result.TxBytes;
-                var signature = _keyPair.Sign(txBytes);
+            //var buildTxCallResult = await method();
+            //if (buildTxCallResult.IsSuccess)
+            //{
+            //    var txBytes = buildTxCallResult.Result.TxBytes;
+            //    var signature = _keyPair.Sign(txBytes);
 
-                var txResponse = await _rpcApiClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, _keyPair.PublicKeyBase64, txRequestType);
-                return txResponse;
-            }
+            //    var txResponse = await _rpcApiClient.ExecuteTransactionAsync(txBytes, SuiSignatureScheme.ED25519, signature, _keyPair.PublicKeyBase64, txRequestType);
+            //    return txResponse;
+            //}
 
             return null;
-        }
-
-        public async Task<RpcResult<SuiExecuteTransactionResponse>> SignAndExecuteMoveCallAsync(MoveCallTransaction moveCallTransaction)
-        {
-            return await SignAndExecuteAsync(() => _rpcApiClient.MoveCallAsync(moveCallTransaction), moveCallTransaction.RequestType);
         }
     }
 }

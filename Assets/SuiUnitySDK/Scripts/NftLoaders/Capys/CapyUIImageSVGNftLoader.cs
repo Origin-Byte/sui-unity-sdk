@@ -1,4 +1,6 @@
 using Suinet.Rpc.Types.MoveTypes;
+using Suinet.Rpc.Types.Nfts;
+using Suinet.Rpc.Types.ObjectDataParsers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,11 +10,11 @@ public class CapyUIImageSVGNftLoader : MonoBehaviour {
 
     private async void Start()
     {
-        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync<CapyNft>(NftObjectId);
+        var capyObjectRpcResult = await SuiApi.Client.GetObjectAsync<CapySuiFren>(NftObjectId, new CapySuiFrenParser());
 
         if (!capyObjectRpcResult.IsSuccess) return;
         
-        var url =  capyObjectRpcResult.Result.Url;
+        var url =  capyObjectRpcResult.Result.Display.ImageUrl;
         var sceneInfo = await SVGHelper.LoadSVGAsync(url); 
         var image = gameObject.GetComponent<Image>();
         var sprite = SVGHelper.ConvertSVGToSprite(sceneInfo);

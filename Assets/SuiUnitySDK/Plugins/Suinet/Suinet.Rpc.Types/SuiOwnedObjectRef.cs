@@ -2,7 +2,7 @@
 {
     public class SuiOwnedObjectRef
     {
-        public SuiOwner Owner { get; set; }
+        public Owner Owner { get; set; }
 
         public SuiObjectRef Reference { get; set; }
     }

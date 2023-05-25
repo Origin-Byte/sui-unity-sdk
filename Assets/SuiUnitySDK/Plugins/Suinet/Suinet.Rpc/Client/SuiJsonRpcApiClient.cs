@@ -1,19 +1,17 @@
-﻿using Chaos.NaCl;
-using Org.BouncyCastle.Crypto;
-using Suinet.Rpc.Api;
+﻿using Suinet.Rpc.Api;
 using Suinet.Rpc.Client;
 using Suinet.Rpc.Http;
 using Suinet.Rpc.JsonRpc;
 using Suinet.Rpc.Types;
+using Suinet.Rpc.Types.MoveTypes;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace Suinet.Rpc
 {
-    public partial class SuiJsonRpcApiClient : IReadApi, ITransactionBuilderApi, IQuorumDriverApi, IEventReadApi
+    public partial class SuiJsonRpcApiClient : IReadApi, IExtendedApi, IWriteApi, IMoveUtils, IGovernanceReadApi, ICoinQueryApi, ITransactionBuilderApi
     {
         private readonly IRpcClient _rpcClient;
 
@@ -39,122 +37,219 @@ namespace Suinet.Rpc
             return await _rpcClient.SendAsync<T>(request);
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> BatchTransactionAsync(string signer, IEnumerable<object> singleTransactionParams, string gas, ulong gasBudget)
+        public async Task<RpcResult<SuiObjectResponse>> GetDynamicFieldObjectAsync(string parentObjectId, DynamicFieldName fieldName)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_batchTransaction", ArgumentBuilder.BuildArguments(signer, singleTransactionParams, gas, gasBudget));
+            return await SendRpcRequestAsync<SuiObjectResponse>("suix_getDynamicFieldObject", ArgumentBuilder.BuildArguments(parentObjectId, fieldName));
         }
 
-        public async Task<RpcResult<SuiExecuteTransactionResponse>> ExecuteTransactionAsync(string txBytes, SuiSignatureScheme sigScheme, string signature, string pubKey, SuiExecuteTransactionRequestType suiExecuteTransactionRequestType)
+        public async Task<RpcResult<BigInteger>> GetTotalTransactionBlocksAsync()
         {
-            // Todo refact this logic from here
-            var signatureBytes = CryptoBytes.FromBase64String(signature);
-            var publicKeyBytes = CryptoBytes.FromBase64String(pubKey);
-            var finalSignatureBytes = new byte[signatureBytes.Length + 1 + publicKeyBytes.Length];
-
-            finalSignatureBytes[0] = SignatureSchemeToByte(sigScheme);
-            Array.Copy(signatureBytes, 0, finalSignatureBytes, 1, signatureBytes.Length);
-            Array.Copy(publicKeyBytes, 0, finalSignatureBytes, signatureBytes.Length + 1, publicKeyBytes.Length);
-
-            var serializedSignature = CryptoBytes.ToBase64String(finalSignatureBytes);
-
-            return await SendRpcRequestAsync<SuiExecuteTransactionResponse>("sui_executeTransaction", ArgumentBuilder.BuildArguments(txBytes, serializedSignature, suiExecuteTransactionRequestType));
+            return await SendRpcRequestAsync<BigInteger>("sui_getTotalTransactionBlocks");
         }
 
-        byte SignatureSchemeToByte(SuiSignatureScheme suiSignatureScheme)
+        public async Task<RpcResult<TransactionBlockResponse>> GetTransactionBlockAsync(string digest)
         {
-            if (suiSignatureScheme == SuiSignatureScheme.ED25519) return 0;
-
-            return 1;
+            return await SendRpcRequestAsync<TransactionBlockResponse>("sui_getTransactionBlock", ArgumentBuilder.BuildArguments(digest));
         }
 
-        public async Task<RpcResult<SuiObjectRead>> GetObjectAsync(string objectId)
+        public async Task<RpcResult<TransactionBlockBytes>> MoveCallAsync(string signer, string packageObjectId, string module, string function, IEnumerable<string> typeArguments, IEnumerable<object> arguments, BigInteger gasBudget, string gas = null)
         {
-            return await SendRpcRequestAsync<SuiObjectRead>("sui_getObject", ArgumentBuilder.BuildArguments(objectId));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_moveCall", ArgumentBuilder.BuildArguments(signer, packageObjectId, module, function, typeArguments, SuiJsonSanitizer.SanitizeArguments(arguments), gas, gasBudget.ToString()));
         }
 
-        public async Task<RpcResult<SuiObjectRead>> GetDynamicFieldObjectAsync(string parentObjectId, string fieldName)
+        public async Task<RpcResult<TransactionBlockBytes>> MoveCallAsync(MoveCallTransaction transactionParams)
         {
-            return await SendRpcRequestAsync<SuiObjectRead>("sui_getDynamicFieldObject", ArgumentBuilder.BuildArguments(parentObjectId, fieldName));
+            return await MoveCallAsync(transactionParams.Signer, transactionParams.PackageObjectId, transactionParams.Module, transactionParams.Function, transactionParams.TypeArguments, transactionParams.Arguments, transactionParams.GasBudget, transactionParams.Gas);
         }
 
-        public async Task<RpcResult<IEnumerable<SuiObjectInfo>>> GetObjectsOwnedByAddressAsync(string address)
+        public async Task<RpcResult<TransactionBlockBytes>> TransferObjectAsync(string signer, string objectId, string gas, ulong gasBudget, string recipient)
         {
-            return await SendRpcRequestAsync<IEnumerable<SuiObjectInfo>>("sui_getObjectsOwnedByAddress", ArgumentBuilder.BuildArguments(address));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_transferObject", ArgumentBuilder.BuildArguments(signer, objectId, gas, gasBudget, recipient));
         }
 
-        public async Task<RpcResult<IEnumerable<SuiObjectInfo>>> GetObjectsOwnedByObjectAsync(string objectId)
+        public async Task<RpcResult<TransactionBlockBytes>> TransferSuiAsync(string signer, string suiObjectId, ulong gasBudget, string recipient, ulong amount)
         {
-            return await SendRpcRequestAsync<IEnumerable<SuiObjectInfo>>("sui_getObjectsOwnedByObject", ArgumentBuilder.BuildArguments(objectId));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_transferSui", ArgumentBuilder.BuildArguments(signer, suiObjectId, gasBudget, recipient, amount));
         }
 
-        public async Task<RpcResult<IEnumerable<(ulong, string)>>> GetRecentTransactionsAsync(ulong count)
+        public async Task<RpcResult<TransactionBlockBytes>> MergeCoinsAsync(string signer, string primaryCoinId, string coinToMergeId, string gas, ulong gasBudget)
         {
-            return await SendRpcRequestAsync<IEnumerable<(ulong, string)>>("sui_getRecentTransactions", ArgumentBuilder.BuildArguments(count));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_mergeCoins", ArgumentBuilder.BuildArguments(signer, primaryCoinId, coinToMergeId, gas, gasBudget));
         }
 
-        public async Task<RpcResult<ulong>> GetTotalTransactionNumberAsync()
+        public async Task<RpcResult<TransactionBlockBytes>> SplitCoinAsync(string signer, string coinObjectId, IEnumerable<ulong> splitAmounts, string gas, ulong gasBudget)
         {
-            return await SendRpcRequestAsync<ulong>("sui_getTotalTransactionNumber");
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_splitCoin", ArgumentBuilder.BuildArguments(signer, coinObjectId, splitAmounts, gas, gasBudget));
         }
 
-        public async Task<RpcResult<SuiTransactionResponse>> GetTransactionAsync(string digest)
+        public async Task<RpcResult<TransactionBlockBytes>> SplitCoinEqualAsync(string signer, string coinObjectId, ulong splitCount, string gas, ulong gasBudget)
         {
-            return await SendRpcRequestAsync<SuiTransactionResponse>("sui_getTransaction", ArgumentBuilder.BuildArguments(digest));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_splitCoinEqual", ArgumentBuilder.BuildArguments(signer, coinObjectId, splitCount, gas, gasBudget));
         }
 
-        public async Task<RpcResult<IEnumerable<(ulong, string)>>> GetTransactionsInRangeAsync(ulong start, ulong end)
+        public async Task<RpcResult<TransactionBlockBytes>> PayAsync(string signer, IEnumerable<string> inputCoins, IEnumerable<string> recipients, IEnumerable<ulong> amounts, string gas, ulong gasBudget)
         {
-            return await SendRpcRequestAsync<IEnumerable<(ulong, string)>>("sui_getTransactionsInRange", ArgumentBuilder.BuildArguments(start, end));
+            return await SendRpcRequestAsync<TransactionBlockBytes>("unsafe_pay", ArgumentBuilder.BuildArguments(signer, inputCoins, recipients, amounts, gas, gasBudget));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(string signer, string packageObjectId, string module, string function, IEnumerable<string> typeArguments, IEnumerable<object> arguments, string gas, ulong gasBudget)
+        public async Task<RpcResult<Page_for_Event_and_EventID>> QueryEventsAsync(EventFilter query, EventId cursor, ulong? limit, bool descendingOrder = false)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_moveCall", ArgumentBuilder.BuildArguments(signer, packageObjectId, module, function, typeArguments, SuiJsonSanitizer.SanitizeArguments(arguments), gas, gasBudget));
+            return await SendRpcRequestAsync<Page_for_Event_and_EventID>("suix_queryEvents", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> MoveCallAsync(MoveCallTransaction transactionParams)
+        public async Task<RpcResult<Page_for_DynamicFieldInfo_and_ObjectID>> GetDynamicFieldsAsync(string objectId)
         {
-            return await MoveCallAsync(transactionParams.Signer, transactionParams.PackageObjectId, transactionParams.Module, transactionParams.Function, transactionParams.TypeArguments, transactionParams.Arguments, transactionParams.Gas, transactionParams.GasBudget);
+            return await SendRpcRequestAsync<Page_for_DynamicFieldInfo_and_ObjectID>("sui_getDynamicFields", ArgumentBuilder.BuildArguments(objectId));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> TransferObjectAsync(string signer, string objectId, string gas, ulong gasBudget, string recipient)
+        public async Task<RpcResult<TransactionBlockResponse>> GetTransactionBlockAsync(string digest, TransactionBlockResponseOptions options)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_transferObject", ArgumentBuilder.BuildArguments(signer, objectId, gas, gasBudget, recipient));
+            return await SendRpcRequestAsync<TransactionBlockResponse>("sui_getTransactionBlock", ArgumentBuilder.BuildArguments(digest, options));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> TransferSuiAsync(string signer, string suiObjectId, ulong gasBudget, string recipient, ulong amount)
+        public Task<RpcResult<TransactionBlockResponse[]>> GetTransactionBlocksAsync(IEnumerable<string> digests, TransactionBlockResponseOptions options)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_transferSui", ArgumentBuilder.BuildArguments(signer, suiObjectId, gasBudget, recipient, amount));
+            throw new NotImplementedException();
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> MergeCoinsAsync(string signer, string primaryCoinId, string coinToMergeId, string gas, ulong gasBudget)
+        public async Task<RpcResult<IEnumerable<SuiObjectResponse>>> GetObjectsAsync(IEnumerable<string> objectIds, ObjectDataOptions options)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_mergeCoins", ArgumentBuilder.BuildArguments(signer, primaryCoinId, coinToMergeId, gas, gasBudget));
+            return await SendRpcRequestAsync<IEnumerable<SuiObjectResponse>>("sui_multiGetObjects", ArgumentBuilder.BuildArguments(objectIds, options));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> SplitCoinAsync(string signer, string coinObjectId, IEnumerable<ulong> splitAmounts, string gas, ulong gasBudget)
+        public async Task<RpcResult<SuiObjectResponse>> GetObjectAsync(string objectId, ObjectDataOptions options)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_splitCoin", ArgumentBuilder.BuildArguments(signer, coinObjectId, splitAmounts, gas, gasBudget));
+            return await SendRpcRequestAsync<SuiObjectResponse>("sui_getObject", ArgumentBuilder.BuildArguments(objectId, options));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> SplitCoinEqualAsync(string signer, string coinObjectId, ulong splitCount, string gas, ulong gasBudget)
+        public async Task<RpcResult<Checkpoint>> GetCheckpointAsync(string id)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_splitCoinEqual", ArgumentBuilder.BuildArguments(signer, coinObjectId, splitCount, gas, gasBudget));
+            return await SendRpcRequestAsync<Checkpoint>("sui_getCheckpoint", ArgumentBuilder.BuildArguments(id));
         }
 
-        public async Task<RpcResult<SuiTransactionBytes>> PayAsync(string signer, IEnumerable<string> inputCoins, IEnumerable<string> recipients, IEnumerable<ulong> amounts, string gas, ulong gasBudget)
+        public async Task<RpcResult<Page_for_Checkpoint_and_BigInteger>> SuiGetCheckpointsAsync(string cursor, ulong? limit, bool isDescending)
         {
-            return await SendRpcRequestAsync<SuiTransactionBytes>("sui_pay", ArgumentBuilder.BuildArguments(signer, inputCoins, recipients, amounts, gas, gasBudget));
+            return await SendRpcRequestAsync<Page_for_Checkpoint_and_BigInteger>("sui_getCheckpoints", ArgumentBuilder.BuildArguments(cursor, limit, isDescending));
         }
 
-        public async Task<RpcResult<SuiPage_for_EventEnvelope_and_EventID>> GetEventsAsync(ISuiEventQuery query, SuiEventId cursor, ulong limit, bool descendingOrder = false)
+        public async Task<RpcResult<SuiEvent[]>> GetEventsAsync(string txDigest)
         {
-            return await SendRpcRequestAsync<SuiPage_for_EventEnvelope_and_EventID>("sui_getEvents", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
+            return await SendRpcRequestAsync<SuiEvent[]>("sui_getEvents", ArgumentBuilder.BuildArguments(txDigest));
         }
 
-        public async Task<RpcResult<SuiPage_for_DynamicFieldInfo_and_ObjectID>> GetDynamicFieldsAsync(string objectId)
+        public async Task<RpcResult<BigInteger>> GetLatestCheckpointSequenceNumberAsync()
         {
-            return await SendRpcRequestAsync<SuiPage_for_DynamicFieldInfo_and_ObjectID>("sui_getDynamicFields", ArgumentBuilder.BuildArguments(objectId));
+            return await SendRpcRequestAsync<BigInteger>("sui_getLatestCheckpointSequenceNumber");
+        }
+
+        public Task<RpcResult<SuiLoadedChildObjectsResponse>> GetLoadedChildObjectsAsync(string txDigest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<RpcResult<Page_for_SuiObjectResponse_and_ObjectID>> GetOwnedObjectsAsync(string address, ObjectResponseQuery query, string cursor, ulong? limit)
+        {
+            return await SendRpcRequestAsync<Page_for_SuiObjectResponse_and_ObjectID>("suix_getOwnedObjects", ArgumentBuilder.BuildArguments(address, query, cursor, limit));
+        }
+
+        public Task<RpcResult<SuiPage_for_TransactionBlockResponse_and_TransactionDigest>> QueryTransactionBlocksAsync(TransactionBlockResponseQuery query, EventId cursor, ulong? limit, bool? descendingOrder = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<string>> ResolveNameServiceAddressAsync(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiDevInspectResults>> DevInspectTransactionBlockAsync(string senderAddress, string txBytes, ulong? gasPrice, ulong? epoch)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiDryRunTransactionBlockResponse>> DryRunTransactionBlockAsync(string txBytes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<RpcResult<TransactionBlockResponse>> ExecuteTransactionBlockAsync(string txBytes, IEnumerable<string> serializedSignatures, TransactionBlockResponseOptions options, ExecuteTransactionRequestType requestType)
+        {
+            return await SendRpcRequestAsync<TransactionBlockResponse>("sui_executeTransactionBlock", ArgumentBuilder.BuildArguments(txBytes, serializedSignatures, options, requestType));
+        }
+
+        public Task<RpcResult<MoveFunctionArgType[]>> GetMoveFunctionArgTypesAsync(string packageId, string module, string function)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiMoveNormalizedFunction>> GetNormalizedMoveFunctionAsync(string packageId, string module, string function)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiMoveNormalizedModule>> GetNormalizedMoveModuleAsync(string packageId, string module)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<Dictionary<string, SuiMoveNormalizedModule>>> GetNormalizedMoveModulesByPackageAsync(string packageId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiMoveNormalizedStruct>> GetNormalizedMoveStructAsync(string packageId, string module, string structName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiSystemStateSummary>> GetLatestSuiSystemStateAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<ulong>> GetReferenceGasPriceAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiDelegatedStake>> GetStakesAsync(string address)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiDelegatedStake[]>> GetStakesByIdsAsync(IEnumerable<string> objectIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<ValidatorApys>> GetValidatorsApy()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<RpcResult<Page_for_DynamicFieldInfo_and_ObjectID>> GetDynamicFieldsAsync(string parentObjectId, string cursor, ulong? limit)
+        {
+            return await SendRpcRequestAsync<Page_for_DynamicFieldInfo_and_ObjectID>("suix_getDynamicFields", ArgumentBuilder.BuildArguments(parentObjectId, cursor, limit));
+        }
+
+        public Task<RpcResult<Balance[]>> GetAllBalancesAsync(string ownerAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RpcResult<SuiPage_for_Coin_and_ObjectID>> GetAllCoinsAsync(string ownerAddress, string cursor, ulong limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<RpcResult<Balance>> GetBalanceAsync(string ownerAddress, string coinType)
+        {
+            return await SendRpcRequestAsync<Balance>("suix_getBalance", ArgumentBuilder.BuildArguments(ownerAddress, coinType));
+        }
+
+        public Task<RpcResult<TransactionBlockBytes>> BatchTransactionAsync(string signer, IEnumerable<object> singleTransactionParams, string gas, ulong gasBudget)
+        {
+            throw new NotImplementedException();
         }
     }
 

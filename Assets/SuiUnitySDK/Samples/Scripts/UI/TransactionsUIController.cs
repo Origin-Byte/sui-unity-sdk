@@ -33,12 +33,13 @@ public class TransactionsUIController : MonoBehaviour
                 Function = "increment",
                 TypeArguments = ArgumentBuilder.BuildTypeArguments(),
                 Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
-                Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
-                GasBudget = 5000,
-                RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
+                Gas =null,
+                GasBudget = 1000000,
+                RequestType = ExecuteTransactionRequestType.WaitForLocalExecution
             };
            
-            await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
+            // TODO execute
+            //await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
             await RefreshCounter();
         });
         
@@ -52,10 +53,10 @@ public class TransactionsUIController : MonoBehaviour
 
     private async Task RefreshCounter()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.DEVNET_ENDPOINT);
+        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.TESTNET_FULLNODE);
         var suiJsonRpcApi = new SuiJsonRpcApiClient(rpcClient);
 
-        var rpcResult = await suiJsonRpcApi.GetObjectAsync(SharedCounterObjectId);
+        var rpcResult = await suiJsonRpcApi.GetObjectAsync(SharedCounterObjectId, ObjectDataOptions.ShowAll());
         Output.text = JsonConvert.SerializeObject(rpcResult.Result, formatting: Formatting.Indented);
     }
 }
