@@ -26,11 +26,9 @@ public class NftProtocolMintUIController : MonoBehaviour
 
     public Image NFTImage;
     
-    private const string SAMPLE_SIGNER_MNEMONIC = "bus indicate leave science minor clip embrace faculty wink industry addict track soup burger scissors another enrich muscle loop fever vacuum buyer paddle roof";
-
     private void Start()
     {
-        NFTPackageObjectIdField.text = "0x116c6862df1e71aa13a88e34b460cfdd46d3fc21bbe64df546faea7251b25dce";
+        NFTPackageObjectIdField.text = "0xb11eda772add7178d97d98fbcb5dc73ea1afec0bb94705416c43efdbedba6e4b";
         TargetWalletAddressInputField.text = SuiWallet.GetActiveAddress();
         
         MintNFTButton.onClick.AddListener(async () =>
@@ -38,9 +36,9 @@ public class NftProtocolMintUIController : MonoBehaviour
             NFTMintedText.gameObject.SetActive(false);
             NFTMintedReadonlyInputField.gameObject.SetActive(false);
 
-            // we can sign the mint transaction with the wallet that deployed the contract
-            var signerKeyPair = Mnemonics.GetKeypairFromMnemonic(SAMPLE_SIGNER_MNEMONIC);
-            var nftProtocolClient = new NftProtocolClient(SuiApi.Client, signerKeyPair);
+            // anyone can mint from this contract
+            var keypair = SuiWallet.GetActiveKeyPair();
+            var nftProtocolClient = new NftProtocolClient(SuiApi.Client, SuiWallet.GetActiveKeyPair());
 
             var randomFaceIndex = Random.Range(1, 9);
             var txParams = new MintSuitradersNft()
@@ -55,7 +53,7 @@ public class NftProtocolMintUIController : MonoBehaviour
                 Function = "airdrop_nft",
                 Name = $"Face {randomFaceIndex}",
                 PackageObjectId = NFTPackageObjectIdField.text,
-                Signer = signerKeyPair.PublicKeyAsSuiAddress,
+                Signer = keypair.PublicKeyAsSuiAddress,
                 Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
             };
 

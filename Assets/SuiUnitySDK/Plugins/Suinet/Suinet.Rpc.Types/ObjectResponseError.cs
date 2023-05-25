@@ -1,7 +1,10 @@
-﻿using System.Numerics;
+﻿using Newtonsoft.Json;
+using Suinet.Rpc.Types.JsonConverters;
+using System.Numerics;
 
 namespace Suinet.Rpc.Types
 {
+    [JsonConverter(typeof(ObjectResponseErrorJsonConverter))]
     public abstract class ObjectResponseError
     {
         public string Code { get; set; }

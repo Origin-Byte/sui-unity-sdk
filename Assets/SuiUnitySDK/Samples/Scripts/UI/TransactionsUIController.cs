@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Suinet.Rpc;
 using Suinet.Rpc.Types;
 using System.Threading.Tasks;
+using Suinet.Wallet;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,8 +18,8 @@ public class TransactionsUIController : MonoBehaviour
 
     public TMP_InputField Output;
 
-    private string SharedCounterObjectId = "0x823bfc13ccfbf4156d2d724e6b9f8286c2171f69";
-    private string PackageObjectId = "0xf637e0486b7d7fb3d7c6fd97639731bb5bd5e3c0";
+    private string SharedCounterObjectId = "0xab86eab42d95c987c879fb53292fa47210e30190524e07e4cf7aa9930446b538";
+    private string PackageObjectId = "0x116c6862df1e71aa13a88e34b460cfdd46d3fc21bbe64df546faea7251b25dce";
 
     private async void Start()
     {
@@ -34,12 +35,18 @@ public class TransactionsUIController : MonoBehaviour
                 TypeArguments = ArgumentBuilder.BuildTypeArguments(),
                 Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
                 Gas =null,
-                GasBudget = 1000000,
+                GasBudget = 10000000,
                 RequestType = ExecuteTransactionRequestType.WaitForLocalExecution
             };
            
-            // TODO execute
-            //await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
+            var moveCallResult = await SuiApi.Client.MoveCallAsync(moveCallTx);
+
+            var txBytes = moveCallResult.Result.TxBytes;
+            var rawSigner = new RawSigner(SuiWallet.GetActiveKeyPair());
+            var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
+          
+            var txResponse = await SuiApi.Client.ExecuteTransactionBlockAsync(txBytes, new[] { signature.Value }, TransactionBlockResponseOptions.ShowAll(), ExecuteTransactionRequestType.WaitForLocalExecution); 
+            ;
             await RefreshCounter();
         });
         
