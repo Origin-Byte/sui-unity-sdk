@@ -5,6 +5,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 # Features
 - For Rpc clients’ direct interaction with the Sui JSON-RPC https://docs.sui.io/sui-jsonrpc
     - Read API
+	- Write API
     - Event Read API
     - Transaction Builder Api
     - Event streaming support
@@ -15,11 +16,12 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
         - [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) : Universal private key derivation from master private key also supported
     - Sign transactions
     - Store key pair in PlayerPrefs
-- Interact with Origin Byte Nft Protocol (0.22) https://github.com/Origin-Byte/nft-protocol
+- Interact with Origin Byte Nft Protocol (1.1.0) https://github.com/Origin-Byte/nft-protocol
 - Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 0.27.0 devnet
+- Samples are using Sui 1.2.0 testnet
+- Please note, some of the samples are being updated!
 
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 
@@ -92,8 +94,10 @@ Now you are ready to execute transactions that require signature.
 Enter any address and see the results as formatted JSON.
 
 ```csharp
-    var ownedObjectsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(address);
-    Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
+   var address = Input.text;
+	var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
+	var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(address, new ObjectResponseQuery() { Filter = filter }, null, null);
+	Ouput.text = JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
 ```
 
 ## RPC Move call and execute transaction samples
@@ -106,20 +110,26 @@ See move logic here: https://github.com/MystenLabs/sui/blob/main/sui_programmabi
 
 ```csharp
     var signer = SuiWallet.GetActiveAddress();
-    var moveCallTx = new MoveCallTransaction()
-    {
-        Signer = signer,
-        PackageObjectId = "0x2554106d7db01830b6ecb0571c489de4a3999163",
-        Module = "counter",
-        Function = "increment",
-        TypeArguments = ArgumentBuilder.BuildTypeArguments(),
-        Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
-        Gas = (await SuiHelper.GetCoinObjectIdsAboveBalancesOwnedByAddressAsync(SuiApi.Client, signer, 1, 10000))[0],
-        GasBudget = 5000,
-        RequestType = SuiExecuteTransactionRequestType.WaitForEffectsCert
-    };
-    
-    await SuiApi.Signer.SignAndExecuteMoveCallAsync(moveCallTx);
+	var moveCallTx = new MoveCallTransaction()
+	{
+		Signer = signer,
+		PackageObjectId = PackageObjectId,
+		Module = "counter",
+		Function = "increment",
+		TypeArguments = ArgumentBuilder.BuildTypeArguments(),
+		Arguments = ArgumentBuilder.BuildArguments( SharedCounterObjectId ),
+		Gas =null,
+		GasBudget = 10000000,
+		RequestType = ExecuteTransactionRequestType.WaitForLocalExecution
+	};
+   
+	var moveCallResult = await SuiApi.Client.MoveCallAsync(moveCallTx);
+
+	var txBytes = moveCallResult.Result.TxBytes;
+	var rawSigner = new RawSigner(SuiWallet.GetActiveKeyPair());
+	var signature = rawSigner.SignData(Intent.GetMessageWithIntent(txBytes));
+  
+	var txResponse = await SuiApi.Client.ExecuteTrans
 ```
 
 ## Mint Nft using Origin Byte Nft Protocol
@@ -134,30 +144,27 @@ This sample uses a pre-minted collection of [DEADBYTES](https://github.com/tomfu
 
 
 ### Setup your collection
-1. Publish https://github.com/tomfurrier/nft-protocol/blob/dead-bytes/sources/collection/deadbytes.move or a similar, std_collection. More information about the [nft protocol](https://github.com/Origin-Byte/nft-protocol) .
-2. update the MintCapId and signer if needed
+1. Publish https://github.com/tomfurrier/nft-protocol/blob/main/example_collections/examples/sources/suitraders.move or a similar. More information about the [nft protocol](https://github.com/Origin-Byte/nft-protocol) .
 3. Mint Nfts by calling NftProtocolClient.MintNftAsync
 
 ```csharp
-    // we can sign the mint transaction with the wallet that deployed the contract
-	var signerKeyPair = Mnemonics.GetKeypairFromMnemonic(SAMPLE_SIGNER_MNEMONIC);
-	var signer = new Signer(SuiApi.Client, signerKeyPair);
-	var nftProtocolClient = new NftProtocolClient(SuiApi.Client, signer);
+    var keypair = SuiWallet.GetActiveKeyPair();
+	var nftProtocolClient = new NftProtocolClient(SuiApi.Client, SuiWallet.GetActiveKeyPair());
 
 	var randomFaceIndex = Random.Range(1, 9);
-	var txParams = new MintNft()
+	var txParams = new MintSuitradersNft()
 	{
 		Attributes = new Dictionary<string, object>()
 		{
 			{ "nft_type", "face" },
 		},
 		Description = "You can use this as a face of your character in the game!",
-		MintCap = NFTMintCapIdField.text,
 		Recipient = TargetWalletAddressInputField.text,
-		ModuleName =  deadBytesType.Module,
+		ModuleName =  "suitraders",
+		Function = "airdrop_nft",
 		Name = $"Face {randomFaceIndex}",
-		PackageObjectId = mintCapType.PackageId,
-		Signer = signerKeyPair.PublicKeyAsSuiAddress,
+		PackageObjectId = NFTPackageObjectIdField.text,
+		Signer = keypair.PublicKeyAsSuiAddress,
 		Url = $"https://suiunitysdksample.blob.core.windows.net/nfts/face{randomFaceIndex}.png"
 	};
 
@@ -216,7 +223,6 @@ Dependencies used by the Samples can be found in ./Assets/SuiUnitySDK/Samples/Pl
 - Mobile platform support (iOS, Android)
 - WalletConnect
 - Streaming RPC client, Event subscription
-- Secp256k1 keypair support
 - More samples
 - Origin-Byte NFT ecosystem access from Unity
 - Higher level APIs, easy-to-use Prefabs 
