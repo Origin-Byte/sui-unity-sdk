@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Suinet.Rpc.Types
@@ -12,13 +13,11 @@ namespace Suinet.Rpc.Types
 
     public class TransactionEventFilter : EventFilter
     {
-       
         public string Transaction { get; set; }
     }
 
     public class PackageEventFilter : EventFilter
     {
-       
         public ObjectId Package { get; set; }
     }
 
@@ -29,10 +28,10 @@ namespace Suinet.Rpc.Types
 
         public class MoveModuleType
         {
-           
+            [JsonProperty("module")]  
             public string Module { get; set; }
 
-           
+            [JsonProperty("package")]           
             public ObjectId Package { get; set; }
         }
     }
@@ -50,11 +49,12 @@ namespace Suinet.Rpc.Types
 
         public class MoveEventFieldType
         {
-           
+            [JsonProperty("path")]
             public string Path { get; set; }
 
             // `value` in the schema is set to `true`. This might need to be adjusted
-           
+
+            [JsonProperty("value")]
             public bool Value { get; set; }
         }
     }
@@ -66,10 +66,10 @@ namespace Suinet.Rpc.Types
 
         public class TimeRangeType
         {
-           
+            [JsonProperty("endTime")]  
             public BigInteger EndTime { get; set; }
 
-           
+            [JsonProperty("startTime")]
             public BigInteger StartTime { get; set; }
         }
     }
