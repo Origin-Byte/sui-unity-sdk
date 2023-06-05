@@ -34,7 +34,7 @@ namespace Suinet.Rpc.Types
 
     public class SuiTransferObjectsTransaction : SuiTransaction
     {
-        public List<List<SuiArgument>> TransferObjects { get; set; }
+        public List<object> TransferObjects { get; set; }
 
         public SuiTransferObjectsTransaction()
         {
@@ -44,7 +44,7 @@ namespace Suinet.Rpc.Types
 
     public class SplitCoinsTransaction : SuiTransaction
     {
-        public List<List<SuiArgument>> SplitCoins { get; set; }
+        public List<object> SplitCoins { get; set; }
 
         public SplitCoinsTransaction()
         {
@@ -54,7 +54,7 @@ namespace Suinet.Rpc.Types
 
     public class MergeCoinsTransaction : SuiTransaction
     {
-        public List<List<SuiArgument>> MergeCoins { get; set; }
+        public List<object> MergeCoins { get; set; }
 
         public MergeCoinsTransaction()
         {
@@ -84,7 +84,7 @@ namespace Suinet.Rpc.Types
 
     public class SuiMakeMoveVecTransaction : SuiTransaction
     {
-        public List<List<SuiArgument>> MakeMoveVec { get; set; }
+        public List<object> MakeMoveVec { get; set; }
 
         public SuiMakeMoveVecTransaction()
         {

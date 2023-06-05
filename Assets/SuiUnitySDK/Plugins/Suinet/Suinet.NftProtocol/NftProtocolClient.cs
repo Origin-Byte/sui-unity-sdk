@@ -129,5 +129,11 @@ namespace Suinet.NftProtocol
                 }
             }
         }
+
+        public async Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsFromKioskAsync(string kioskId)
+        {
+            throw new NotImplementedException();
+            //var kiosk = await 
+        }
     }
 }

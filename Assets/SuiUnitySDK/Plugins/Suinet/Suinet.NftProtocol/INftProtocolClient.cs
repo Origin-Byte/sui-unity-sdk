@@ -31,5 +31,7 @@ namespace Suinet.NftProtocol
         /// <param name="withDomains"></param>
         /// <returns></returns>
         Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsOwnedByAddressAsync(string address, params Type[] withDomains);
+
+        Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsFromKioskAsync(string kioskId);
     }
 }

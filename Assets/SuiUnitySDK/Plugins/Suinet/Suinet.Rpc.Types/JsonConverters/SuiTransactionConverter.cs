@@ -26,24 +26,27 @@ namespace Suinet.Rpc.Types.JsonConverters
             }
             else if (jo["TransferObjects"] != null)
             {
-                return new SuiTransferObjectsTransaction
+                var transferObjectsTransaction = new SuiTransferObjectsTransaction
                 {
-                    TransferObjects = jo["TransferObjects"].ToObject<List<List<SuiArgument>>>()
+                    TransferObjects = ConvertTransactionArguments(jo["TransferObjects"], serializer)
                 };
+                return transferObjectsTransaction;
             }
             else if (jo["SplitCoins"] != null)
             {
-                return new SplitCoinsTransaction
+                var splitCoinsTransaction = new SplitCoinsTransaction
                 {
-                    SplitCoins = jo["SplitCoins"].ToObject<List<List<SuiArgument>>>()
+                    SplitCoins = ConvertTransactionArguments(jo["SplitCoins"], serializer)
                 };
+                return splitCoinsTransaction;
             }
             else if (jo["MergeCoins"] != null)
             {
-                return new MergeCoinsTransaction
+                var mergeCoinsTransaction = new MergeCoinsTransaction
                 {
-                    MergeCoins = jo["MergeCoins"].ToObject<List<List<SuiArgument>>>()
+                    MergeCoins = ConvertTransactionArguments(jo["MergeCoins"], serializer)
                 };
+                return mergeCoinsTransaction;
             }
             else if (jo["Publish"] != null)
             {
@@ -61,16 +64,43 @@ namespace Suinet.Rpc.Types.JsonConverters
             }
             else if (jo["MakeMoveVec"] != null)
             {
-                return new SuiMakeMoveVecTransaction
+                var makeMoveVecTransaction = new SuiMakeMoveVecTransaction
                 {
-                    MakeMoveVec = jo["MakeMoveVec"].ToObject<List<List<SuiArgument>>>()
+                    MakeMoveVec = ConvertTransactionArguments(jo["MakeMoveVec"], serializer)
                 };
+                return makeMoveVecTransaction;
             }
             else
             {
                 throw new JsonSerializationException();
             }
         }
+
+        private List<object> ConvertTransactionArguments(JToken argumentsToken, JsonSerializer serializer)
+        {
+            var arguments = new List<object>();
+
+            foreach (var token in argumentsToken)
+            {
+                switch (token.Type)
+                {
+                    case JTokenType.String:
+                        arguments.Add(token.ToObject<string>());
+                        break;
+                    case JTokenType.Array:
+                        arguments.Add(token.ToObject<List<SuiArgument>>(serializer));
+                        break;
+                    case JTokenType.Object:
+                        arguments.Add(token.ToObject<SuiArgument>(serializer));
+                        break;
+                    default:
+                        throw new Exception("Unexpected token type: " + token.Type);
+                }
+            }
+
+            return arguments;
+        }
+
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

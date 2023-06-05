@@ -37,11 +37,6 @@ namespace Suinet.Rpc
             return await _rpcClient.SendAsync<T>(request);
         }
 
-        public async Task<RpcResult<SuiObjectResponse>> GetDynamicFieldObjectAsync(string parentObjectId, DynamicFieldName fieldName)
-        {
-            return await SendRpcRequestAsync<SuiObjectResponse>("suix_getDynamicFieldObject", ArgumentBuilder.BuildArguments(parentObjectId, fieldName));
-        }
-
         public async Task<RpcResult<BigInteger>> GetTotalTransactionBlocksAsync()
         {
             return await SendRpcRequestAsync<BigInteger>("sui_getTotalTransactionBlocks");
@@ -152,9 +147,9 @@ namespace Suinet.Rpc
             return await SendRpcRequestAsync<Page_for_SuiObjectResponse_and_ObjectID>("suix_getOwnedObjects", ArgumentBuilder.BuildArguments(address, query, cursor, limit));
         }
 
-        public Task<RpcResult<SuiPage_for_TransactionBlockResponse_and_TransactionDigest>> QueryTransactionBlocksAsync(TransactionBlockResponseQuery query, EventId cursor, ulong? limit, bool? descendingOrder = false)
+        public async Task<RpcResult<Page_for_TransactionBlockResponse_and_TransactionDigest>> QueryTransactionBlocksAsync(TransactionBlockResponseQuery query, EventId cursor, ulong? limit, bool? descendingOrder = false)
         {
-            throw new NotImplementedException();
+            return await SendRpcRequestAsync<Page_for_TransactionBlockResponse_and_TransactionDigest>("suix_queryTransactionBlocks", ArgumentBuilder.BuildArguments(query, cursor, limit, descendingOrder));
         }
 
         public Task<RpcResult<string>> ResolveNameServiceAddressAsync(string name)
@@ -232,14 +227,19 @@ namespace Suinet.Rpc
             return await SendRpcRequestAsync<Page_for_DynamicFieldInfo_and_ObjectID>("suix_getDynamicFields", ArgumentBuilder.BuildArguments(parentObjectId, cursor, limit));
         }
 
-        public Task<RpcResult<Balance[]>> GetAllBalancesAsync(string ownerAddress)
+        public async Task<RpcResult<SuiObjectResponse>> GetDynamicFieldObjectAsync(string parentObjectId, DynamicFieldName fieldName)
         {
-            throw new NotImplementedException();
+            return await SendRpcRequestAsync<SuiObjectResponse>("suix_getDynamicFieldObject", ArgumentBuilder.BuildArguments(parentObjectId, fieldName));
         }
 
-        public Task<RpcResult<SuiPage_for_Coin_and_ObjectID>> GetAllCoinsAsync(string ownerAddress, string cursor, ulong limit)
+        public async Task<RpcResult<Balance[]>> GetAllBalancesAsync(string ownerAddress)
         {
-            throw new NotImplementedException();
+            return await SendRpcRequestAsync<Balance[]>("suix_getAllBalances", ArgumentBuilder.BuildArguments(ownerAddress));
+        }
+
+        public async Task<RpcResult<Page_for_Coin_and_ObjectID>> GetAllCoinsAsync(string ownerAddress, string cursor, ulong limit)
+        {
+            return await SendRpcRequestAsync<Page_for_Coin_and_ObjectID>("suix_getAllCoins", ArgumentBuilder.BuildArguments(ownerAddress, cursor, limit));
         }
 
         public async Task<RpcResult<Balance>> GetBalanceAsync(string ownerAddress, string coinType)

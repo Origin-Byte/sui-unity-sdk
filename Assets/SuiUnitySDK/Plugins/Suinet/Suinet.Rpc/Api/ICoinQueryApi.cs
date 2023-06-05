@@ -19,7 +19,7 @@ namespace Suinet.Rpc.Api
         /// <param name="cursor">optional paging cursor</param>
         /// <param name="limit">maximum number of items per page</param>
         /// <returns></returns>
-        Task<RpcResult<SuiPage_for_Coin_and_ObjectID>> GetAllCoinsAsync(string ownerAddress, string cursor, ulong limit);
+        Task<RpcResult<Page_for_Coin_and_ObjectID>> GetAllCoinsAsync(string ownerAddress, string cursor = null, ulong limit = 10);
 
         /// <summary>
         /// Return the total coin balance for one coin type, owned by the address owner.
