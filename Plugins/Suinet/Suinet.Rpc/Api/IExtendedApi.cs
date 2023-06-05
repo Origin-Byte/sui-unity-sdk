@@ -51,7 +51,7 @@ namespace Suinet.Rpc.Api
         /// <param name="limit">Maximum item returned per page, default to QUERY_MAX_RESULT_LIMIT if not specified.</param>
         /// <param name="descendingOrder">Query result ordering, default to false (ascending order), oldest record first.</param>
         /// <returns></returns>
-        Task<RpcResult<SuiPage_for_TransactionBlockResponse_and_TransactionDigest>> QueryTransactionBlocksAsync(TransactionBlockResponseQuery query, EventId cursor, ulong? limit, bool? descendingOrder = false);
+        Task<RpcResult<Page_for_TransactionBlockResponse_and_TransactionDigest>> QueryTransactionBlocksAsync(TransactionBlockResponseQuery query, EventId cursor, ulong? limit, bool? descendingOrder = false);
 
         /// <summary>
         /// Return the resolved address given resolver and name

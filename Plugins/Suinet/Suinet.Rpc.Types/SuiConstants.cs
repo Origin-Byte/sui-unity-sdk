@@ -11,5 +11,8 @@
         public const int OBJECT_DIGEST_LENGTH = 32;
 
         public const int SUI_ADDRESS_LENGTH = 32;
+
+        public const string KIOSK_TYPE = "0x2::kiosk::Kiosk";
+        public const string KIOSK_ITEM_TYPE = "0x2::kiosk::Item";
     }
 }

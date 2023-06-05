@@ -7,6 +7,6 @@ namespace Suinet.NftProtocol.TransactionBuilders
         // signer address
         string Signer { get; }
 
-        MoveCallTransaction BuildMoveCallTransaction(string gas = null, ulong gasBudget = 10000000, ExecuteTransactionRequestType RequestType = ExecuteTransactionRequestType.WaitForLocalExecution);
+        MoveCallTransaction BuildMoveCallTransaction(string gas = null, ulong gasBudget = 100000000, ExecuteTransactionRequestType RequestType = ExecuteTransactionRequestType.WaitForLocalExecution);
     }
 }

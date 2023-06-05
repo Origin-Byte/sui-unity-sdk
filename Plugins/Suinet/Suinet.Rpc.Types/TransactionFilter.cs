@@ -1,78 +1,71 @@
-﻿using System.Numerics;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Numerics;
 
 namespace Suinet.Rpc.Types
 {
-    public class TransactionFilter
+    [JsonConverter(typeof(TransactionFilterConverter))]
+    public abstract class TransactionFilter
     {
-        public CheckpointFilter Checkpoint { get; set; }
-
-        public MoveFunctionFilter MoveFunction { get; set; }
-
-        public InputObjectFilter InputObject { get; set; }
-
-        public ChangedObjectFilter ChangedObject { get; set; }
-
-        public FromAddressFilter FromAddress { get; set; }
-
-        public ToAddressFilter ToAddress { get; set; }
-
-        public FromAndToAddressFilter FromAndToAddress { get; set; }
-
-        public TransactionKindFilter TransactionKind { get; set; }
     }
 
-    public class CheckpointFilter
+    public class CheckpointFilter : TransactionFilter
     {
         public BigInteger Checkpoint { get; set; }
     }
 
-    public class MoveFunctionFilter
+    public class MoveFunctionFilter : TransactionFilter
     {
         public MoveFunction MoveFunction { get; set; }
     }
 
-    public class MoveFunction
+    public class MoveFunction : TransactionFilter
     {
+        [JsonProperty("function")]
         public string Function { get; set; }
 
+        [JsonProperty("module")]
         public string Module { get; set; }
 
+        [JsonProperty("package")]
         public string Package { get; set; }
     }
 
-    public class InputObjectFilter
+    public class InputObjectFilter : TransactionFilter
     {
         public string InputObject { get; set; }
     }
 
-    public class ChangedObjectFilter
+    public class ChangedObjectFilter : TransactionFilter
     {
         public string ChangedObject { get; set; }
     }
 
-    public class FromAddressFilter
+    public class FromAddressFilter : TransactionFilter      
     {
         public string FromAddress { get; set; }
     }
 
-    public class ToAddressFilter
+    public class ToAddressFilter : TransactionFilter
     {
         public string ToAddress { get; set; }
     }
 
-    public class FromAndToAddressFilter
+    public class FromAndToAddressFilter : TransactionFilter
     {
         public FromAndToAddress FromAndToAddress { get; set; }
     }
 
     public class FromAndToAddress
     {
+        [JsonProperty("from")]
         public string From { get; set; }
 
+        [JsonProperty("to")]
         public string To { get; set; }
     }
 
-    public class TransactionKindFilter
+    public class TransactionKindFilter : TransactionFilter  
     {
         public string TransactionKind { get; set; }
     }
