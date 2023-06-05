@@ -1,5 +1,9 @@
-﻿namespace Suinet.Rpc.Types
+﻿using Newtonsoft.Json;
+using Suinet.Rpc.Types.JsonConverters;
+
+namespace Suinet.Rpc.Types
 {
+    [JsonConverter(typeof(ObjectIdJsonConverter))]
     public class ObjectId
     {
         private readonly string value;

@@ -1,5 +1,9 @@
-﻿namespace Suinet.Rpc.Types
+﻿using Newtonsoft.Json;
+using Suinet.Rpc.Types.JsonConverters;
+
+namespace Suinet.Rpc.Types
 {
+    [JsonConverter(typeof(SuiAddressJsonConverter))]
     public class SuiAddress
     {
         private readonly string value;
