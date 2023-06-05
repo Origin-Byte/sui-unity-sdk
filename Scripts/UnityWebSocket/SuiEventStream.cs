@@ -6,7 +6,7 @@ public class SuiEventStream : MonoBehaviour
 
     public bool autoConnectOnStartup = true;
 
-    private const string WebsocketEndpoint = "wss://fullnode.devnet.sui.io:443";
+    private const string WebsocketEndpoint = "wss://fullnode.testnet.sui.io:443";
 
     public virtual void Awake()
     {
@@ -24,7 +24,8 @@ public class SuiEventStream : MonoBehaviour
     {
         if (autoConnectOnStartup)
         {
-            _webSocketService.SubscribeToEvents("{\"MoveEventType\":\"0x2::devnet_nft::MintNFTEvent\"}");
+            var filterJson = "{\"MoveModule\":{\"module\":\"clob\",\"package\":\"0x8da36ef392a7d2b1e7dac2a987767eea5a415d843d3d34cb66bec6434001f931\"}}";
+            _webSocketService.SubscribeToEvents(filterJson);
         }
     }
 
