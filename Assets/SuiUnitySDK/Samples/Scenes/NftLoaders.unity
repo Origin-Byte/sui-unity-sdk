@@ -731,6 +731,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpriteNftLoader (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 539349531932313787, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
 --- !u!224 &2103195782 stripped
@@ -797,6 +801,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpriteNftLoader
       objectReference: {fileID: 0}
+    - target: {fileID: 539349531932313787, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9faa489eeda71424695eab8b80e4ce9e, type: 3}
 --- !u!1001 &2933614625903714475
@@ -816,7 +824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5298871264423989558, guid: 6def9ac4a65ca984a9d740398c5e5402, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5298871264423989559, guid: 6def9ac4a65ca984a9d740398c5e5402, type: 3}
       propertyPath: m_Pivot.x
@@ -921,7 +929,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6722239002838358652, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6722239002838358653, guid: 9f5cd98173ab4b547b0d729cd7b42063, type: 3}
       propertyPath: m_Pivot.x
