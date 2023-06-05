@@ -113,7 +113,7 @@ public class WebSocketService
     {
         if (_socket is null) return null;
 
-        var parameterToSend = "{\"jsonrpc\":\"2.0\", \"id\": 1, \"method\": \"sui_subscribeEvent\", \"params\": [" + eventFilterString + "]}";
+        var parameterToSend = "{\"jsonrpc\":\"2.0\", \"id\": 1, \"method\": \"suix_subscribeEvent\", \"params\": [" + eventFilterString + "]}";
         return parameterToSend;
     }
 
@@ -124,7 +124,7 @@ public class WebSocketService
     {
         if (_socket is null) return null;
 
-        var unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"sui_unsubscribeEvent\", \"params\":[" + streamId + "]}";
+        var unsubscribeParameter = "{\"jsonrpc\":\"2.0\", \"id\":1, \"method\":\"suix_unsubscribeEvent\", \"params\":[" + streamId + "]}";
         return unsubscribeParameter;
     }
 }
