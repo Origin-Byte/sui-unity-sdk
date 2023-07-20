@@ -1,0 +1,16 @@
+{
+    "name": "Suinet.SuiPlay",
+    "rootNamespace": "Suinet.SuiPlay",
+    "references": [
+        
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
