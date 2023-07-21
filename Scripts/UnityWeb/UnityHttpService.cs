@@ -9,7 +9,8 @@ using Suinet.SuiPlay.Http;
 public class UnityHttpService : IHttpService
 {
     private readonly string _baseUrl;
-
+    private string _authHeader;
+    
     public UnityHttpService(string baseUrl)
     {
         _baseUrl = baseUrl;
@@ -20,6 +21,10 @@ public class UnityHttpService : IHttpService
         Debug.Log($"UnityHttpService.GetAsync url: {url}");
 
         using var unityWebRequest = UnityWebRequest.Get(_baseUrl + url);
+        if (!string.IsNullOrEmpty(_authHeader))
+        {
+            unityWebRequest.SetRequestHeader("Authorization", _authHeader);
+        }
         unityWebRequest.SendWebRequest();
         while (!unityWebRequest.isDone)
         {
@@ -36,6 +41,10 @@ public class UnityHttpService : IHttpService
         
         var contentBytes = await content.ReadAsByteArrayAsync();
         using var unityWebRequest = new UnityWebRequest(_baseUrl + url, "POST");
+        if (!string.IsNullOrEmpty(_authHeader))
+        {
+            unityWebRequest.SetRequestHeader("Authorization", _authHeader);
+        }
         unityWebRequest.uploadHandler = new UploadHandlerRaw(contentBytes);
         unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
         unityWebRequest.SetRequestHeader("Content-Type", "application/json");
@@ -55,6 +64,10 @@ public class UnityHttpService : IHttpService
 
         var contentBytes = await content.ReadAsByteArrayAsync();
         using var unityWebRequest = new UnityWebRequest(_baseUrl + url, "PATCH");
+        if (!string.IsNullOrEmpty(_authHeader))
+        {
+            unityWebRequest.SetRequestHeader("Authorization", _authHeader);
+        }
         unityWebRequest.uploadHandler = new UploadHandlerRaw(contentBytes);
         unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
         unityWebRequest.SetRequestHeader("Content-Type", "application/json");
@@ -66,6 +79,11 @@ public class UnityHttpService : IHttpService
         return HandleResult(unityWebRequest);
     }
 
+    public void SetAuthorizationHeader(string scheme, string parameter)
+    {
+        _authHeader = $"{scheme} {parameter}";
+    }
+    
     private HttpResponseMessage HandleResult(UnityWebRequest unityWebRequest)
     {
         Debug.Log($"UnityWebRequest response: {unityWebRequest.downloadHandler.text}");
