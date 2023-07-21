@@ -20,7 +20,7 @@ Connecting Unity game developers to Sui and Origin Byte's NFT ecosystem.
 - Helper Scripts and prefabs to load NFTs (even Capys!)
 - Windows desktop and WebGL platforms tested
 - Unity 2021.3.10f1 LTS or later supported
-- Samples are using Sui 1.2.0 testnet
+- Samples are using Sui 1.5.0 testnet
 - Please note, some of the samples are being updated!
 
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
@@ -62,6 +62,13 @@ https://github.com/Origin-Byte/sui-unity-sdk.git#upm
 # Usage Samples
 
 All samples can be found in SuiUnitySDK/Samples
+
+## Integration with SuiPlay!
+https://suiplay.originbyte.io/
+
+All-in-one web3 gaming platform for Sui! Authentication, account and backend wallet management, and many more features!
+
+Check out the SuiPlayClientAuth scene for more details!
 
 ## Wallet management
 ![Alt text](/imgs/wallet_ui_1.png "Wallet UI")
@@ -196,7 +203,7 @@ You can also import Capys! This uses the experimental Vector Graphics package to
 ![Capy Image Nft loader](/imgs/capy_loader_1.webp "Capy Image Nft loader")
 ![Capy Image Nft loader configuration](/imgs/capy_loader_2.webp "Capy Image Nft loader configuration")
 
-The srcipt can load the whole hierarchy of accessories for the Capy, or just the main Capy object.
+The script can load the whole hierarchy of accessories for the Capy, or just the main Capy object.
 
 # Dependencies
 

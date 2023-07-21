@@ -10,10 +10,25 @@ public class UIImageArtNftLoaderForAddress : MonoBehaviour
     
     async void Start()
     {
+        await LoadArtNftsAsync();
+    }
+    
+    public async Task LoadNFTsAsync(string url, Image nftImage)
+    {
+        var req = await UnityWebRequests.GetAsync(url);
+        var data = req.downloadHandler.data;
+        SetSpriteFromData(data, nftImage);
+    }
+    
+    public async Task LoadArtNftsAsync()
+    {
         var getObjectRpcResult = await SuiApi.NftProtocolClient.GetArtNftsOwnedByAddressAsync(Address);
 
         if (getObjectRpcResult.IsSuccess)
         {
+            while (transform.childCount > 0) {
+                DestroyImmediate(transform.GetChild(0).gameObject);
+            }
             foreach (var nftData in getObjectRpcResult.Result)
             {
                 var imageGo = Instantiate(ImagePrefab, transform);
@@ -21,12 +36,6 @@ public class UIImageArtNftLoaderForAddress : MonoBehaviour
                 imageGo.gameObject.SetActive(true);
             }
         }
-    }
-    public async Task LoadNFTsAsync(string url, Image nftImage)
-    {
-        var req = await UnityWebRequests.GetAsync(url);
-        var data = req.downloadHandler.data;
-        SetSpriteFromData(data, nftImage);
     }
     
     private void SetSpriteFromData(byte[] data, Image nftImage)

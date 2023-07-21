@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Suinet.NftProtocol
 {
@@ -61,19 +62,11 @@ namespace Suinet.NftProtocol
 
         public async Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsOwnedByAddressAsync(string address, params Type[] withDomains)
         {
-            throw new NotImplementedException();
 
-            //var nftsResult = await _jsonRpcApiClient.GetObjectsOwnedByAddressAsync<ArtNft>(address, null, null);
-
-            //if (nftsResult == null || !nftsResult.IsSuccess) return nftsResult;
-
-            //// TODO test is Task.WhenAll works correctly on webgl
-            //foreach (var nft in nftsResult.Result)
-            //{
-            //    await LoadDomainsForArtNftAsync(nft, withDomains);
-            //}
-
-            //return nftsResult;
+            var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
+            var query = new ObjectResponseQuery() {Filter = filter, Options = ObjectDataOptions.ShowAll()};
+            return await _jsonRpcApiClient.GetOwnedObjectsAsync<ArtNft>(address, new ArtNftParser(), query
+                , null, null);
         }
 
         private async Task LoadDomainsForArtNftAsync(ArtNft nft, params Type[] withDomains)

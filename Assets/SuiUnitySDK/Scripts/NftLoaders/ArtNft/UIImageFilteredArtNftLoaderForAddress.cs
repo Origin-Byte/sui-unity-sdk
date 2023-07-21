@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Suinet.NftProtocol.Nft;
 using UnityEngine;
@@ -14,9 +15,10 @@ public class UIImageFilteredArtNftLoaderForAddress : MonoBehaviour
     {
         var getObjectRpcResult = await SuiApi.NftProtocolClient.GetArtNftsOwnedByAddressAsync(Address);
 
+        Debug.Log("getObjectRpcResult cnt: " + getObjectRpcResult?.Result?.Count());
         if (getObjectRpcResult.IsSuccess)
         {
-            int i = 0;
+            //int i = 0;
             foreach (var nftData in getObjectRpcResult.Result)
             {
                 // var attributes = nftData.Attributes;
