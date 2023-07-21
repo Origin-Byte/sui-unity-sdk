@@ -20,10 +20,10 @@ namespace Suinet.SuiPlay
         {
             _httpService = httpService;
             _tokenStorage = tokenStorage;
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-            };
+            // JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            // {
+            //     ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+            // };
             LoadToken();
         }
 
