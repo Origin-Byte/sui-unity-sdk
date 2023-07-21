@@ -8,9 +8,18 @@ using Suinet.SuiPlay.Http;
 
 public class UnityHttpService : IHttpService
 {
+    private readonly string _baseUrl;
+
+    public UnityHttpService(string baseUrl)
+    {
+        _baseUrl = baseUrl;
+    }
+    
     public async Task<HttpResponseMessage> GetAsync(string url)
     {
-        using var unityWebRequest = UnityWebRequest.Get(url);
+        Debug.Log($"UnityHttpService.GetAsync url: {url}");
+
+        using var unityWebRequest = UnityWebRequest.Get(_baseUrl + url);
         unityWebRequest.SendWebRequest();
         while (!unityWebRequest.isDone)
         {
@@ -22,8 +31,11 @@ public class UnityHttpService : IHttpService
 
     public async Task<HttpResponseMessage> PostAsync(string url, HttpContent content)
     {
+        var contentString = await content.ReadAsStringAsync();
+        Debug.Log($"UnityHttpService.PostAsync url: {url}, content: {contentString}");
+        
         var contentBytes = await content.ReadAsByteArrayAsync();
-        using var unityWebRequest = new UnityWebRequest(url, "POST");
+        using var unityWebRequest = new UnityWebRequest(_baseUrl + url, "POST");
         unityWebRequest.uploadHandler = new UploadHandlerRaw(contentBytes);
         unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
         unityWebRequest.SetRequestHeader("Content-Type", "application/json");
@@ -38,8 +50,11 @@ public class UnityHttpService : IHttpService
 
     public async Task<HttpResponseMessage> PatchAsync(string url, HttpContent content)
     {
+        var contentString = await content.ReadAsStringAsync();
+        Debug.Log($"UnityHttpService.PatchAsync url: {url}, content: {contentString}");
+
         var contentBytes = await content.ReadAsByteArrayAsync();
-        using var unityWebRequest = new UnityWebRequest(url, "PATCH");
+        using var unityWebRequest = new UnityWebRequest(_baseUrl + url, "PATCH");
         unityWebRequest.uploadHandler = new UploadHandlerRaw(contentBytes);
         unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
         unityWebRequest.SetRequestHeader("Content-Type", "application/json");
@@ -55,11 +70,12 @@ public class UnityHttpService : IHttpService
     {
         if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
         {
+            Debug.Log($"UnityWebRequest response: {unityWebRequest.downloadHandler.text}");
             Debug.LogError($"UnityWebRequest error: {unityWebRequest.error}");
             return new HttpResponseMessage()
             {
                 StatusCode = (HttpStatusCode)unityWebRequest.responseCode,
-                Content = new StringContent(string.Empty, Encoding.UTF8, "application/json")
+                Content = new StringContent(unityWebRequest.downloadHandler.text, Encoding.UTF8, "application/json")
             };
         }
         else

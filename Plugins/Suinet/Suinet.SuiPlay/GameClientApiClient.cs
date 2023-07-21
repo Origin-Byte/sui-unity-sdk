@@ -17,6 +17,10 @@ namespace Suinet.SuiPlay
         public GameClientApiClient(IHttpService httpService)
         {
             _httpService = httpService;
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+            };
         }
 
         public async Task<SuiPlayResult<Player>> GetPlayerProfileAsync(string gameId)
@@ -39,11 +43,11 @@ namespace Suinet.SuiPlay
             return await HandleResponse<AuthResponse>(response);
         }
 
-        public async Task<SuiPlayResult<AuthResponse>> RegisterWithEmailAsync(RegistrationRequest request)
+        public async Task<SuiPlayResult<RegistrationResponse>> RegisterWithEmailAsync(RegistrationRequest request)
         {
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var response = await _httpService.PostAsync("/client/auth/register", content);
-            return await HandleResponse<AuthResponse>(response);
+            return await HandleResponse<RegistrationResponse>(response);
         }
 
         public async Task<SuiPlayResult<AuthResponse>> LoginAnonymouslyAsync()
