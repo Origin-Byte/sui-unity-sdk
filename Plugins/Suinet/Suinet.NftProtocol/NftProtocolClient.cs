@@ -64,23 +64,9 @@ namespace Suinet.NftProtocol
         {
 
             var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
-            var nftsResult = await _jsonRpcApiClient.GetOwnedObjectsAsync(address,
-                new ObjectResponseQuery() { Filter = filter }, null, null);
-            
-            if (nftsResult == null || !nftsResult.IsSuccess) return null;
-
-            var parsedNftsResult = new RpcResult<IEnumerable<ArtNft>>();
-            foreach (var nftObjectResponse in nftsResult.Result.Data)
-            {
-                var nftResult = await _jsonRpcApiClient.GetObjectAsync<ArtNft>(nftObjectResponse.Data.ObjectId, new ArtNftParser());
-                if (nftResult.IsSuccess && parsedNftsResult.Result != null)
-                {
-                    parsedNftsResult.Result.Append(nftResult.Result);
-                }
-                Debug.Log("nftResult: " + nftResult.RawRpcResponse);
-            }
-
-            return parsedNftsResult;
+            var query = new ObjectResponseQuery() {Filter = filter, Options = ObjectDataOptions.ShowAll()};
+            return await _jsonRpcApiClient.GetOwnedObjectsAsync<ArtNft>(address, new ArtNftParser(), query
+                , null, null);
         }
 
         private async Task LoadDomainsForArtNftAsync(ArtNft nft, params Type[] withDomains)

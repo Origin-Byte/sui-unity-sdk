@@ -13,7 +13,8 @@ public class SuiPlayWalletUIController : MonoBehaviour
     public TMP_InputField output; // outputs can be copy-pasted
     public TMP_InputField coinBalance; 
     public Button loadOwnedObjectsButton;
-
+    public UIImageArtNftLoaderForAddress artNftLoader;
+    
     private void Start()
     {
         loadBalanceButton.onClick.AddListener(async () =>
@@ -38,14 +39,8 @@ public class SuiPlayWalletUIController : MonoBehaviour
             var playerProfile = await SuiPlay.Client.GetPlayerProfileAsync(SuiPlayConfig.GAME_ID);
             var walletAddress = playerProfile.Value.Wallets.First().Value.Address;
 
-             var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(walletAddress));
-             var query = new ObjectResponseQuery() {Filter = filter, Options = ObjectDataOptions.ShowAll()};
-             // var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(walletAddress,
-            //     , null, null);
-
-            var ownedArtNftObjectsResult =
-                await SuiApi.Client.GetOwnedObjectsAsync(walletAddress, query, null, null);
-            output.text =  JsonConvert.SerializeObject(ownedArtNftObjectsResult, Formatting.Indented);
+            artNftLoader.Address = walletAddress;
+            await artNftLoader.LoadArtNftsAsync();
         });
     }
 }
