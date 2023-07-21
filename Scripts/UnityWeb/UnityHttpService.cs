@@ -68,9 +68,9 @@ public class UnityHttpService : IHttpService
 
     private HttpResponseMessage HandleResult(UnityWebRequest unityWebRequest)
     {
+        Debug.Log($"UnityWebRequest response: {unityWebRequest.downloadHandler.text}");
         if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError || unityWebRequest.result == UnityWebRequest.Result.ProtocolError)
         {
-            Debug.Log($"UnityWebRequest response: {unityWebRequest.downloadHandler.text}");
             Debug.LogError($"UnityWebRequest error: {unityWebRequest.error}");
             return new HttpResponseMessage()
             {
