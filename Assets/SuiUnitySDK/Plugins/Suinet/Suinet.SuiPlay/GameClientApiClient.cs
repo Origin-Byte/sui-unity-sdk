@@ -13,7 +13,8 @@ namespace Suinet.SuiPlay
     public class GameClientApiClient
     {
         private readonly IHttpService _httpService;
-
+        private string _accessToken;
+        
         public GameClientApiClient(IHttpService httpService)
         {
             _httpService = httpService;
@@ -40,7 +41,15 @@ namespace Suinet.SuiPlay
         {
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             var response = await _httpService.PostAsync("/client/auth/login", content);
-            return await HandleResponse<AuthResponse>(response);
+            var result = await HandleResponse<AuthResponse>(response);
+
+            if (result.IsSuccess)
+            {
+                _accessToken = result.Value.IdToken;
+                _httpService.SetAuthorizationHeader("Bearer", _accessToken);
+            }
+
+            return result;
         }
 
         public async Task<SuiPlayResult<RegistrationResponse>> RegisterWithEmailAsync(RegistrationRequest request)

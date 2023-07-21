@@ -10,6 +10,6 @@ namespace Suinet.SuiPlay.DTO
         public DateTime LastLogin { get; set; }
         public string UserId { get; set; }
         public Dictionary<string, object> Properties { get; set; }
-        public List<Wallet> Wallets { get; set; }
+        public Dictionary<string, Wallet> Wallets { get; set; }
     }
 }
