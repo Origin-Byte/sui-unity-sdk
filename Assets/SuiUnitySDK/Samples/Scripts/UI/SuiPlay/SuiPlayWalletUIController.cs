@@ -9,13 +9,14 @@ using Suinet.SuiPlay.Requests;
 
 public class SuiPlayWalletUIController : MonoBehaviour
 {
-    public Button actionButton;
+    public Button loadBalanceButton;
     public TMP_InputField output; // outputs can be copy-pasted
     public TMP_InputField coinBalance; 
+    public Button loadOwnedObjectsButton;
 
     private void Start()
     {
-        actionButton.onClick.AddListener(async () =>
+        loadBalanceButton.onClick.AddListener(async () =>
         {
             var playerProfile = await SuiPlay.Client.GetPlayerProfileAsync(SuiPlayConfig.GAME_ID);
 
@@ -25,11 +26,26 @@ public class SuiPlayWalletUIController : MonoBehaviour
 
             // var nftsResult = await SuiApi.Client.GetObjectsOwnedByAddressAsync(walletAddress, new ArtNftParser(),
             //     options: ObjectDataOptions.ShowAll());
-            var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(walletAddress));
-            var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(walletAddress,
-                new ObjectResponseQuery() { Filter = filter }, null, null);
+            // var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(walletAddress));
+            // var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(walletAddress,
+            //     new ObjectResponseQuery() { Filter = filter, Options = ObjectDataOptions.ShowAll()}, null, null);
+            //
+            // output.text = JsonConvert.SerializeObject(coinBalanceResult.Result, Formatting.Indented) + "\n" + JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
+        });
+        
+        loadOwnedObjectsButton.onClick.AddListener(async () =>
+        {
+            var playerProfile = await SuiPlay.Client.GetPlayerProfileAsync(SuiPlayConfig.GAME_ID);
+            var walletAddress = playerProfile.Value.Wallets.First().Value.Address;
 
-            output.text = JsonConvert.SerializeObject(coinBalanceResult.Result, Formatting.Indented) + "\n" + JsonConvert.SerializeObject(ownedObjectsResult.Result, Formatting.Indented);
+             var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(walletAddress));
+             var query = new ObjectResponseQuery() {Filter = filter, Options = ObjectDataOptions.ShowAll()};
+             // var ownedObjectsResult = await SuiApi.Client.GetOwnedObjectsAsync(walletAddress,
+            //     , null, null);
+
+            var ownedArtNftObjectsResult =
+                await SuiApi.Client.GetOwnedObjectsAsync(walletAddress, query, null, null);
+            output.text =  JsonConvert.SerializeObject(ownedArtNftObjectsResult, Formatting.Indented);
         });
     }
 }
