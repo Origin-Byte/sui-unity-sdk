@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Suinet.NftProtocol
 {
@@ -61,19 +62,25 @@ namespace Suinet.NftProtocol
 
         public async Task<RpcResult<IEnumerable<ArtNft>>> GetArtNftsOwnedByAddressAsync(string address, params Type[] withDomains)
         {
-            throw new NotImplementedException();
 
-            //var nftsResult = await _jsonRpcApiClient.GetObjectsOwnedByAddressAsync<ArtNft>(address, null, null);
+            var filter = ObjectDataFilterFactory.CreateMatchAllFilter(ObjectDataFilterFactory.CreateAddressOwnerFilter(address));
+            var nftsResult = await _jsonRpcApiClient.GetOwnedObjectsAsync(address,
+                new ObjectResponseQuery() { Filter = filter }, null, null);
+            
+            if (nftsResult == null || !nftsResult.IsSuccess) return null;
 
-            //if (nftsResult == null || !nftsResult.IsSuccess) return nftsResult;
+            var parsedNftsResult = new RpcResult<IEnumerable<ArtNft>>();
+            foreach (var nftObjectResponse in nftsResult.Result.Data)
+            {
+                var nftResult = await _jsonRpcApiClient.GetObjectAsync<ArtNft>(nftObjectResponse.Data.ObjectId, new ArtNftParser());
+                if (nftResult.IsSuccess && parsedNftsResult.Result != null)
+                {
+                    parsedNftsResult.Result.Append(nftResult.Result);
+                }
+                Debug.Log("nftResult: " + nftResult.RawRpcResponse);
+            }
 
-            //// TODO test is Task.WhenAll works correctly on webgl
-            //foreach (var nft in nftsResult.Result)
-            //{
-            //    await LoadDomainsForArtNftAsync(nft, withDomains);
-            //}
-
-            //return nftsResult;
+            return parsedNftsResult;
         }
 
         private async Task LoadDomainsForArtNftAsync(ArtNft nft, params Type[] withDomains)

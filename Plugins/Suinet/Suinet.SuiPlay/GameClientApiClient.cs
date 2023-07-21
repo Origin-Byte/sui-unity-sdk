@@ -102,13 +102,20 @@ namespace Suinet.SuiPlay
             return await HandleResponse<string>(response);
         }
 
-        public async Task<SuiPlayResult<SuiTransactionResponseData>> ExecuteSponsoredTransactionAsync(string studioId, string gameId, string walletId, SuiTransactionRequest request)
+        public async Task<SuiPlayResult<SuiTransactionResponseData>> ExecuteSponsoredTransactionAsync(string gameId, string walletId, SuiTransactionRequest request)
         {
             var content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            var response = await _httpService.PostAsync($"/client/wallets/{walletId}/transactions/execute-sponsored?studioId={studioId}&gameId={gameId}", content);
+            var response = await _httpService.PostAsync($"/client/wallets/{walletId}/transactions/execute-sponsored?gameId={gameId}", content);
             return await HandleResponse<SuiTransactionResponseData>(response);
         }
 
+        public async Task<SuiPlayResult<SignTransactionResult>> SignTransactionAsync(string gameId, string walletId, SignTransactionRequest transactionRequest)
+        {
+            var content = new StringContent(JsonConvert.SerializeObject(transactionRequest), Encoding.UTF8, "application/json");
+            var response = await _httpService.PostAsync($"/client/wallets/{walletId}/transactions/sign?gameId={gameId}", content);
+            return await HandleResponse<SignTransactionResult>(response);
+        }
+        
         private async Task<SuiPlayResult<T>> HandleResponse<T>(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
