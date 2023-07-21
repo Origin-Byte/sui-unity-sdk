@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System;
+using UnityEngine;
 
 namespace Suinet.Rpc.Types.JsonConverters
 {
@@ -29,10 +30,10 @@ namespace Suinet.Rpc.Types.JsonConverters
                     throw new JsonSerializationException("Type of TransactionBlockKind not recognized");
             }
         }
-
+        
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+   
         }
     }
 
