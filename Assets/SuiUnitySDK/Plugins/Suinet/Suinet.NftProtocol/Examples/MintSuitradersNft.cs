@@ -27,7 +27,7 @@ namespace Suinet.NftProtocol.Examples
 
         public string Recipient { get; set; }
 
-        public MoveCallTransaction BuildMoveCallTransaction(string gas = null, ulong gasBudget = 1000000, ExecuteTransactionRequestType RequestType = ExecuteTransactionRequestType.WaitForLocalExecution)
+        public MoveCallTransaction BuildMoveCallTransaction(string gas = null, ulong gasBudget = 10000000, ExecuteTransactionRequestType RequestType = ExecuteTransactionRequestType.WaitForLocalExecution)
         {
             return new MoveCallTransaction()
             {
