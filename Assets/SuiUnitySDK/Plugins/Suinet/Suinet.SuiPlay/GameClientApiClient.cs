@@ -13,15 +13,18 @@ namespace Suinet.SuiPlay
     public class GameClientApiClient
     {
         private readonly IHttpService _httpService;
+        private readonly ITokenStorage _tokenStorage;
         private string _accessToken;
         
-        public GameClientApiClient(IHttpService httpService)
+        public GameClientApiClient(IHttpService httpService, ITokenStorage tokenStorage)
         {
             _httpService = httpService;
+            _tokenStorage = tokenStorage;
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
+            LoadToken();
         }
 
         public async Task<SuiPlayResult<Player>> GetPlayerProfileAsync(string gameId)
@@ -47,6 +50,7 @@ namespace Suinet.SuiPlay
             {
                 _accessToken = result.Value.IdToken;
                 _httpService.SetAuthorizationHeader("Bearer", _accessToken);
+                _tokenStorage.SaveToken(_accessToken);
             }
 
             return result;
@@ -116,6 +120,15 @@ namespace Suinet.SuiPlay
             else
             {
                 return new SuiPlayResult<T> { Error = $"Error {response.StatusCode}: {await response.Content.ReadAsStringAsync()}" };
+            }
+        }
+        
+        public void LoadToken()
+        {
+            _accessToken = _tokenStorage.LoadToken();
+            if (!string.IsNullOrEmpty(_accessToken))
+            {
+                _httpService.SetAuthorizationHeader("Bearer", _accessToken);
             }
         }
     }

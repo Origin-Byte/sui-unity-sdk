@@ -8,6 +8,6 @@ public static class SuiPlay
     static SuiPlay()
     {
         var httpService = new UnityHttpService(SuiConstants.SUIPLAY_API_URL);
-        Client = new GameClientApiClient(httpService);
+        Client = new GameClientApiClient(httpService, new UnityTokenStorage());
     }
 }
