@@ -14,5 +14,7 @@
 
         public const string KIOSK_TYPE = "0x2::kiosk::Kiosk";
         public const string KIOSK_ITEM_TYPE = "0x2::kiosk::Item";
+        
+        public const string SUIPLAY_API_URL = "https://suiplay-api.originbyte.io/v1";
     }
 }

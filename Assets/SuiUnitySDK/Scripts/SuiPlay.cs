@@ -1,18 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Suinet.Rpc.Types;
+using Suinet.SuiPlay;
 
-public class SuiPlay : MonoBehaviour
+public static class SuiPlay
 {
-    // Start is called before the first frame update
-    void Start()
+    public static GameClientApiClient Client { get; }
+    
+    static SuiPlay()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        var httpService = new UnityHttpService(SuiConstants.SUIPLAY_API_URL);
+        Client = new GameClientApiClient(httpService);
     }
 }
