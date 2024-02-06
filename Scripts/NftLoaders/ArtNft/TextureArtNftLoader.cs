@@ -27,6 +27,12 @@ public class TextureArtNftLoader : MonoBehaviour
 
     public async Task LoadNFTAsync(string url)
     {
+        if (url.StartsWith("ipfs://"))
+        {
+            string ipfsHash = url.Substring(7);
+            url = $"https://ipfs.io/ipfs/{ipfsHash}";
+        }
+        
         var req = await UnityWebRequests.GetAsync(url);
         var data = req.downloadHandler.data;
         SetTextureFromData(data);
@@ -34,6 +40,12 @@ public class TextureArtNftLoader : MonoBehaviour
 
     public void LoadNFT(string url)
     {
+        if (url.StartsWith("ipfs://"))
+        {
+            string ipfsHash = url.Substring(7);
+            url = $"https://ipfs.io/ipfs/{ipfsHash}";
+        }
+        
         StartCoroutine(UnityWebRequests.Get(url, onSuccess: req =>
         {
             var data = req.downloadHandler.data;

@@ -62,7 +62,7 @@ public class UnityWebRequestRpcClient : IRpcClient
         try
         {
             result.RawRpcResponse = downloadHandler.text;
-            //Debug.Log($"Result: {result.RawRpcResponse}");
+            Debug.Log($"Result: {result.RawRpcResponse}");
             var res = JsonConvert.DeserializeObject<JsonRpcValidResponse<T>>(result.RawRpcResponse);
 
             if (res.Result != null)
