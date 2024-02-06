@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Suinet.NftProtocol.Nft;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,12 +16,19 @@ public class UIImageArtNftLoader : MonoBehaviour
 
         if (getObjectRpcResult.IsSuccess)
         {
+            Debug.Log( "getObjectRpcResult: " + JsonConvert.SerializeObject(getObjectRpcResult));
             await LoadNFTAsync(getObjectRpcResult.Result.Url);
         }
     }
     
     public async Task LoadNFTAsync(string url)
     {
+        if (url.StartsWith("ipfs://"))
+        {
+            string ipfsHash = url.Substring(7);
+            url = $"https://ipfs.io/ipfs/{ipfsHash}";
+        }
+        
         var req = await UnityWebRequests.GetAsync(url);
         var data = req.downloadHandler.data;
         SetSpriteFromData(data);

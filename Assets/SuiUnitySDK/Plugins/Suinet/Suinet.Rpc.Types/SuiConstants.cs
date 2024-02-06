@@ -4,6 +4,7 @@
     {
         public const string SUI_COIN_TYPE = "0x2::coin::Coin<0x2::sui::SUI>";
         public const string TESTNET_FULLNODE = "https://rpc-testnet.suiscan.xyz:443/";
+        public const string MAINNET_FULLNODE = "https://rpc.mainnet.sui.io:443/";
         public const string DEVNET_FULLNODE = "https://fullnode.devnet.sui.io:443/";
 
         // Sui uses SHA3-256 hence 32 bytes here

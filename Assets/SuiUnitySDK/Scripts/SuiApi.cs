@@ -16,7 +16,7 @@ public static class SuiApi
 
     static SuiApi()
     {
-        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.TESTNET_FULLNODE);
+        var rpcClient = new UnityWebRequestRpcClient(SuiConstants.MAINNET_FULLNODE);
         Client = new SuiJsonRpcApiClient(rpcClient);
         _signer = CreateSigner(Client, SuiWallet.GetActiveKeyPair());
         NftProtocolClient = new NftProtocolClient(Client, SuiWallet.GetActiveKeyPair());
